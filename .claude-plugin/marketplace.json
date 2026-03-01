@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Custom development workflow agents and skills for code quality, Tauri/Rust development, frontend optimization, AI tooling, and constraint programming optimization",
-    "version": "1.25.0"
+    "version": "1.28.0"
   },
   "plugins": [
     {
@@ -89,7 +89,7 @@
       "name": "frontend",
       "source": "./plugins/frontend",
       "description": "React performance optimization, UI polishing, UX design, and modern CSS for frontend applications",
-      "version": "1.9.0",
+      "version": "2.1.0",
       "author": {
         "name": "Alfio"
       },
@@ -110,10 +110,15 @@
         "./agents/react-performance-optimizer.md",
         "./agents/ui-polisher.md",
         "./agents/ui-ux-designer.md",
-        "./agents/ui-layout-designer.md"
+        "./agents/ui-layout-designer.md",
+        "./agents/modern-css.md"
       ],
       "skills": [
         "./skills/modern-css"
+      ],
+      "commands": [
+        "./commands/review-frontend-changes.md",
+        "./commands/review-design.md"
       ]
     },
     {
@@ -491,7 +496,7 @@
       "name": "comprehensive-review",
       "source": "./plugins/comprehensive-review",
       "description": "Multi-agent code review orchestration with architecture, security, pattern analysis, and best practices across 5 phases",
-      "version": "1.2.0",
+      "version": "1.3.0",
       "author": {
         "name": "Alfio"
       },
@@ -512,7 +517,8 @@
       ],
       "commands": [
         "./commands/full-review.md",
-        "./commands/pr-enhance.md"
+        "./commands/pr-enhance.md",
+        "./commands/review-changes.md"
       ]
     }
   ]
