@@ -5,6 +5,7 @@ app-explorer crawler -- BFS webapp exploration with Playwright.
 Usage:
     python crawler.py --url http://localhost:3000
     python crawler.py --url http://localhost:3000 --max-depth 3 --max-screens 50
+    python crawler.py --url http://localhost:3000 --mobile --auth auth.json
 """
 from __future__ import annotations
 
@@ -19,7 +20,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urljoin, urlparse, urlunparse
 
-from playwright.sync_api import Browser, Page, sync_playwright
+from playwright.sync_api import Browser, BrowserContext, Page, sync_playwright
 
 
 # ---------------------------------------------------------------------------
@@ -32,6 +33,16 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output", default=".app-explorer", help="Output directory")
     parser.add_argument("--max-depth", type=int, default=5, help="Max BFS depth")
     parser.add_argument("--max-screens", type=int, default=200, help="Max screens to explore")
+    parser.add_argument("--mobile", action="store_true", default=True,
+                        help="Use mobile viewport (default: True)")
+    parser.add_argument("--no-mobile", action="store_true",
+                        help="Disable mobile viewport")
+    parser.add_argument("--width", type=int, default=390,
+                        help="Viewport width (default: 390)")
+    parser.add_argument("--height", type=int, default=844,
+                        help="Viewport height (default: 844)")
+    parser.add_argument("--auth", default=None,
+                        help="Path to auth.json from a previous crawl to skip login")
     return parser.parse_args()
 
 
@@ -165,6 +176,25 @@ def extract_interactive_elements(page: Page, base_origin: str, current_url: str)
         except Exception:
             pass
 
+    # Bottom nav items (common SPA pattern)
+    for nav_item in page.locator(
+        "nav button, nav [role='button'], "
+        "[class*='bottom-nav'] button, [class*='BottomNav'] button, "
+        "[class*='tab-bar'] button, [class*='TabBar'] button"
+    ).all():
+        try:
+            label = (nav_item.get_attribute("aria-label") or nav_item.inner_text()).strip()
+            if label and len(label) < 30:
+                # Avoid duplicates with buttons already captured
+                if not any(e.get("label") == label[:120] and e["type"] == "button" for e in elements):
+                    elements.append({
+                        "type": "nav_item",
+                        "label": label[:120],
+                        "selector": _best_selector(nav_item),
+                    })
+        except Exception:
+            pass
+
     return elements
 
 
@@ -172,16 +202,37 @@ def extract_interactive_elements(page: Page, base_origin: str, current_url: str)
 # State fingerprinting
 # ---------------------------------------------------------------------------
 
-def compute_fingerprint(url: str, elements: list[dict], base_origin: str) -> str:
-    """Unique identifier for a (url, DOM-state) pair."""
-    norm_url = normalize_url(url, base_origin)
+def compute_fingerprint(page: Page, elements: list[dict], base_origin: str) -> str:
+    """Unique identifier for a (url, DOM-state) pair.
+
+    Uses multi-signal approach for SPA support:
+    - Signal 1: interactive element labels
+    - Signal 2: DOM structure (headings + active tab/selection)
+    """
+    url = normalize_url(page.url, base_origin)
     labels = sorted(e.get("label", "") for e in elements if e.get("label"))
-    dom_hash = hashlib.md5("|".join(labels).encode()).hexdigest()[:8]
-    return f"{norm_url}::{dom_hash}"
+
+    # Signal 1: interactive labels hash
+    labels_hash = hashlib.md5("|".join(labels).encode()).hexdigest()[:8]
+
+    # Signal 2: DOM structure (headings + active tab indicator)
+    try:
+        structure = page.evaluate("""() => {
+            const headings = [...document.querySelectorAll('h1,h2,h3,[role=heading]')]
+                .map(h => h.textContent?.trim()).filter(Boolean).join('|');
+            const active = document.querySelector('[aria-selected=true],[data-state=active]');
+            const activeLabel = active?.textContent?.trim() || '';
+            return headings + '::' + activeLabel;
+        }""")
+    except Exception:
+        structure = ""
+    structure_hash = hashlib.md5(structure.encode()).hexdigest()[:6]
+
+    return f"{url}::{labels_hash}::{structure_hash}"
 
 
 # ---------------------------------------------------------------------------
-# Non-href element exploration (modals, tabs, menu items)
+# Non-href element exploration (modals, tabs, menu items, nav items)
 # ---------------------------------------------------------------------------
 
 def explore_clickable_element(
@@ -195,6 +246,7 @@ def explore_clickable_element(
     output_dir: str,
     depth: int,
     current_path: list,
+    original_screen_fp: str,
 ) -> dict | None:
     """
     Click a non-link element, check if it opened a new state, capture it.
@@ -215,9 +267,11 @@ def explore_clickable_element(
 
         scroll_to_bottom(page)
         new_elements = extract_interactive_elements(page, base_origin, page.url)
-        fp = compute_fingerprint(page.url, new_elements, base_origin)
+        fp = compute_fingerprint(page, new_elements, base_origin)
 
         if fp in visited:
+            # Dismiss any overlay before returning
+            _dismiss_overlay(page, original_screen_fp, base_origin)
             return None
 
         visited.add(fp)
@@ -252,17 +306,39 @@ def explore_clickable_element(
             "elements": new_elements,
         }
 
-        # Try to dismiss modal / restore original state
-        try:
-            page.keyboard.press("Escape")
-            page.wait_for_timeout(300)
-        except Exception:
-            pass
+        # Dismiss modal / restore original state
+        _dismiss_overlay(page, original_screen_fp, base_origin)
 
         return screen
 
     except Exception:
         return None
+
+
+def _dismiss_overlay(page: Page, original_fp: str, base_origin: str) -> None:
+    """Try to dismiss an overlay/modal/sheet and restore the original screen state."""
+    # Step 1: try Escape
+    try:
+        page.keyboard.press("Escape")
+        page.wait_for_timeout(400)
+    except Exception:
+        pass
+
+    # Check if we're back to the original state
+    try:
+        post_elements = extract_interactive_elements(page, base_origin, page.url)
+        post_fp = compute_fingerprint(page, post_elements, base_origin)
+        if post_fp == original_fp:
+            return
+    except Exception:
+        pass
+
+    # Step 2: try clicking the backdrop (top-left corner)
+    try:
+        page.mouse.click(10, 10)
+        page.wait_for_timeout(400)
+    except Exception:
+        pass
 
 
 # ---------------------------------------------------------------------------
@@ -334,10 +410,51 @@ def build_workflows(screens: dict) -> list[dict]:
 
 
 # ---------------------------------------------------------------------------
+# Browser context setup
+# ---------------------------------------------------------------------------
+
+def create_context(
+    browser: Browser,
+    *,
+    mobile: bool,
+    width: int,
+    height: int,
+    auth_path: str | None = None,
+) -> BrowserContext:
+    """Create a browser context with optional mobile viewport and auth state."""
+    kwargs: dict = {}
+
+    if mobile:
+        kwargs.update({
+            "viewport": {"width": width, "height": height},
+            "device_scale_factor": 3,
+            "is_mobile": True,
+            "has_touch": True,
+        })
+
+    if auth_path and Path(auth_path).exists():
+        kwargs["storage_state"] = auth_path
+
+    context = browser.new_context(**kwargs)
+    context.on("page", lambda p: p.on("dialog", lambda d: d.dismiss()))
+    return context
+
+
+# ---------------------------------------------------------------------------
 # Main BFS loop
 # ---------------------------------------------------------------------------
 
-def crawl(start_url: str, output_dir: str, max_depth: int, max_screens: int) -> None:
+def crawl(
+    start_url: str,
+    output_dir: str,
+    max_depth: int,
+    max_screens: int,
+    *,
+    mobile: bool = True,
+    width: int = 390,
+    height: int = 844,
+    auth: str | None = None,
+) -> None:
     output_path = Path(output_dir)
     screenshots_dir = output_path / "screenshots"
     screenshots_dir.mkdir(parents=True, exist_ok=True)
@@ -360,32 +477,72 @@ def crawl(start_url: str, output_dir: str, max_depth: int, max_screens: int) -> 
     visited: set[str] = set()
     screen_counter = 0
 
-    queue: deque[dict] = deque([{
-        "url": start_url,
-        "depth": 0,
-        "path": [],
-        "reached_via": None,
-    }])
-
     with sync_playwright() as pw:
         browser: Browser = pw.chromium.launch(headless=False)
-        context = browser.new_context()
-        context.on("page", lambda p: p.on("dialog", lambda d: d.dismiss()))
+        context = create_context(
+            browser, mobile=mobile, width=width, height=height, auth_path=auth,
+        )
         page: Page = context.new_page()
 
         # --- Login phase ---
+        auth_loaded = bool(auth and Path(auth).exists())
         log.info("Navigating to %s", start_url)
         page.goto(start_url)
         page.wait_for_load_state("networkidle", timeout=15000)
 
-        print("\n" + "=" * 60)
-        print("Browser aperto. Effettua il login se necessario,")
-        print("poi premi Invio per avviare il crawl...")
-        print("=" * 60 + "\n")
-        input()
+        if auth_loaded:
+            log.info("Auth state loaded from %s", auth)
+            # Check if we're still on a login page despite loaded auth
+            elements_check = extract_interactive_elements(page, base_origin, page.url)
+            labels_check = [e.get("label", "").lower() for e in elements_check]
+            login_indicators = ["accedi", "login", "sign in", "registrati", "sign up"]
+            still_on_login = any(
+                ind in label for ind in login_indicators for label in labels_check
+            )
+            if still_on_login:
+                log.warning("Auth state expired — manual login required")
+                auth_loaded = False
 
-        log.info("BFS crawl started. max_depth=%d max_screens=%d", max_depth, max_screens)
+        if not auth_loaded:
+            print("\n" + "=" * 60)
+            print("Browser aperto. Effettua il login se necessario,")
+            print("poi premi Invio per avviare il crawl...")
+            print("=" * 60 + "\n")
+            input()
+            page.wait_for_timeout(1000)
+
+            # Post-login validation
+            post_login_elements = extract_interactive_elements(page, base_origin, page.url)
+            labels_post = [e.get("label", "").lower() for e in post_login_elements]
+            login_indicators = ["accedi", "login", "sign in", "registrati", "sign up"]
+            still_on_login = any(
+                ind in label for ind in login_indicators for label in labels_post
+            )
+            if still_on_login:
+                log.warning("Still on login page. Press Enter again after logging in...")
+                input()
+                page.wait_for_timeout(1000)
+
+        # Save auth state for future crawls
+        auth_save_path = output_path / "auth.json"
+        try:
+            context.storage_state(path=str(auth_save_path))
+            log.info("Auth state saved to %s", auth_save_path)
+        except Exception as exc:
+            log.warning("Could not save auth state: %s", exc)
+
+        # Capture current page as root (don't re-navigate — preserves auth)
+        root_url = page.url
+        log.info("BFS crawl started from %s. max_depth=%d max_screens=%d", root_url, max_depth, max_screens)
         start_time = time.time()
+
+        queue: deque[dict] = deque([{
+            "url": root_url,
+            "depth": 0,
+            "path": [],
+            "reached_via": None,
+            "skip_navigation": True,  # Use current page, don't goto
+        }])
 
         # --- BFS ---
         while queue:
@@ -401,15 +558,17 @@ def crawl(start_url: str, output_dir: str, max_depth: int, max_screens: int) -> 
             if depth > max_depth:
                 continue
 
-            try:
-                page.goto(url, wait_until="networkidle", timeout=15000)
-            except Exception as exc:
-                log.warning("Navigation failed for %s: %s", url, exc)
-                continue
+            # Navigate only if not using the current page
+            if not state.get("skip_navigation"):
+                try:
+                    page.goto(url, wait_until="networkidle", timeout=15000)
+                except Exception as exc:
+                    log.warning("Navigation failed for %s: %s", url, exc)
+                    continue
 
             scroll_to_bottom(page)
             elements = extract_interactive_elements(page, base_origin, page.url)
-            fp = compute_fingerprint(page.url, elements, base_origin)
+            fp = compute_fingerprint(page, elements, base_origin)
 
             if fp in visited:
                 log.debug("Skip visited state: %s", fp[:60])
@@ -451,10 +610,10 @@ def crawl(start_url: str, output_dir: str, max_depth: int, max_screens: int) -> 
                         })
                 enriched_elements.append(enriched)
 
-            # Explore clickable non-link elements (buttons, tabs, menu items)
+            # Explore clickable non-link elements (buttons, tabs, menu items, nav items)
             if depth < max_depth:
                 for el in elements:
-                    if el["type"] not in ("button", "tab", "menu_item"):
+                    if el["type"] not in ("button", "tab", "menu_item", "nav_item"):
                         continue
                     if screen_counter >= max_screens:
                         break
@@ -464,6 +623,7 @@ def crawl(start_url: str, output_dir: str, max_depth: int, max_screens: int) -> 
                         visited, base_origin,
                         screenshots_dir, output_dir,
                         depth, path,
+                        original_screen_fp=fp,
                     )
                     if new_screen:
                         screens[new_screen["id"]] = new_screen
@@ -531,6 +691,8 @@ def crawl(start_url: str, output_dir: str, max_depth: int, max_screens: int) -> 
     print(f"  Schermata piu deep:  {metrics.get('deepest_screen', {}).get('title', '')} "
           f"({metrics.get('deepest_screen', {}).get('min_clicks', 0)} click)")
     print(f"\nOutput: {sitemap_path}")
+    if auth_save_path.exists():
+        print(f"Auth state: {auth_save_path} (use --auth to skip login next time)")
     print("=" * 60 + "\n")
 
 
@@ -545,4 +707,8 @@ if __name__ == "__main__":
         output_dir=args.output,
         max_depth=args.max_depth,
         max_screens=args.max_screens,
+        mobile=args.mobile and not args.no_mobile,
+        width=args.width,
+        height=args.height,
+        auth=args.auth,
     )

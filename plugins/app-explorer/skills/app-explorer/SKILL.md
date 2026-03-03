@@ -4,10 +4,11 @@ description: >
   Automated webapp explorer that crawls a local web application using Playwright BFS,
   mapping all screens, interactive elements, navigation flows, and user workflows into
   a structured JSON sitemap with per-screen screenshots. Computes UX metrics: min clicks
-  per destination, average depth, deepest screens. Use when: analyzing webapp structure,
-  documenting UI flows, preparing for visual analysis, mapping user workflows, auditing
-  navigation complexity. Triggers: /app-explorer, "explore my app", "map the webapp",
-  "analyze app structure", "crawl my frontend", "mappa la webapp", "esplora l'app".
+  per destination, average depth, deepest screens. Supports authenticated SPAs with session
+  persistence and mobile viewport. Use when: analyzing webapp structure, documenting UI flows,
+  preparing for visual analysis, mapping user workflows, auditing navigation complexity.
+  Triggers: /app-explorer, "explore my app", "map the webapp", "analyze app structure",
+  "crawl my frontend", "mappa la webapp", "esplora l'app".
 ---
 
 # app-explorer
@@ -26,23 +27,62 @@ python "{SKILL_BASE_DIR}/scripts/crawler.py" \
   --output .app-explorer \
   --max-depth 5 \
   --max-screens 200
+
+# Mobile viewport (default: on, 390x844)
+python "{SKILL_BASE_DIR}/scripts/crawler.py" \
+  --url <URL> --output .app-explorer
+
+# Custom viewport
+python "{SKILL_BASE_DIR}/scripts/crawler.py" \
+  --url <URL> --output .app-explorer --width 1280 --height 800 --no-mobile
+
+# Reuse auth from previous crawl (skip login)
+python "{SKILL_BASE_DIR}/scripts/crawler.py" \
+  --url <URL> --output .app-explorer --auth .app-explorer/auth.json
 ```
 
 Replace `{SKILL_BASE_DIR}` with the base directory shown at the top of this skill context.
+
+### CLI flags
+
+| Flag | Default | Description |
+|---|---|---|
+| `--url` | required | Starting URL |
+| `--output` | `.app-explorer` | Output directory |
+| `--max-depth` | `5` | Max BFS depth |
+| `--max-screens` | `200` | Max screens to explore |
+| `--mobile` | on | Mobile viewport with touch (390x844) |
+| `--no-mobile` | off | Disable mobile viewport |
+| `--width` | `390` | Viewport width |
+| `--height` | `844` | Viewport height |
+| `--auth` | none | Path to `auth.json` from previous crawl to skip login |
 
 ## Workflow
 
 1. Create `.app-explorer/` in the current working directory if it doesn't exist.
 2. Run crawler.py with the target URL. The script:
-   - Opens a **headed** (visible) browser
+   - Opens a **headed** (visible) browser with mobile viewport (390x844)
    - Navigates to the URL
    - Prints: `"Browser aperto. Effettua il login se necessario, poi premi Invio per avviare il crawl..."`
    - Waits for user to press Enter
-   - Runs BFS crawl across all pages, buttons, menus, modals, dropdowns, tabs
+   - Validates login succeeded (re-prompts if still on login page)
+   - Saves auth state to `auth.json` for future reuse
+   - Runs BFS crawl using the **post-login page** as root (preserves auth session)
+   - Explores all pages, buttons, menus, modals, tabs, bottom navigation
+   - Uses multi-signal fingerprinting to distinguish SPA states with same URL
    - Saves a screenshot for every unique screen
    - Writes `.app-explorer/sitemap.json`
 3. Confirm to user: `"Crawl completato. N schermate trovate. Sitemap in .app-explorer/sitemap.json"`
 4. Read `sitemap.json` for downstream visual analysis or to answer structure/UX questions.
+
+## SPA support
+
+The crawler handles single-page applications with:
+- **Auth session persistence**: saves browser storage state after login, uses current page as BFS root (no re-navigation that would lose auth)
+- **Multi-signal fingerprinting**: combines URL + interactive labels + DOM headings + active tab state to distinguish pages with the same URL
+- **Bottom navigation detection**: finds nav buttons, tab bars, and bottom nav components common in mobile SPAs
+- **Overlay dismiss**: tries Escape, then backdrop click to dismiss modals/sheets before continuing
+- **Auth reuse**: `--auth auth.json` flag to skip login on subsequent crawls
 
 ## sitemap.json structure
 
@@ -76,6 +116,7 @@ Replace `{SKILL_BASE_DIR}` with the base directory shown at the top of this skil
 | `dropdown` | `<select>`, `[role=combobox]` with options |
 | `tab` | `[role=tab]` |
 | `menu_item` | `[role=menuitem]` |
+| `nav_item` | Bottom nav / tab bar buttons |
 | `modal_trigger` | Elements that open an overlay/modal |
 
 ## Phase 2: Visual analysis

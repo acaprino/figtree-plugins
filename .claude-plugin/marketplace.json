@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Custom development workflow agents and skills for code quality, Tauri/Rust development, frontend optimization, AI tooling, and constraint programming optimization",
-    "version": "1.36.0"
+    "version": "1.38.0"
   },
   "plugins": [
     {
@@ -219,7 +219,7 @@
       "name": "utilities",
       "source": "./plugins/utilities",
       "description": "General utility skills for file organization, cleanup, and system maintenance",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "ComposioHQ"
       },
@@ -524,7 +524,7 @@
       "name": "app-explorer",
       "source": "./plugins/app-explorer",
       "description": "Automated webapp explorer that crawls a local web application using Playwright BFS, mapping all screens, interactive elements, navigation flows, and user workflows into a structured JSON sitemap with per-screen screenshots",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "Alfio"
       },

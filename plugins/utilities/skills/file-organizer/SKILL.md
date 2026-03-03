@@ -25,6 +25,8 @@ This skill acts as your personal organization assistant, helping you maintain a 
 4. **Automates Cleanup**: Moves, renames, and organizes files with your approval
 5. **Maintains Context**: Makes smart decisions based on file types, dates, and content
 6. **Reduces Clutter**: Identifies old files you probably don't need anymore
+7. **Detects Anti-Patterns**: Flags common organization mistakes and proposes fixes
+8. **Recommends Maintenance**: Suggests a sustainable maintenance schedule
 
 ## How to Use
 
@@ -78,6 +80,8 @@ When a user requests file organization help:
    - Any files or folders to avoid? (Current projects, sensitive data?)
    - How aggressively to organize? (Conservative vs. comprehensive cleanup)
 
+   **Optional — Organization Philosophy**: If the user is setting up a top-level structure or reorganizing broadly, briefly propose an organization philosophy from the reference guide (PARA, Johnny Decimal, GTD, 7-Folder). Let the user choose — never force a philosophy. Skip this for simple, scoped tasks like cleaning Downloads.
+
 2. **Analyze Current State**
 
    Review the target directory:
@@ -101,6 +105,14 @@ When a user requests file organization help:
    - Size distribution
    - Date ranges
    - Obvious organization issues
+
+   **Anti-Pattern Detection**: While analyzing, flag any common anti-patterns found:
+   - Desktop used as permanent archive (zero permanent files on Desktop is the goal)
+   - Unnamed folders (`New Folder`, `New Folder (3)`)
+   - Broken versioning (`document_FINAL_v2_DEFINITIVE_copy.docx`)
+   - Downloads folder never cleaned (thousands of unsorted files)
+   - Same file duplicated in multiple locations (use shortcuts instead)
+   - Deeply nested paths approaching the 260-character Windows limit
 
 3. **Identify Organization Patterns**
 
@@ -127,6 +139,15 @@ When a user requests file organization help:
    - Previous years
    - Very old (archive candidates)
 
+   **Context-Specific Structures** (use when content matches):
+   - **Photos/Video**: `Year/YYYY-MM_event-location/` with RAW, Edited, Export subfolders
+   - **Music**: `Artist/[Year] Album/NN - Track.ext`
+   - **Work Projects**: Numbered prefixes (`01_Brief/`, `02_Research/`, `03_Assets/`, `04_Deliverables/`) with WIP/FINAL_APPROVED separation
+   - **Finance/Personal Docs**: Include expiry dates in filenames (`passport_exp_2030.pdf`), organize by year then type
+   - **Code**: Map local paths to remote URLs (`github.com/username/repo/`)
+
+   See `references/organization-guide.md` for detailed templates.
+
 4. **Find Duplicates**
 
    When requested, search for duplicates:
@@ -146,6 +167,7 @@ When a user requests file organization help:
    - Display sizes and modification dates
    - Recommend which to keep (usually newest or best-named)
    - **Important**: Always ask for confirmation before deleting
+   - Suggest using shortcuts/aliases instead of keeping copies if the user needs access from multiple locations
 
 5. **Propose Organization Plan**
 
@@ -159,6 +181,7 @@ When a user requests file organization help:
    - [Size] total
    - File types: [breakdown]
    - Issues: [list problems]
+   - Anti-patterns found: [list any detected]
 
    ## Proposed Structure
 
@@ -206,7 +229,7 @@ When a user requests file organization help:
    mv "old/path/file.pdf" "new/path/file.pdf"
 
    # Rename files with consistent patterns
-   # Example: "YYYY-MM-DD - Description.ext"
+   # Example: "YYYY-MM-DD_context_description_v01.ext"
    ```
 
    **Important Rules**:
@@ -215,6 +238,18 @@ When a user requests file organization help:
    - Preserve original modification dates
    - Handle filename conflicts gracefully
    - Stop and ask if you encounter unexpected situations
+
+   **Optional — File Renaming**: When renaming files, offer to apply consistent naming conventions. Only rename when the user agrees — never auto-rename without consent:
+   - ISO 8601 dates: `YYYY-MM-DD` (correct alphabetical sort across all OSes)
+   - Formula: `[Date]_[Context]_[Description]_[Version].ext`
+   - Zero-padded versioning: `v01`, `v02`, `v03` (minor: `v01.1`, `v01.2`)
+   - Separators: `kebab-case` or `snake_case` (never spaces)
+   - All lowercase for maximum cross-platform compatibility
+   - Zero-padding for sequences: `001`, `002` (prevents `1, 10, 11, 2` sort)
+   - Status prefixes when useful: `WIP_`, `DRAFT_`, `REVIEW_`, `APPROVED_`
+   - Avoid: `< > : " / \ | ? *`, accents, emoji, leading dots, Windows reserved names (`CON`, `PRN`, `AUX`, `NUL`)
+   - Keep filenames under 25-30 characters — let folder context provide the rest
+   - Watch for full path length approaching Windows 260-character limit
 
 7. **Provide Summary and Maintenance Tips**
 
@@ -229,19 +264,22 @@ When a user requests file organization help:
    - Organized [Y] files
    - Freed [Z] GB by removing duplicates
    - Archived [W] old files
+   - Fixed [N] anti-patterns
 
    ## New Structure
 
    [Show the new folder tree]
 
-   ## Maintenance Tips
+   ## Maintenance Schedule
 
    To keep this organized:
 
-   1. **Weekly**: Sort new downloads
-   2. **Monthly**: Review and archive completed projects
-   3. **Quarterly**: Check for new duplicates
-   4. **Yearly**: Archive old files
+   | Frequency | Time | Tasks |
+   |-----------|------|-------|
+   | Weekly | 15 min | Empty Downloads, process Inbox to zero, verify recent files are in place |
+   | Monthly | 45 min | Scan for duplicates, verify backups, archive completed projects |
+   | Quarterly | 2 hrs | Disk space audit, archive projects inactive 3+ months, test backup restore |
+   | Yearly | Half day | Disaster recovery test, retention policy review, structure update |
 
    ## Quick Commands for You
 
@@ -268,16 +306,18 @@ When a user requests file organization help:
 **Process**:
 1. Analyzes Downloads folder
 2. Finds patterns: work docs, personal photos, installers, random PDFs
-3. Proposes structure:
+3. Detects anti-patterns: broken versioning names, unnamed folders, duplicates
+4. Proposes structure:
    - Downloads/
      - Work/
      - Personal/
-     - Installers/ (DMG, PKG files)
+     - Installers/ (DMG, PKG, EXE, MSI files)
      - Archive/
      - ToSort/ (things needing decisions)
-4. Asks for confirmation
-5. Moves files intelligently based on content and names
-6. Results: 500 files → 5 organized folders
+5. Offers to rename files with consistent conventions (ISO dates, kebab-case)
+6. Asks for confirmation
+7. Moves and optionally renames files
+8. Results: 500 files → 5 organized folders with clean names
 
 ### Example 2: Finding and Removing Duplicates
 
@@ -293,7 +333,7 @@ When a user requests file organization help:
 - `/Desktop/proposal.pdf` (2.3 MB, modified: 2024-03-10)
 
 **Recommendation**: Keep `/Documents/proposal.pdf` (most recent in correct location)
-Delete the other 2 copies?
+Create shortcut on Desktop if needed. Delete the other 2 copies?
 
 [Continue for all duplicates...]
 ```
@@ -311,6 +351,11 @@ Delete the other 2 copies?
 - No consistent naming convention
 - Some projects at root, others in random subfolders
 - Duplicate folders (project-name, project-name-old, project-name-v2)
+
+## Anti-Patterns Detected
+- 4 folders with `_FINAL_v2` naming → needs proper versioning
+- `New Folder` and `New Folder (2)` → unnamed, unknown content
+- Same README.md duplicated in 3 locations
 
 ## Proposed Structure
 
@@ -344,16 +389,30 @@ Want me to implement this?
 ```
 Photos/
 ├── 2023/
-│   ├── 01-January/
-│   ├── 02-February/
+│   ├── 2023-01_january/
+│   ├── 2023-02_february/
 │   └── ...
 ├── 2024/
-│   ├── 01-January/
+│   ├── 2024-01_january/
 │   └── ...
 └── Unsorted/
 ```
 
-Then moves photos based on EXIF data or file modification dates.
+Then moves photos based on EXIF data or file modification dates. Optionally renames from camera defaults (`IMG_4523.jpg`) to `YYYY-MM-DD_event_NNN.jpg`.
+
+### Example 5: Setting Up a New Top-Level Structure
+
+**User**: "Help me reorganize my entire Documents folder from scratch."
+
+**Process**:
+1. Asks which organization philosophy appeals to the user:
+   - **PARA**: Simple, 4 folders by actionability (Projects/Areas/Resources/Archives)
+   - **Johnny Decimal**: Numeric IDs, max 2 levels, unambiguous references
+   - **7-Folder**: Max 7 folders per level, max 3 levels, 343 total
+   - **Custom**: Build a structure that fits their specific needs
+2. Analyzes existing content to map files to the chosen structure
+3. Proposes the migration plan
+4. Executes with confirmation at each step
 
 ## Common Organization Tasks
 
@@ -397,31 +456,38 @@ Documents folder.
 ## Pro Tips
 
 1. **Start Small**: Begin with one messy folder (like Downloads) to build trust
-2. **Regular Maintenance**: Run weekly cleanup on Downloads
-3. **Consistent Naming**: Use "YYYY-MM-DD - Description" format for important files
+2. **Regular Maintenance**: Run weekly cleanup on Downloads — 15 minutes saves 4 hours/week
+3. **Consistent Naming**: Use `YYYY-MM-DD_context_description` format for important files
 4. **Archive Aggressively**: Move old projects to Archive instead of deleting
 5. **Keep Active Separate**: Maintain clear boundaries between active and archived work
-6. **Trust the Process**: Let Claude handle the cognitive load of where things go
+6. **One File, One Place**: Never duplicate files — use shortcuts/aliases for multi-location access
+7. **Inbox Zero for Files**: Use a single entry point folder, empty it weekly
+8. **Trust the Process**: Let Claude handle the cognitive load of where things go
 
 ## Best Practices
 
 ### Folder Naming
-- Use clear, descriptive names
+- Use clear, descriptive names — all lowercase
 - Avoid spaces (use hyphens or underscores)
-- Be specific: "client-proposals" not "docs"
-- Use prefixes for ordering: "01-current", "02-archive"
+- Be specific: `client-proposals` not `docs`
+- Use prefixes for ordering: `01-current`, `02-archive`
+- Max 3-4 levels deep for personal files, 5-7 for work environments
+- Stay under ~500 items per level
 
 ### File Naming
-- Include dates: "2024-10-17-meeting-notes.md"
-- Be descriptive: "q3-financial-report.xlsx"
-- Avoid version numbers in names (use version control instead)
-- Remove download artifacts: "document-final-v2 (1).pdf" → "document.pdf"
+- ISO dates: `2024-10-17_meeting-notes.md`
+- Be descriptive: `q3-financial-report.xlsx`
+- Use proper versioning: `v01`, `v02` instead of `_FINAL_v2`
+- Remove download artifacts: `document-final-v2 (1).pdf` → `document.pdf`
+- Include expiry dates for documents that expire: `passport_exp_2030.pdf`
+- Status prefixes when useful: `DRAFT_`, `WIP_`, `APPROVED_`
 
 ### When to Archive
 - Projects not touched in 6+ months
 - Completed work that might be referenced later
 - Old versions after migration to new systems
 - Files you're hesitant to delete (archive first)
+- Use compressed archives with README: `YYYY-MM_project-name_archive.7z`
 
 ## Related Use Cases
 
