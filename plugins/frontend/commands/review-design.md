@@ -1,16 +1,16 @@
 ---
-description: "Full design, layout, and CSS audit of the entire frontend — UX patterns, component hierarchy, spacing system, typography, accessibility, and visual consistency — outputs an actionable markdown report"
+description: "Full design, layout, CSS, and performance audit of the entire frontend — UX patterns, component hierarchy, spacing system, typography, accessibility, visual consistency, and React performance — outputs an actionable markdown report"
 argument-hint: "[src-path] [--framework react|vue|svelte] [--strict-mode]"
 ---
 
-# Full Frontend Design & CSS Review
+# Full Frontend Design & Performance Review
 
-You are a senior frontend design auditor. Perform a **comprehensive design, layout, and CSS review** of the entire frontend codebase — not just recent changes. Evaluate UX patterns, visual consistency, accessibility, layout system, typography, and CSS architecture.
+You are a senior frontend design auditor. Perform a **comprehensive design, layout, CSS, and performance review** of the entire frontend codebase — not just recent changes. Evaluate UX patterns, visual consistency, accessibility, layout system, typography, CSS architecture, and React performance.
 
 ## CRITICAL RULES
 
 1. **Scan the whole frontend.** Use `src/`, `app/`, `components/`, `pages/`, `styles/` — or the path from `$ARGUMENTS` if provided.
-2. **Design + CSS only.** Ignore backend files, API routes, build config. Focus on components, stylesheets, layout files.
+2. **Design + CSS + Performance.** Ignore backend files, API routes, build config. Focus on components, stylesheets, layout files, state management.
 3. **Run all agents in parallel.** Fire all in a single response.
 4. **Write markdown report.** Output is `.design-review/report.md` — an actionable checklist with scores, findings, and fix instructions.
 5. **Never enter plan mode.** Execute immediately.
@@ -25,19 +25,22 @@ Or use the path from `$ARGUMENTS` if provided. List what you find — components
 
 If no frontend files are found, stop and say so.
 
-## Step 2: Sample Key Files
+## Step 2: Sample Key Files & Gather Context
 
 Read a representative cross-section:
 - Entry layout files (e.g., `App.tsx`, `Layout.tsx`, `_app.tsx`, `root.tsx`)
 - 3-5 core components
 - Primary stylesheet(s) or `globals.css` / `tailwind.config`
 - Design token files (`tokens.ts`, `theme.ts`, `variables.css`)
+- State management files (stores, contexts, atoms)
 
-This gives you the design language and patterns to evaluate against.
+This gives you the design language, patterns, and architecture to evaluate against.
+
+**UI Studio brief check:** Look for a product brief file (`brief.md`, `product-brief.md`, or similar) in the project root or docs directory. If found, use it as the north star for evaluating design coherence — every UX, layout, and aesthetic decision should align with the stated goal, audience, and aesthetic tone from the brief. Pass the brief content to all agents as evaluation context.
 
 ## Step 3: Run Parallel Review Agents
 
-Fire all three agents **in parallel** in a single response:
+Fire all four agents **in parallel** in a single response:
 
 ### Agent A: UX Patterns & Component Architecture
 
@@ -54,6 +57,9 @@ Task:
     ## File Contents
     [paste sampled component and layout file contents]
 
+    ## Product Brief (if available)
+    [paste brief content or "No product brief found — evaluate against general UX best practices"]
+
     ## Instructions
     Evaluate:
     1. **Component responsibility**: God components, missing abstractions, component prop explosion
@@ -63,6 +69,7 @@ Task:
     5. **User flows**: Are there obvious dead ends, missing feedback, or confusing navigation?
     6. **Design system adherence**: Are colors, spacing, and typography from a token system, or are they scattered arbitrary values?
     7. **Accessibility audit**: Semantic HTML, ARIA roles, keyboard navigation, focus management, color contrast awareness
+    8. **Brief alignment** (if brief provided): Does the UX serve the stated goal and audience? Are interaction patterns appropriate for the target user?
 
     For each finding: severity (Critical/High/Medium/Low), file, issue, specific fix recommendation.
     Note what's working well.
@@ -94,6 +101,9 @@ Task:
     ## File Contents
     [paste sampled layout and stylesheet file contents]
 
+    ## Product Brief (if available)
+    [paste brief content or "No product brief found — evaluate against general layout best practices"]
+
     ## Instructions
     Evaluate:
     1. **Layout system**: Is there a consistent grid/layout pattern (CSS Grid, Flexbox, utility classes)? Or ad-hoc layouts per component?
@@ -103,6 +113,7 @@ Task:
     5. **Alignment & rhythm**: Do elements align to a clear baseline? Is vertical rhythm maintained?
     6. **Above-the-fold**: Is the critical viewport optimized? Is the most important content immediately visible?
     7. **Container strategy**: Max-widths, centering, content containers — are they consistent?
+    8. **Brief alignment** (if brief provided): Does the layout serve the stated audience and aesthetic tone? Is the spatial hierarchy appropriate?
 
     For each finding: severity (Critical/High/Medium/Low), file, issue, specific fix.
     Note what's done well.
@@ -134,6 +145,9 @@ Task:
     ## File Contents
     [paste sampled stylesheet and component file contents]
 
+    ## Product Brief (if available)
+    [paste brief content or "No product brief found — evaluate against general CSS and visual polish best practices"]
+
     ## Instructions
     Evaluate:
     1. **CSS architecture**: Global styles pollution, specificity wars, selector depth, !important abuse
@@ -144,6 +158,7 @@ Task:
     6. **CSS performance**: Unnecessary repaints, layout-triggering animations, oversized background images
     7. **Dead CSS**: Unused selectors, legacy overrides, commented-out blocks
     8. **Component isolation**: Are styles scoped or do they leak? CSS Modules / Tailwind / CSS-in-JS used correctly?
+    9. **Brief alignment** (if brief provided): Does the visual polish match the stated aesthetic tone? Is motion appropriate for the audience?
 
     For each finding: severity (Critical/High/Medium/Low), file, issue, specific fix.
     Note what's done well.
@@ -160,18 +175,68 @@ Task:
     ```
 ```
 
+### Agent D: React Performance (React/Next.js projects only)
+
+Skip this agent if the project does not use React/Next.js.
+
+```
+Task:
+  subagent_type: "react-performance-optimizer"
+  description: "React performance and bundle optimization audit"
+  prompt: |
+    Audit the React performance, state management, and bundle optimization of this frontend codebase.
+
+    ## Scope
+    [list of key files sampled]
+
+    ## File Contents
+    [paste sampled component, state management, and config file contents]
+
+    ## Product Brief (if available)
+    [paste brief content — especially performance budget and stack info — or "No product brief found"]
+
+    ## Instructions
+    Evaluate:
+    1. **Re-render prevention**: External store selectors returning objects/arrays without useShallow, missing memoization, component splitting
+    2. **State management**: Zustand/Jotai/Redux selector patterns, prop drilling, state duplication, useEffect chains
+    3. **React Compiler readiness**: Patterns the compiler can optimize vs patterns requiring manual intervention
+    4. **Bundle optimization**: Heavy imports, missing code splitting, lazy loading opportunities, tree-shaking blockers
+    5. **Virtualization**: Large lists/tables not using virtual scrolling
+    6. **Caching strategy**: TanStack Query config, stale times, cache invalidation patterns
+    7. **useEffect cleanup**: Missing AbortControllers, unsubscribed listeners, memory leak vectors
+    8. **Performance budget** (if brief provided): Does the current state meet the stated Core Web Vitals or performance targets?
+
+    For each finding: severity (Critical/High/Medium/Low), file, issue, specific fix with code example.
+    Note what's done well.
+
+    Return structured JSON at the end:
+    ```json
+    {
+      "findings": [
+        { "severity": "Critical", "category": "Re-renders", "file": "...", "issue": "...", "fix": "..." }
+      ],
+      "positives": ["..."],
+      "score": { "re_render_control": 6, "state_management": 7, "bundle": 8, "overall": 7 }
+    }
+    ```
+```
+
 ## Step 4: Generate Markdown Report
 
 After all agents complete, create `.design-review/` directory and write `report.md`.
 
-Merge and deduplicate overlapping findings from the three agents. Order by severity, then file name. Group findings by category (UX, Layout, CSS).
+Merge and deduplicate overlapping findings from all agents. Order by severity, then file name. Group findings by category (UX, Layout, CSS, Performance).
 
 **Output file:** `.design-review/report.md`
 
 ```markdown
-# Design & CSS Review — [date]
+# Design & Performance Review — [date]
 
 Full frontend audit · [N] components · [M] stylesheets
+
+## Product Brief Context
+
+[If a product brief was found, summarize goal, audience, aesthetic tone, and performance budget. If not, note "No product brief found — reviewed against general best practices."]
 
 ## Scores
 
@@ -182,6 +247,7 @@ Full frontend audit · [N] components · [M] stylesheets
 | CSS Architecture | X/10 |
 | Accessibility | X/10 |
 | Typography | X/10 |
+| React Performance | X/10 |
 | **Overall** | **X/10** |
 
 Critical: X | High: X | Medium: X | Low: X
@@ -218,6 +284,14 @@ Critical: X | High: X | Medium: X | Low: X
 - **Fix**: [fix instruction]
 - [ ] Fixed
 
+### React Performance
+
+#### `Store.ts` — [issue title]
+- **Severity**: Critical
+- **Issue**: [description]
+- **Fix**: [fix instruction with code]
+- [ ] Fixed
+
 ---
 
 ## Medium & Low Issues
@@ -229,6 +303,9 @@ Critical: X | High: X | Medium: X | Low: X
 [Same format]
 
 ### CSS Architecture
+[Same format]
+
+### React Performance
 [Same format]
 
 ---
@@ -252,12 +329,12 @@ Critical: X | High: X | Medium: X | Low: X
 **Print a short summary** in the conversation:
 
 ```
-Design & CSS review complete.
+Design & performance review complete.
 
 Report: .design-review/report.md
 
 Overall Score: X/10
-UX: X/10 | Layout: X/10 | CSS: X/10 | Accessibility: X/10
+UX: X/10 | Layout: X/10 | CSS: X/10 | Performance: X/10 | Accessibility: X/10
 
 Critical: X | High: X | Medium: X | Low: X
 
@@ -269,5 +346,5 @@ Top 3 issues:
 
 If `--strict-mode` is set and Critical findings exist:
 ```
-⚠️  STRICT MODE: X critical design issues found. Recommend addressing before shipping.
+STRICT MODE: X critical design/performance issues found. Recommend addressing before shipping.
 ```
