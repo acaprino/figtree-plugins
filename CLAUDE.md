@@ -80,7 +80,7 @@ Some plugins are ported from external repositories and should be kept in sync wi
 | `ai-tooling` (brainstorming) | `obra/superpowers` — `skills/brainstorming/SKILL.md` | `plugins/ai-tooling/skills/brainstorming/SKILL.md` |
 | `ai-tooling` (writing-plans) | `obra/superpowers` — `skills/writing-plans/SKILL.md` | `plugins/ai-tooling/skills/writing-plans/SKILL.md` |
 | `ai-tooling` (executing-plans) | `obra/superpowers` — `skills/executing-plans/SKILL.md` | `plugins/ai-tooling/skills/executing-plans/SKILL.md` |
-| `frontend` (modern-css) | `paulirish/dotfiles` — `agents/paulirish-skills/skills/modern-css/SKILL.md` | `plugins/frontend/skills/modern-css/SKILL.md`, `plugins/frontend/skills/modern-css/references/argyle-cacadia-2025-deck.md` |
+| `frontend` (css-master) | `paulirish/dotfiles` — `agents/paulirish-skills/skills/modern-css/SKILL.md` | `plugins/frontend/skills/css-master/SKILL.md`, `plugins/frontend/skills/css-master/references/argyle-cacadia-2025-deck.md` |
 
 ### How to sync a plugin
 

@@ -1,13 +1,13 @@
 ---
-name: modern-css
-description: Specialized knowledge for writing modern high-quality CSS. Trigger this skill when starting a new CSS project/file, when the user asks about new CSS features (e.g. Masonry, View Transitions, Container Queries, Scroll-driven animations), or requests refactoring of legacy styles to modern standards.
+name: css-master
+description: Comprehensive CSS skill covering modern CSS features, architecture methodologies (BEM, CSS Modules, Cascade Layers), SASS/preprocessors, accessibility patterns, responsive images, cross-browser compatibility, and web fonts. Trigger when writing CSS, refactoring styles, handling modern CSS features (Container Queries, View Transitions, Scroll-driven animations, Masonry), or architecting a style system.
 ---
 
-<!-- Upstream source: https://github.com/paulirish/dotfiles/tree/main/agents/paulirish-skills/skills/modern-css -->
+<!-- Upstream source (modern CSS content): https://github.com/paulirish/dotfiles/tree/main/agents/paulirish-skills/skills/modern-css -->
 
-# Modern CSS
+# CSS Master
 
-This skill provides a reference for writing modern, robust, and efficient CSS.
+Comprehensive reference for writing modern, robust, maintainable, and accessible CSS — from cutting-edge native features to production architecture patterns.
 
 ---
 
@@ -153,6 +153,36 @@ h1, p, button {
 - `dvh` / `dvw` - Dynamic (accounts for mobile browser UI)
 - `svh` / `svw` - Small (smallest possible viewport)
 - `lvh` / `lvw` - Large (largest possible viewport)
+
+### Web Fonts
+```css
+/* Variable fonts — one file, infinite variations */
+@font-face {
+  font-family: 'Inter';
+  src: url('inter.woff2') format('woff2');
+  font-weight: 100 900;       /* Weight axis range */
+  font-style: normal oblique; /* Style axis range */
+  font-display: swap;         /* Prevent invisible text while loading */
+}
+
+/* Size-specific subsets reduce file size */
+@font-face {
+  font-family: 'Inter';
+  src: url('inter-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF;
+}
+
+/* Use variable axes */
+.display {
+  font-variation-settings: 'wght' 800, 'wdth' 75;
+}
+```
+
+**Performance tips:**
+- Always use `woff2` — best compression, universal browser support
+- Preload critical fonts: `<link rel="preload" as="font" href="font.woff2" crossorigin>`
+- Use `font-display: swap` or `optional` (zero layout shift but may show fallback briefly)
+- Subsetting: use only the characters you need via tools like `glyphhanger` or Google Fonts `text=` param
 
 ---
 
@@ -305,6 +335,119 @@ Benefits:
 - Import third-party CSS with lower specificity
 - Organize styles by concern, not selector weight
 - Nested layers create clear hierarchies
+
+### BEM Naming Convention
+Block-Element-Modifier: predictable, collision-free class names for component-scoped CSS without tooling.
+
+```css
+/* Block: standalone component */
+.card { }
+
+/* Element: part of the block, never standalone */
+.card__title { }
+.card__image { }
+.card__body { }
+
+/* Modifier: variant or state of a block or element */
+.card--featured { }
+.card--dark { }
+.card__title--truncated { }
+```
+
+Rules:
+- Elements never depend on other elements: `.card__title`, not `.card__header__title`
+- Modifiers never appear alone — always with their block/element class
+- Avoid deep nesting in selectors; BEM trades class verbosity for zero specificity wars
+- One block = one file in a component-driven project
+
+### CSS Modules (React/Vite)
+Scoped styles via build-time hash — zero runtime overhead, zero global leakage.
+
+```css
+/* Button.module.css */
+.button {
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-md);
+}
+
+.button--primary {
+  background: var(--brand);
+  color: white;
+}
+
+.button--ghost {
+  background: transparent;
+  border: 1px solid currentColor;
+}
+```
+
+```tsx
+// Button.tsx
+import styles from './Button.module.css';
+
+export function Button({ variant = 'primary', children }) {
+  return (
+    <button className={`${styles.button} ${styles[`button--${variant}`]}`}>
+      {children}
+    </button>
+  );
+}
+```
+
+**Composing classes:**
+```css
+.error-button {
+  composes: button from './Button.module.css';
+  background: var(--danger);
+}
+```
+
+**When to use BEM vs CSS Modules:**
+- **BEM**: Plain HTML projects, design systems shipped as CSS, teams preferring no build step
+- **CSS Modules**: React/Vue/Svelte component projects — scoping is automatic and co-location is clean
+- **Tailwind**: Utility-first, good for rapid iteration; pair with `@apply` sparingly for repeated patterns
+
+### SASS/Preprocessors
+Native CSS now covers most SASS use cases (custom properties, nesting, `@layer`). Use SASS when you need:
+
+```scss
+// Maps: iterate design tokens
+$spacing: (
+  'sm': 0.5rem,
+  'md': 1rem,
+  'lg': 1.5rem,
+);
+
+@each $name, $value in $spacing {
+  .p-#{$name} { padding: $value; }
+  .m-#{$name} { margin: $value; }
+}
+
+// Mixins: reusable style blocks with arguments
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.sr-only { @include visually-hidden; }
+
+// @use and @forward (modern SASS module system — NOT @import)
+// _tokens.scss
+$brand: oklch(60% 0.2 230);
+
+// main.scss
+@use 'tokens' as t;
+.button { background: t.$brand; }
+```
+
+**When to skip SASS:** If the project uses native CSS custom properties, `@layer`, and native nesting, SASS adds complexity without benefit. Prefer native CSS for new projects.
 
 ---
 
@@ -469,9 +612,150 @@ label:has(+ input:user-invalid) {
 
 ---
 
-## Progressive Enhancement Patterns
+## Accessible Styles
 
-### Feature Detection
+### Focus Management
+```css
+/* :focus-visible — only show ring for keyboard, not mouse */
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* Remove default focus ring only if providing a custom one */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+```
+
+### Visually Hidden (Screen Reader Only)
+```css
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Unhide on focus (e.g. skip links) */
+.sr-only:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+```
+
+### Skip Link Pattern
+```html
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<main id="main-content">...</main>
+```
+```css
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  padding: 0.5rem 1rem;
+  background: var(--brand);
+  color: white;
+  border-radius: var(--radius-sm);
+  z-index: 9999;
+}
+.skip-link:focus { top: 1rem; }
+```
+
+### Forced Colors / High Contrast Mode
+```css
+/* Respect Windows High Contrast / Forced Colors mode */
+@media (forced-colors: active) {
+  .button {
+    border: 2px solid ButtonText;
+    forced-color-adjust: none; /* Only when you need to preserve specific colors */
+  }
+}
+
+/* Never convey information by color alone */
+.error {
+  color: var(--danger);
+  border-left: 3px solid var(--danger); /* Also a shape cue */
+}
+.error::before {
+  content: "⚠ "; /* Also a text cue */
+}
+```
+
+**WCAG contrast minimums:**
+- Normal text: 4.5:1 (AA), 7:1 (AAA)
+- Large text (18px+/14px+ bold): 3:1 (AA), 4.5:1 (AAA)
+- UI components and focus rings: 3:1 (AA)
+- Use `oklch()` — its uniform lightness makes contrast estimation intuitive
+
+---
+
+## Responsive Images
+
+```html
+<!-- srcset + sizes: browser picks the right resolution -->
+<img
+  src="hero-800.jpg"
+  srcset="hero-400.jpg 400w, hero-800.jpg 800w, hero-1600.jpg 1600w"
+  sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 800px"
+  alt="Description"
+  loading="lazy"
+  decoding="async"
+>
+
+<!-- picture: art direction (different crops at different sizes) -->
+<picture>
+  <source
+    media="(min-width: 800px)"
+    srcset="hero-wide.webp"
+    type="image/webp"
+  >
+  <source
+    media="(max-width: 799px)"
+    srcset="hero-square.webp"
+    type="image/webp"
+  >
+  <img src="hero-wide.jpg" alt="Description">
+</picture>
+```
+
+**CSS aspect ratio (prevents layout shift):**
+```css
+img {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* Reserve space before image loads */
+.image-container {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+```
+
+**Performance rules:**
+- Always set `width` and `height` attributes on `<img>` — browser reserves space before load
+- Use `loading="lazy"` for below-fold images; never on LCP image
+- Prefer `webp` with jpg/png fallback via `<picture>`
+- Use `fetchpriority="high"` on the LCP image
+
+---
+
+## Progressive Enhancement & Cross-Browser Compatibility
+
+### Feature Detection with @supports
 ```css
 @supports (animation-timeline: view()) {
   .fade-in {
@@ -484,6 +768,32 @@ label:has(+ input:user-invalid) {
   .responsive-card {
     container-type: inline-size;
   }
+}
+
+/* Negative — apply styles only when NOT supported */
+@supports not (display: grid) {
+  .layout { display: flex; flex-wrap: wrap; }
+}
+```
+
+### Vendor Prefixes
+Modern browsers require very few vendor prefixes (Autoprefixer handles the rest). The few remaining cases:
+
+```css
+/* -webkit- still needed for some properties */
+.gradient {
+  background: -webkit-linear-gradient(top, #000, #fff);
+  background: linear-gradient(to bottom, #000, #fff);
+}
+
+/* Always write the unprefixed version last */
+```
+
+**Use Autoprefixer in your build tool** (PostCSS plugin) — don't write vendor prefixes manually. Configure `browserslist` in `package.json` to target the browsers you support:
+
+```json
+{
+  "browserslist": "> 0.5%, last 2 versions, not dead"
 }
 ```
 
