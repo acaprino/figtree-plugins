@@ -91,16 +91,16 @@ claude plugin list
 
 | Plugin | Description | Agents | Skills | Commands |
 |--------|-------------|:------:|:------:|:--------:|
-| [**python-development**](#python-development-plugin) | Modern Python, Django, FastAPI, testing, packaging | 3 | 7 | 3 |
-| [**humanize**](#humanize-plugin) | Code humanization — readable naming, no AI boilerplate | 1 | - | 1 |
+| [**python-development**](#python-development-plugin) | Modern Python, Django, FastAPI, testing, packaging | 3 | 7 | 2 |
+| [**humanize**](#humanize-plugin) | Code humanization -- readable naming, no AI boilerplate | 1 | - | 1 |
 | [**deep-dive-analysis**](#deep-dive-analysis-plugin) | AI-powered systematic codebase analysis | - | 1 | 1 |
 | [**comprehensive-review**](#comprehensive-review-plugin) | Multi-agent review orchestration (architecture, security, patterns) | 3 | - | 3 |
 | [**tauri-development**](#tauri-development-plugin) | Tauri 2 mobile/desktop and Rust engineering | 2 | 1 | - |
-| [**frontend**](#frontend-plugin) | React performance, UI polish, UX design, layout, modern CSS | 4 | 1 | 2 |
+| [**frontend**](#frontend-plugin) | React performance, UI polish, UX design, layout, modern CSS | 5 | 2 | 1 |
 | [**frontend-design**](#frontend-design-plugin) | Distinctive, production-grade frontend interfaces | - | 1 | - |
 | [**ai-tooling**](#ai-tooling-plugin) | Prompt engineering, brainstorming, and planning workflows | 1 | 3 | 1 |
 | [**stripe**](#stripe-plugin) | Payments, subscriptions, Connect, billing, revenue optimization | - | 2 | - |
-| [**utilities**](#utilities-plugin) | File organization, cleanup, and directory management | - | 1 | 1 |
+| [**utilities**](#utilities-plugin) | File organization, dead code cleanup, and directory management | - | 1 | 2 |
 | [**business**](#business-plugin) | Legal advisory, compliance, contracts, and risk management | - | 1 | - |
 | [**project-setup**](#project-setup-plugin) | .claude.md auditing, creation, and maintenance | 1 | - | 2 |
 | [**code-documentation**](#code-documentation-plugin) | Technical documentation engineering and maintenance | 1 | - | 2 |
@@ -109,7 +109,7 @@ claude plugin list
 | [**messaging**](#messaging-plugin) | RabbitMQ messaging, configuration, and optimization | 1 | - | - |
 | [**research**](#research-plugin) | Advanced search and information retrieval | 1 | - | - |
 | [**mobile-development**](#mobile-development-plugin) | Android app competitive analysis via ADB | - | 1 | - |
-| [**typescript-development**](#typescript-development-plugin) | TypeScript/JavaScript with Metabase coding standards | - | 1 | - |
+| [**typescript-development**](#typescript-development-plugin) | TypeScript/JavaScript with Metabase coding standards | - | 2 | - |
 | [**workflows**](#workflows-plugin) | Cross-plugin orchestration pipelines | - | - | 4 |
 
 ---
@@ -344,38 +344,23 @@ Scaffold production-ready Python projects with modern tooling. Presents plan and
 
 ---
 
-#### `/python-full-refactor`
+#### `/python-refactor`
 
 Metrics-driven 4-phase refactoring with checkpoint approval before execution and persistent output files.
 
 ```
-/python-full-refactor src/legacy_module.py
+/python-refactor src/legacy_module.py
 ```
 
-**Phases:** Analysis → Planning → (Checkpoint) → Execution → Validation
+**Phases:** Analysis -> Planning -> (Checkpoint) -> Execution -> Validation
 
 **Output:** `.python-refactor/` directory with analysis, plan, execution log, and validation report.
 
 ---
 
-#### `/humanize-python-code`
-
-Rewrite Python code to feel like it was written by a thoughtful senior developer.
-
-```
-/humanize-python-code src/module.py
-```
-
-**Focus areas:**
-- Readable naming and natural flow
-- Remove AI-generated boilerplate
-- Improve code structure and clarity
-
----
-
 ## Humanize Plugin
 
-> Rewrites source code to be more readable and human-friendly without changing behavior — improves naming and comments only, with mandatory test validation.
+> Rewrites source code to be more readable and human-friendly without changing behavior -- improves naming and comments only, with mandatory test validation.
 
 ### Agents
 
@@ -452,7 +437,7 @@ AI-powered systematic codebase analysis combining structure extraction with sema
 
 #### `/deep-dive-analysis`
 
-7-phase systematic codebase analysis with state management, output files, and phased execution: structure → interfaces → flows → semantics → risks → documentation → report.
+7-phase systematic codebase analysis with state management, output files, and phased execution: structure -> interfaces -> flows -> semantics -> risks -> documentation -> report.
 
 ```
 /deep-dive-analysis src/core/ --critical
@@ -547,15 +532,17 @@ Orchestrate comprehensive multi-dimensional code review using all specialized re
 
 ---
 
-#### `/review-changes`
+#### `/code-review`
 
-Review code changes made in the current Claude Code session by analyzing git diff.
+Unified code review -- auto-detects scope: uncommitted/staged changes, recent commits, PR number, or branch diff. Runs architecture, security, and pattern analysis agents in parallel with confidence scoring.
 
 ```
-/review-changes --security-focus
+/code-review                    # auto-detect: uncommitted changes or branch diff
+/code-review 42                 # review PR #42
+/code-review --commits 3        # review last 3 commits
+/code-review --branch feature   # review branch diff
+/code-review --auto-comment     # post findings as PR comments
 ```
-
-Auto-detects uncommitted changes or recent commits, confirms scope with user, then runs focused architecture, security, and pattern analysis in parallel. Skips documentation files.
 
 ---
 
@@ -721,11 +708,27 @@ Use the ui-layout-designer agent to design [layout/page]
 
 ---
 
+#### `css-master`
+
+Expert CSS developer for hands-on CSS work -- refactoring styles, migrating SASS/preprocessors to native CSS, setting up CSS architecture, adopting modern CSS features.
+
+| | |
+|---|---|
+| **Model** | `opus` |
+| **Use for** | CSS refactoring, SASS-to-native migration, CSS architecture, Container Queries, View Transitions, Scroll-driven animations |
+
+**Invocation:**
+```
+Use the css-master agent to [refactor/migrate/architect] [styles]
+```
+
+---
+
 ### Skills
 
-#### `modern-css`
+#### `css-master`
 
-Specialized knowledge for writing modern high-quality CSS.
+Comprehensive CSS reference covering modern CSS features, architecture methodologies, and production patterns.
 
 | | |
 |---|---|
@@ -738,27 +741,17 @@ Specialized knowledge for writing modern high-quality CSS.
 
 ### Commands
 
-#### `/review-frontend-changes`
-
-Review frontend code changes made in the current session — React, performance, UX, CSS — and output an actionable markdown report.
-
-```
-/review-frontend-changes --framework react
-```
-
-**Output:** `.frontend-review/report.md` — actionable checklist with scores, findings, and fix instructions.
-
----
-
 #### `/review-design`
 
-Full design, layout, and CSS audit of the entire frontend — UX patterns, component hierarchy, spacing, typography, accessibility, and visual consistency.
+Unified frontend design review -- auto-detects scope: diff mode for changed frontend files, or full audit for entire frontend. UX patterns, CSS architecture, and React performance.
 
 ```
-/review-design src/ --framework react
+/review-design src/ --framework react     # full audit
+/review-design --full                     # explicit full audit
+/review-design                            # auto-detect: diff mode if changes exist
 ```
 
-**Output:** `.design-review/report.md` — actionable checklist with scores, grouped by category (UX, Layout, CSS).
+**Output:** `.design-review/report.md` -- actionable checklist with scores, grouped by category (UX, Layout, CSS).
 
 ---
 
@@ -855,13 +848,13 @@ Execute written implementation plans in a separate session with review checkpoin
 
 #### `/prompt-optimize`
 
-Analyze, score, and optimize prompts for LLMs — evaluates clarity, specificity, structure, token efficiency, robustness, and output control. Shows before/after comparison.
+Analyze, score, and optimize prompts for LLMs -- evaluates clarity, specificity, structure, token efficiency, robustness, and output control. Shows before/after comparison.
 
 ```
 /prompt-optimize "You are a helpful assistant that..." --optimize-for tokens
 ```
 
-**Phases:** Analyze (6-dimension scorecard) → Optimize → Compare (before/after scores + token count)
+**Phases:** Analyze (6-dimension scorecard) -> Optimize -> Compare (before/after scores + token count)
 
 ---
 
@@ -936,7 +929,7 @@ Monetization expert that analyzes codebases to discover features, calculate serv
 
 ## Utilities Plugin
 
-> File organization, cleanup, duplicate detection, and directory management.
+> File organization, dead code cleanup, duplicate detection, and directory management.
 
 ### Skills
 
@@ -975,6 +968,17 @@ Quick command to organize files and directories.
 | `/organize-files ~/Documents find duplicates` | Find duplicate files |
 | `/organize-files ~/Projects archive old` | Archive inactive projects |
 | `/organize-files . cleanup` | Clean up current directory |
+
+---
+
+#### `/cleanup-dead-code`
+
+Find and remove dead code -- auto-detects language: Knip for TypeScript/JavaScript, vulture + ruff for Python.
+
+| | |
+|---|---|
+| **Invoke** | `/cleanup-dead-code [path] [--dry-run] [--dependencies-only] [--exports-only] [--production]` |
+| **Use for** | Dead code removal, dependency cleanup, export pruning, unused import removal |
 
 ---
 
@@ -1088,7 +1092,7 @@ Use the documentation-engineer agent to document [codebase/feature]
 
 #### `/docs-create`
 
-Analyze code bottom-up and generate accurate documentation — API reference, architecture guides, or full project docs. Confirms scope before generating.
+Analyze code bottom-up and generate accurate documentation -- API reference, architecture guides, or full project docs. Confirms scope before generating.
 
 ```
 /docs-create src/api/ --api-only
@@ -1215,7 +1219,7 @@ Use the content-marketer agent to [plan/create/optimize] [content/campaign]
 /seo-audit https://example.com
 ```
 
-**Phases:** Discovery → Technical Audit → Score → (Checkpoint) → Fix → Report
+**Phases:** Discovery -> Technical Audit -> Score -> (Checkpoint) -> Fix -> Report
 
 **Output:** `.seo-audit/` directory with discovery, audit, scorecard, fixes, and final report.
 
@@ -1229,7 +1233,7 @@ Marketing and conversion audit using 3 parallel agents (UX/Conversion, Content/C
 /content-strategy https://example.com
 ```
 
-**Phases:** Scope → Parallel Audit (3 agents) → Synthesis → (Checkpoint) → Apply → Report
+**Phases:** Scope -> Parallel Audit (3 agents) -> Synthesis -> (Checkpoint) -> Apply -> Report
 
 **Output:** `.content-strategy/` directory with scope, audit, plan, changes, and final report.
 
@@ -1304,7 +1308,7 @@ Mobile app competitive analyzer with automated ADB-based navigation, screenshot 
 
 ## TypeScript Development Plugin
 
-> TypeScript and JavaScript development with Metabase coding standards.
+> TypeScript and JavaScript development with Metabase coding standards, Knip dead code detection, and best practices.
 
 ### Skills
 
@@ -1316,6 +1320,15 @@ Write TypeScript and JavaScript code following Metabase coding standards and bes
 |---|---|
 | **Invoke** | Skill reference |
 | **Use for** | TypeScript/JavaScript development, code refactoring, coding standards |
+
+#### `knip`
+
+Knip finds unused files, dependencies, exports, and types in JavaScript/TypeScript projects. Plugin system for frameworks (React, Next.js, Vite), test runners (Vitest, Jest), and build tools.
+
+| | |
+|---|---|
+| **Invoke** | Skill reference |
+| **Use for** | Dead code detection, unused dependency cleanup, bundle size optimization, CI dependency hygiene |
 
 ---
 
@@ -1332,7 +1345,7 @@ End-to-end feature pipeline: brainstorm design, write implementation plan, execu
 | | |
 |---|---|
 | **Invoke** | `/feature-e2e <feature description> [--skip-brainstorm] [--skip-humanize] [--strict-mode]` |
-| **Pipeline** | brainstorming → writing-plans → executing-plans → review-changes → humanize |
+| **Pipeline** | brainstorming -> writing-plans -> executing-plans -> code-review -> humanize |
 | **Checkpoints** | After design, plan, execution, and review phases |
 | **Dependencies** | ai-tooling, comprehensive-review, humanize plugins |
 
@@ -1343,9 +1356,9 @@ Full frontend redesign pipeline: UX audit, layout system design, implementation,
 | | |
 |---|---|
 | **Invoke** | `/frontend-redesign <target path> [--framework react\|vue\|svelte] [--skip-performance] [--strict-mode]` |
-| **Pipeline** | ui-ux-designer → ui-layout-designer → frontend-design → react-performance-optimizer → ui-polisher → design audit |
+| **Pipeline** | ui-ux-designer -> ui-layout-designer -> frontend-design -> react-performance-optimizer -> ui-polisher -> design audit |
 | **Checkpoints** | After layout spec and polish phases |
-| **Output** | `.frontend-redesign/report.md` — actionable checklist with before/after comparison |
+| **Output** | `.frontend-redesign/report.md` -- actionable checklist with before/after comparison |
 | **Dependencies** | frontend, frontend-design plugins |
 
 #### `/mobile-intel`
@@ -1355,7 +1368,7 @@ Competitive mobile intelligence: analyze competitor Android app via ADB, brainst
 | | |
 |---|---|
 | **Invoke** | `/mobile-intel <app-package-name> [--device <device-id>] [--skip-scaffold]` |
-| **Pipeline** | analyze-mobile-app → brainstorming → ui-ux-designer → writing-plans → tauri2-mobile |
+| **Pipeline** | analyze-mobile-app -> brainstorming -> ui-ux-designer -> writing-plans -> tauri2-mobile |
 | **Checkpoints** | After analysis, brainstorm, and plan phases |
 | **Pre-flight** | Verifies ADB device connection |
 | **Dependencies** | mobile-development, ai-tooling, frontend, tauri-development plugins |
@@ -1367,7 +1380,7 @@ End-to-end Tauri 2 desktop app pipeline: Rust backend review, Tauri IPC optimiza
 | | |
 |---|---|
 | **Invoke** | `/tauri-pipeline <target path> [--rust-only] [--frontend-only] [--strict-mode]` |
-| **Pipeline** | rust-engineer → tauri-optimizer → react-performance-optimizer → ui-layout-designer → ui-polisher |
+| **Pipeline** | rust-engineer -> tauri-optimizer -> react-performance-optimizer -> ui-layout-designer -> ui-polisher |
 | **Checkpoints** | After Tauri IPC review |
 | **Pre-flight** | Verifies `src-tauri/` directory and `tauri.conf.json` exist |
 | **Dependencies** | tauri-development, frontend plugins |
@@ -1380,7 +1393,7 @@ End-to-end Tauri 2 desktop app pipeline: Rust backend review, Tauri IPC optimiza
 ```
 1. /python-scaffold FastAPI microservice
 2. Implement features with python-pro agent
-3. /python-full-refactor on complex modules
+3. /python-refactor on complex modules
 4. Use python-testing-patterns for test coverage
 ```
 
@@ -1395,9 +1408,8 @@ End-to-end Tauri 2 desktop app pipeline: Rust backend review, Tauri IPC optimiza
 
 ### Quick Session Review
 ```
-1. /review-changes — review uncommitted changes or recent commits
-2. /review-frontend-changes — review frontend changes with markdown report
-3. /review-design src/ — full design audit with markdown report
+1. /code-review -- review uncommitted changes, commits, or PRs
+2. /review-design -- auto-detect: diff mode or full frontend audit
 ```
 
 ### Tauri App Optimization
@@ -1418,7 +1430,7 @@ End-to-end Tauri 2 desktop app pipeline: Rust backend review, Tauri IPC optimiza
 ### Legacy Code Modernization
 ```
 1. /deep-dive-analysis to understand codebase
-2. /python-full-refactor on legacy modules
+2. /python-refactor on legacy modules
 3. Use python-testing-patterns to add test coverage
 4. /humanize to clean up naming and comments
 ```
@@ -1433,10 +1445,10 @@ End-to-end Tauri 2 desktop app pipeline: Rust backend review, Tauri IPC optimiza
 
 ### Cross-Plugin Workflows
 ```
-1. /feature-e2e "add user authentication" — full brainstorm-to-humanize pipeline
-2. /frontend-redesign src/ --framework react — redesign with HTML audit report
-3. /mobile-intel com.competitor.app --device emulator-5554 — competitive analysis to scaffold
-4. /tauri-pipeline --rust-only — Rust backend + Tauri IPC review only
+1. /feature-e2e "add user authentication" -- full brainstorm-to-humanize pipeline
+2. /frontend-redesign src/ --framework react -- redesign with HTML audit report
+3. /mobile-intel com.competitor.app --device emulator-5554 -- competitive analysis to scaffold
+4. /tauri-pipeline --rust-only -- Rust backend + Tauri IPC review only
 ```
 
 ### Optimization & Scheduling with CSP
@@ -1478,8 +1490,7 @@ alfio-claude-plugins/
 │   │   │   └── python-comments/
 │   │   └── commands/
 │   │       ├── python-scaffold.md
-│   │       ├── python-full-refactor.md
-│   │       └── humanize-python-code.md
+│   │       └── python-refactor.md
 │   ├── humanize/
 │   │   ├── agents/
 │   │   │   └── humanize.md
@@ -1497,7 +1508,7 @@ alfio-claude-plugins/
 │   │   │   └── pattern-quality-scorer.md
 │   │   └── commands/
 │   │       ├── full-review.md
-│   │       ├── review-changes.md
+│   │       ├── code-review.md
 │   │       └── pr-enhance.md
 │   ├── tauri-development/
 │   │   ├── agents/
@@ -1510,11 +1521,11 @@ alfio-claude-plugins/
 │   │   │   ├── react-performance-optimizer.md
 │   │   │   ├── ui-polisher.md
 │   │   │   ├── ui-ux-designer.md
-│   │   │   └── ui-layout-designer.md
+│   │   │   ├── ui-layout-designer.md
+│   │   │   └── css-master.md
 │   │   ├── skills/
-│   │   │   └── modern-css/
+│   │   │   └── css-master/
 │   │   └── commands/
-│   │       ├── review-frontend-changes.md
 │   │       └── review-design.md
 │   ├── frontend-design/
 │   │   └── skills/
@@ -1536,7 +1547,8 @@ alfio-claude-plugins/
 │   │   ├── skills/
 │   │   │   └── file-organizer/
 │   │   └── commands/
-│   │       └── organize-files.md
+│   │       ├── organize-files.md
+│   │       └── cleanup-dead-code.md
 │   ├── business/
 │   │   └── skills/
 │   │       └── legal-advisor/
@@ -1573,7 +1585,8 @@ alfio-claude-plugins/
 │   │       └── analyze-mobile-app/
 │   ├── typescript-development/
 │   │   └── skills/
-│   │       └── typescript-write/
+│   │       ├── typescript-write/
+│   │       └── knip/
 │   └── workflows/
 │       └── commands/
 │           ├── feature-e2e.md

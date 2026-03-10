@@ -1,27 +1,49 @@
 ---
-description: "Full design, layout, CSS, and performance audit of the entire frontend — UX patterns, component hierarchy, spacing system, typography, accessibility, visual consistency, and React performance — outputs an actionable markdown report"
-argument-hint: "[src-path] [--framework react|vue|svelte] [--strict-mode]"
+description: "Unified frontend design review -- auto-detects scope: diff mode for changed frontend files, or full audit for entire frontend. UX patterns, component hierarchy, spacing, typography, accessibility, CSS architecture, and React performance -- outputs an actionable markdown report"
+argument-hint: "[src-path] [--full] [--framework react|vue|svelte] [--strict-mode]"
 ---
 
-# Full Frontend Design & Performance Review
+# Frontend Design & Performance Review
 
-You are a senior frontend design auditor. Perform a **comprehensive design, layout, CSS, and performance review** of the entire frontend codebase — not just recent changes. Evaluate UX patterns, visual consistency, accessibility, layout system, typography, CSS architecture, and React performance.
+You are a senior frontend design auditor. Review frontend code for design quality, layout, CSS architecture, and performance. Auto-detects scope based on git state.
 
 ## CRITICAL RULES
 
-1. **Scan the whole frontend.** Use `src/`, `app/`, `components/`, `pages/`, `styles/` — or the path from `$ARGUMENTS` if provided.
+1. **Auto-detect scope.** Check git diff for frontend file changes first. If found, review only changed files (diff mode, 3 agents). If no diff or `--full` flag, audit the entire frontend (full mode, 4 agents).
 2. **Design + CSS + Performance.** Ignore backend files, API routes, build config. Focus on components, stylesheets, layout files, state management.
 3. **Run all agents in parallel.** Fire all in a single response.
-4. **Write markdown report.** Output is `.design-review/report.md` — an actionable checklist with scores, findings, and fix instructions.
+4. **Write markdown report.** Output is `.design-review/report.md` -- an actionable checklist with scores, findings, and fix instructions.
 5. **Never enter plan mode.** Execute immediately.
 
-## Step 1: Discover Frontend Files
+## Step 1: Detect Scope
+
+### Check for changed frontend files
+
+```bash
+git diff HEAD --name-only | grep -E '\.(tsx|jsx|vue|svelte|css|scss|sass|less|html)$'
+git diff --name-only | grep -E '\.(tsx|jsx|vue|svelte|css|scss|sass|less|html)$'
+git diff --cached --name-only | grep -E '\.(tsx|jsx|vue|svelte|css|scss|sass|less|html)$'
+```
+
+### Decision tree
+
+**Diff mode** (changed frontend files exist AND `--full` is NOT set):
+- Review only the changed frontend files
+- Get the diff: `git diff HEAD -- <frontend files>`
+- Run 3 agents: UX & Components, CSS & Visual Polish, React Performance
+- This is the default when uncommitted frontend changes exist
+
+**Full mode** (no frontend changes in diff, OR `--full` flag set):
+- Scan entire frontend: `src/`, `app/`, `components/`, `pages/`, `styles/` -- or path from `$ARGUMENTS`
+- Run 4 agents: UX & Components, Layout System, CSS & Visual Polish, React Performance
+
+### Discover frontend files (full mode only)
 
 ```bash
 find src -type f \( -name "*.tsx" -o -name "*.jsx" -o -name "*.vue" -o -name "*.svelte" -o -name "*.css" -o -name "*.scss" -o -name "*.sass" \) | head -80
 ```
 
-Or use the path from `$ARGUMENTS` if provided. List what you find — components, pages, and stylesheet files.
+Or use the path from `$ARGUMENTS` if provided. List what you find -- components, pages, and stylesheet files.
 
 If no frontend files are found, stop and say so.
 
@@ -36,11 +58,11 @@ Read a representative cross-section:
 
 This gives you the design language, patterns, and architecture to evaluate against.
 
-**UI Studio brief check:** Look for a product brief file (`brief.md`, `product-brief.md`, or similar) in the project root or docs directory. If found, use it as the north star for evaluating design coherence — every UX, layout, and aesthetic decision should align with the stated goal, audience, and aesthetic tone from the brief. Pass the brief content to all agents as evaluation context.
+**UI Studio brief check:** Look for a product brief file (`brief.md`, `product-brief.md`, or similar) in the project root or docs directory. If found, use it as the north star for evaluating design coherence -- every UX, layout, and aesthetic decision should align with the stated goal, audience, and aesthetic tone from the brief. Pass the brief content to all agents as evaluation context.
 
 ## Step 3: Run Parallel Review Agents
 
-Fire all four agents **in parallel** in a single response:
+Fire all agents **in parallel** in a single response (3 in diff mode, 4 in full mode):
 
 ### Agent A: UX Patterns & Component Architecture
 
@@ -58,7 +80,7 @@ Task:
     [paste sampled component and layout file contents]
 
     ## Product Brief (if available)
-    [paste brief content or "No product brief found — evaluate against general UX best practices"]
+    [paste brief content or "No product brief found -- evaluate against general UX best practices"]
 
     ## Instructions
     Evaluate:
@@ -102,17 +124,17 @@ Task:
     [paste sampled layout and stylesheet file contents]
 
     ## Product Brief (if available)
-    [paste brief content or "No product brief found — evaluate against general layout best practices"]
+    [paste brief content or "No product brief found -- evaluate against general layout best practices"]
 
     ## Instructions
     Evaluate:
     1. **Layout system**: Is there a consistent grid/layout pattern (CSS Grid, Flexbox, utility classes)? Or ad-hoc layouts per component?
     2. **Spacing scale**: Is spacing derived from a consistent scale (4px/8px/rem)? Or arbitrary pixel values scattered everywhere?
     3. **Responsive strategy**: Are breakpoints consistent? Mobile-first vs desktop-first? Are there layout shifts on resize?
-    4. **Typography system**: Font scale, line-height, letter-spacing — are they tokens or raw values?
+    4. **Typography system**: Font scale, line-height, letter-spacing -- are they tokens or raw values?
     5. **Alignment & rhythm**: Do elements align to a clear baseline? Is vertical rhythm maintained?
     6. **Above-the-fold**: Is the critical viewport optimized? Is the most important content immediately visible?
-    7. **Container strategy**: Max-widths, centering, content containers — are they consistent?
+    7. **Container strategy**: Max-widths, centering, content containers -- are they consistent?
     8. **Brief alignment** (if brief provided): Does the layout serve the stated audience and aesthetic tone? Is the spatial hierarchy appropriate?
 
     For each finding: severity (Critical/High/Medium/Low), file, issue, specific fix.
@@ -146,14 +168,14 @@ Task:
     [paste sampled stylesheet and component file contents]
 
     ## Product Brief (if available)
-    [paste brief content or "No product brief found — evaluate against general CSS and visual polish best practices"]
+    [paste brief content or "No product brief found -- evaluate against general CSS and visual polish best practices"]
 
     ## Instructions
     Evaluate:
     1. **CSS architecture**: Global styles pollution, specificity wars, selector depth, !important abuse
     2. **Modern CSS usage**: Are CSS custom properties used? Container queries? Logical properties? Or legacy patterns?
     3. **Animation quality**: Transitions feel smooth? GPU-accelerated properties? prefers-reduced-motion respected?
-    4. **Visual consistency**: Border-radius, shadow elevation, color palette — are they consistent or scattered?
+    4. **Visual consistency**: Border-radius, shadow elevation, color palette -- are they consistent or scattered?
     5. **Dark mode**: Is dark mode supported? Are colors properly adapted or just inverted?
     6. **CSS performance**: Unnecessary repaints, layout-triggering animations, oversized background images
     7. **Dead CSS**: Unused selectors, legacy overrides, commented-out blocks
@@ -193,7 +215,7 @@ Task:
     [paste sampled component, state management, and config file contents]
 
     ## Product Brief (if available)
-    [paste brief content — especially performance budget and stack info — or "No product brief found"]
+    [paste brief content -- especially performance budget and stack info -- or "No product brief found"]
 
     ## Instructions
     Evaluate:
@@ -230,13 +252,13 @@ Merge and deduplicate overlapping findings from all agents. Order by severity, t
 **Output file:** `.design-review/report.md`
 
 ```markdown
-# Design & Performance Review — [date]
+# Design & Performance Review -- [date]
 
 Full frontend audit · [N] components · [M] stylesheets
 
 ## Product Brief Context
 
-[If a product brief was found, summarize goal, audience, aesthetic tone, and performance budget. If not, note "No product brief found — reviewed against general best practices."]
+[If a product brief was found, summarize goal, audience, aesthetic tone, and performance budget. If not, note "No product brief found -- reviewed against general best practices."]
 
 ## Scores
 
@@ -262,7 +284,7 @@ Critical: X | High: X | Medium: X | Low: X
 
 ### UX & Components
 
-#### `Button.tsx` — [issue title]
+#### `Button.tsx` -- [issue title]
 - **Severity**: Critical
 - **Issue**: [description]
 - **Fix**: [concrete fix instruction]
@@ -270,7 +292,7 @@ Critical: X | High: X | Medium: X | Low: X
 
 ### Layout & Spacing
 
-#### `Layout.tsx` — [issue title]
+#### `Layout.tsx` -- [issue title]
 - **Severity**: High
 - **Issue**: [description]
 - **Fix**: [fix instruction]
@@ -278,7 +300,7 @@ Critical: X | High: X | Medium: X | Low: X
 
 ### CSS Architecture
 
-#### `globals.css` — [issue title]
+#### `globals.css` -- [issue title]
 - **Severity**: High
 - **Issue**: [description]
 - **Fix**: [fix instruction]
@@ -286,7 +308,7 @@ Critical: X | High: X | Medium: X | Low: X
 
 ### React Performance
 
-#### `Store.ts` — [issue title]
+#### `Store.ts` -- [issue title]
 - **Severity**: Critical
 - **Issue**: [description]
 - **Fix**: [fix instruction with code]
@@ -319,7 +341,7 @@ Critical: X | High: X | Medium: X | Low: X
 
 ## Action Plan
 
-1. [ ] [top priority fix — from critical findings]
+1. [ ] [top priority fix -- from critical findings]
 2. [ ] [second priority]
 3. [ ] [third priority]
 4. [ ] [fourth priority]

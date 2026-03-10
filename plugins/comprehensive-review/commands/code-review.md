@@ -1,11 +1,11 @@
 ---
-description: "PR-focused code review with git blame analysis, CLAUDE.md compliance, confidence scoring, and optional auto-commenting on GitHub PRs"
-argument-hint: "[PR number | --branch <name>] [--auto-comment] [--strict]"
+description: "Unified code review -- auto-detects scope: uncommitted/staged changes, recent commits, PR number, or branch diff. Runs architecture, security, and pattern analysis agents in parallel with confidence scoring"
+argument-hint: "[PR number | --branch <name> | --commits N] [--auto-comment] [--strict] [--security-focus]"
 ---
 
 # Code Review
 
-You are a thorough code reviewer. Your job is to review a pull request or branch diff, analyze the changes in depth, and produce a structured review with confidence-scored findings. Optionally post review comments directly on the PR.
+You are a thorough code reviewer. Your job is to review code changes -- uncommitted edits, recent commits, a pull request, or a branch diff -- analyze them in depth, and produce a structured review with confidence-scored findings. Optionally post review comments directly on PRs.
 
 ## CRITICAL RULES
 
@@ -18,23 +18,36 @@ You are a thorough code reviewer. Your job is to review a pull request or branch
 
 ## Step 1: Identify Review Target
 
-From `$ARGUMENTS`, determine what to review:
+From `$ARGUMENTS`, determine what to review using this priority:
 
-**Case A — PR number provided** (e.g. `42`, `#42`):
+**Case A -- Uncommitted/staged changes exist** (no explicit PR or branch arg):
+
+```bash
+git diff --name-only          # unstaged changes
+git diff --cached --name-only # staged changes
+```
+
+If either has results, use uncommitted changes as the review target. The diff source is "uncommitted changes".
+
+**Case B -- `--commits N` flag provided:**
+
+Use `git diff HEAD~N..HEAD` as the review target. The diff source is "last N commits".
+
+**Case C -- PR number provided** (e.g. `42`, `#42`):
 
 ```bash
 gh pr view 42 --json number,title,body,baseRefName,headRefName,files
 gh pr diff 42
 ```
 
-**Case B — `--branch <name>` provided:**
+**Case D -- `--branch <name>` provided:**
 
 ```bash
 git log main..<branch> --oneline
 git diff main...<branch>
 ```
 
-**Case C — No arguments:**
+**Case E -- No arguments, no uncommitted changes:**
 
 Detect current branch and compare against main/master:
 
@@ -43,6 +56,8 @@ CURRENT=$(git branch --show-current)
 BASE=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@' || echo "main")
 git diff ${BASE}...${CURRENT}
 ```
+
+If the branch is main/master with no diff, fall back to last commit (`HEAD~1..HEAD`).
 
 ### Filter code files
 
@@ -55,9 +70,9 @@ If no code files remain, say so and stop.
 
 For each changed code file:
 
-1. **Read the full file** — understand surrounding context
-2. **Get the diff** — know exactly what changed
-3. **Run git blame on changed lines** — understand who wrote the original code and when
+1. **Read the full file** -- understand surrounding context
+2. **Get the diff** -- know exactly what changed
+3. **Run git blame on changed lines** -- understand who wrote the original code and when
 
 ```bash
 git blame -L <start>,<end> <file>
@@ -69,7 +84,7 @@ git blame -L <start>,<end> <file>
 gh api repos/{owner}/{repo}/pulls/{number}/comments --jq '.[].path' | sort -u
 ```
 
-5. **Read CLAUDE.md** if it exists — note project conventions, naming rules, patterns
+5. **Read CLAUDE.md** if it exists -- note project conventions, naming rules, patterns
 
 ## Step 3: Run Parallel Review Agents
 
@@ -95,20 +110,20 @@ Task:
     [paste the git diff output]
 
     ## Git Blame Context
-    [paste relevant blame output — shows history of changed lines]
+    [paste relevant blame output -- shows history of changed lines]
 
     ## Project Conventions (from CLAUDE.md)
     [paste relevant conventions, or "none found"]
 
     ## Instructions
     Analyze the CHANGED code in context for:
-    1. Design concerns — coupling, broken abstractions, inappropriate patterns
-    2. Code quality — naming, complexity, duplication
-    3. Error handling — missing or incorrect in new/modified code
-    4. Consistency — do changes follow existing codebase patterns?
-    5. Over/under-engineering — is the solution appropriately scoped?
-    6. CLAUDE.md compliance — do changes follow project conventions?
-    7. Flow correctness — trace modified flows end-to-end, check callers/consumers
+    1. Design concerns -- coupling, broken abstractions, inappropriate patterns
+    2. Code quality -- naming, complexity, duplication
+    3. Error handling -- missing or incorrect in new/modified code
+    4. Consistency -- do changes follow existing codebase patterns?
+    5. Over/under-engineering -- is the solution appropriately scoped?
+    6. CLAUDE.md compliance -- do changes follow project conventions?
+    7. Flow correctness -- trace modified flows end-to-end, check callers/consumers
 
     For each finding: severity (Critical/High/Medium/Low), file + line, confidence (0-100), concrete fix.
 ```
@@ -134,13 +149,13 @@ Task:
 
     ## Instructions
     Check the CHANGED code for:
-    1. Injection risks — SQL, command, XSS injection
-    2. Input validation — missing or insufficient
-    3. Auth/authz — flawed logic, missing checks, privilege escalation
-    4. Secrets exposure — hardcoded credentials, tokens, keys
-    5. Insecure defaults — debug mode, verbose errors, permissive CORS
-    6. Dependency risks — new packages trustworthy and up to date?
-    7. Data exposure — sensitive data in logs, errors, responses
+    1. Injection risks -- SQL, command, XSS injection
+    2. Input validation -- missing or insufficient
+    3. Auth/authz -- flawed logic, missing checks, privilege escalation
+    4. Secrets exposure -- hardcoded credentials, tokens, keys
+    5. Insecure defaults -- debug mode, verbose errors, permissive CORS
+    6. Dependency risks -- new packages trustworthy and up to date?
+    7. Data exposure -- sensitive data in logs, errors, responses
 
     For each finding: severity, CWE if applicable, file + line, confidence (0-100), attack scenario, concrete fix.
 ```
@@ -199,7 +214,7 @@ Task:
 After all agents complete, synthesize findings into a structured review:
 
 ```
-## Code Review — [PR title or branch name]
+## Code Review -- [PR title or branch name]
 
 ### Review Scope
 - Files reviewed: [N]
@@ -240,7 +255,7 @@ Post only findings with confidence >= 70 as inline PR comments:
 
 ```bash
 gh api repos/{owner}/{repo}/pulls/{number}/comments \
-  -f body="**[Severity]** (confidence: X%) — [finding summary]
+  -f body="**[Severity]** (confidence: X%) -- [finding summary]
 
 [concrete fix recommendation]" \
   -f path="[file]" \

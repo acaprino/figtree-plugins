@@ -1,5 +1,5 @@
 ---
-description: "Rewrite source code to be more readable and human-friendly — improves naming, removes AI boilerplate, simplifies structure, adds clarity comments — without changing behavior"
+description: "Rewrite source code to be more readable and human-friendly -- improves naming, removes AI boilerplate, simplifies structure, adds clarity comments -- without changing behavior"
 argument-hint: "<file or directory> [--dry-run] [--strict]"
 ---
 
@@ -35,8 +35,8 @@ Record passing/failing tests. If no tests exist, warn the user:
 ```
 No tests found. Humanization changes can't be automatically validated.
 
-1. Proceed anyway — I'll be extra careful
-2. Cancel — set up tests first
+1. Proceed anyway -- I'll be extra careful
+2. Cancel -- set up tests first
 ```
 
 ## Step 3: Preview Changes (always for --dry-run, ask otherwise)
@@ -83,7 +83,7 @@ Task:
   description: "Humanize [target] for readability"
   prompt: |
     Improve the readability and human-friendliness of this code.
-    Do NOT change behavior — only improve naming, comments, structure, and clarity.
+    Do NOT change behavior -- only improve naming, comments, structure, and clarity.
 
     ## Files to Humanize
     [list of files]
@@ -132,7 +132,7 @@ Changes made:
 - Comments added: [count]
 - Structural simplifications: [count]
 
-Tests: [all passing / X failures — reverted problematic changes]
+Tests: [all passing / X failures -- reverted problematic changes]
 
 Review the changes with: git diff
 ```
@@ -153,7 +153,7 @@ If `--strict` flag is set, also flag any remaining readability concerns that wer
 - Does not modify test files (unless renaming symbols renamed in source)
 - Does not over-simplify: keeps abstractions that aid testing or extension
 
-For deeper restructuring, use `/python-full-refactor` for metrics-driven refactoring.
+For deeper restructuring, use `/python-refactor` for metrics-driven refactoring.
 
 Humanize the following:
 

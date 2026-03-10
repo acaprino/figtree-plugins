@@ -1,5 +1,5 @@
 ---
-description: "End-to-end feature pipeline — brainstorm design, write plan, execute with checkpoints, review changes, and humanize code"
+description: "End-to-end feature pipeline -- brainstorm design, write plan, execute with checkpoints, review changes, and humanize code"
 argument-hint: "<feature description> [--skip-brainstorm] [--skip-humanize] [--strict-mode]"
 ---
 
@@ -98,7 +98,7 @@ Scan the current project to understand:
 
 **Skip if:** `--skip-brainstorm` flag is set. If skipped, ask the user to provide a design document or requirements, then save to `.feature-e2e/01-design.md` and proceed to Phase 2.
 
-Follow the brainstorming skill process — this phase is **interactive**:
+Follow the brainstorming skill process -- this phase is **interactive**:
 
 ### Step 1A: Explore project context
 
@@ -338,7 +338,7 @@ Do NOT proceed to Phase 4 until the user approves.
 
 ## Phase 4: Review Changes
 
-Run the review-changes process — fire all 3 review agents **in parallel**:
+Run the code-review process -- fire all 3 review agents **in parallel**:
 
 First, get the diff of all changes made during execution:
 
@@ -368,11 +368,11 @@ Task:
 
     ## Instructions
     Analyze for:
-    1. Design concerns — are changes architecturally sound?
-    2. Code quality — naming, complexity, duplication
-    3. Error handling — missing or incorrect
-    4. Consistency — do changes follow existing patterns?
-    5. Scope — is the solution appropriately scoped?
+    1. Design concerns -- are changes architecturally sound?
+    2. Code quality -- naming, complexity, duplication
+    3. Error handling -- missing or incorrect
+    4. Consistency -- do changes follow existing patterns?
+    5. Scope -- is the solution appropriately scoped?
 
     For each finding: severity (Critical/High/Medium/Low), file + line, concrete fix.
     Note what was done well.
@@ -395,12 +395,12 @@ Task:
 
     ## Instructions
     Check for:
-    1. Injection risks — SQL, command, XSS in new code
-    2. Input validation — missing validation of user input
-    3. Auth/authorization — flawed logic, missing checks
-    4. Secrets exposure — hardcoded credentials or tokens
-    5. Insecure defaults — debug mode, verbose errors
-    6. Dependency risks — new packages trustworthy and current?
+    1. Injection risks -- SQL, command, XSS in new code
+    2. Input validation -- missing validation of user input
+    3. Auth/authorization -- flawed logic, missing checks
+    4. Secrets exposure -- hardcoded credentials or tokens
+    5. Insecure defaults -- debug mode, verbose errors
+    6. Dependency risks -- new packages trustworthy and current?
 
     For each finding: severity, CWE if applicable, file + line, concrete fix.
 ```
@@ -504,7 +504,7 @@ Task:
   description: "Humanize feature implementation code"
   prompt: |
     Improve the readability and human-friendliness of recently implemented code.
-    Do NOT change behavior — only improve naming, comments, and code clarity.
+    Do NOT change behavior -- only improve naming, comments, and code clarity.
 
     ## Changed Files
     [list of code files modified during Phase 3 execution]
