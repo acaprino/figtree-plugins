@@ -1,6 +1,6 @@
 # Alfio Claude Plugins
 
-Custom Claude Code plugin marketplace with development workflow agents, skills, and commands for Python development, code review, Tauri/Rust, frontend, AI tooling, constraint programming, and more.
+Custom Claude Code plugin marketplace with development workflow agents, skills, and commands for Python development, code review, Tauri/Rust, frontend, AI tooling, Obsidian plugins, constraint programming, and more.
 
 ---
 
@@ -28,6 +28,9 @@ Custom Claude Code plugin marketplace with development workflow agents, skills, 
 - [Mobile Development](#mobile-development-plugin)
 - [TypeScript Development](#typescript-development-plugin)
 - [Workflows](#workflows-plugin)
+- [App Explorer](#app-explorer-plugin)
+- [Browser Extensions](#browser-extensions-plugin)
+- [Obsidian Development](#obsidian-development-plugin)
 - [Usage Examples](#usage-examples)
 - [Project Structure](#project-structure)
 - [Contributing](#contributing)
@@ -66,6 +69,9 @@ claude plugin install mobile-development@alfio-claude-plugins
 claude plugin install typescript-development@alfio-claude-plugins
 claude plugin install utilities@alfio-claude-plugins
 claude plugin install workflows@alfio-claude-plugins
+claude plugin install app-explorer@alfio-claude-plugins
+claude plugin install browser-extensions@alfio-claude-plugins
+claude plugin install obsidian-development@alfio-claude-plugins
 ```
 
 ### From Local Path (Development)
@@ -91,7 +97,7 @@ claude plugin list
 
 | Plugin | Description | Agents | Skills | Commands |
 |--------|-------------|:------:|:------:|:--------:|
-| [**python-development**](#python-development-plugin) | Modern Python, Django, FastAPI, testing, packaging | 3 | 7 | 2 |
+| [**python-development**](#python-development-plugin) | Modern Python, Django, FastAPI, testing, packaging | 3 | 8 | 2 |
 | [**humanize**](#humanize-plugin) | Code humanization -- readable naming, no AI boilerplate | 1 | - | 1 |
 | [**deep-dive-analysis**](#deep-dive-analysis-plugin) | AI-powered systematic codebase analysis | - | 1 | 1 |
 | [**code-review**](#code-review-plugin) | Multi-agent review orchestration (architecture, security, patterns) | 3 | - | 3 |
@@ -111,6 +117,9 @@ claude plugin list
 | [**mobile-development**](#mobile-development-plugin) | Android app competitive analysis via ADB | - | 1 | - |
 | [**typescript-development**](#typescript-development-plugin) | TypeScript/JavaScript with Metabase coding standards | - | 2 | - |
 | [**workflows**](#workflows-plugin) | Cross-plugin orchestration pipelines | - | - | 4 |
+| [**app-explorer**](#app-explorer-plugin) | Automated webapp crawling with Playwright BFS | - | 1 | - |
+| [**browser-extensions**](#browser-extensions-plugin) | Firefox WebExtension development (Manifest V2/V3) | - | 1 | - |
+| [**obsidian-development**](#obsidian-development-plugin) | Obsidian plugin development, scaffolding, and compliance checks | - | 3 | - |
 
 ---
 
@@ -1387,6 +1396,79 @@ End-to-end Tauri 2 desktop app pipeline: Rust backend review, Tauri IPC optimiza
 
 ---
 
+## App Explorer Plugin
+
+> Automated webapp explorer that crawls a local web application using Playwright BFS, mapping all screens, interactive elements, navigation flows, and user workflows into a structured JSON sitemap with per-screen screenshots.
+
+### Skills
+
+#### `app-explorer`
+
+Crawls local web applications via Playwright breadth-first search. Maps screens, interactive elements, and navigation flows into structured JSON with screenshots. Computes UX metrics (min clicks, average depth, deepest screens).
+
+| | |
+|---|---|
+| **Trigger** | `/app-explorer`, "explore my app", "map the webapp", "crawl my frontend" |
+| **Features** | Authenticated SPAs, session persistence, mobile viewport, per-screen screenshots |
+| **Output** | JSON sitemap with UX metrics |
+
+---
+
+## Browser Extensions Plugin
+
+> Expert Firefox extension (WebExtension) developer covering Manifest V2/V3, all 51 browser.* APIs, content scripts, background scripts, native messaging, cross-browser compatibility, AMO publishing, and web-ext CLI tooling.
+
+### Skills
+
+#### `firefox-extension-dev`
+
+Comprehensive Firefox WebExtension development guidance covering the full extension lifecycle.
+
+| | |
+|---|---|
+| **Trigger** | Firefox extension, WebExtension, browser add-on, manifest.json, content scripts, AMO publishing |
+| **Coverage** | Manifest V2/V3, browser.* APIs, native messaging, sidebar extensions, cross-browser porting |
+
+---
+
+## Obsidian Development Plugin
+
+> Obsidian community plugin development with ObsidianReviewBot compliance, project scaffolding, and pre-submission checks.
+
+### Skills
+
+#### `obsidian-plugin-development`
+
+Write Obsidian plugin code that passes the ObsidianReviewBot automated review on first submission. Covers all required eslint-plugin-obsidianmd rules with code examples.
+
+| | |
+|---|---|
+| **Trigger** | Writing, reviewing, or fixing Obsidian community plugin code |
+| **Coverage** | 21 required rules (sentence case, no inline styles, promise handling, etc.), API reference |
+| **Reference** | Condensed TypeScript API reference for Plugin, Vault, Workspace, Setting, Modal, and more |
+
+#### `obsidian-scaffold`
+
+Scaffold a new Obsidian community plugin project that is bot-compliant from day one.
+
+| | |
+|---|---|
+| **Trigger** | Creating a new Obsidian plugin from scratch |
+| **Creates** | `manifest.json`, `package.json`, `tsconfig.json`, `esbuild.config.mjs`, `.eslintrc.json`, `src/main.ts` |
+| **Validates** | Plugin ID, name, and description against ObsidianReviewBot rules |
+
+#### `obsidian-check`
+
+Pre-submission lint and review. Scans all `.ts` files against ObsidianReviewBot rules and produces a structured pass/fail report.
+
+| | |
+|---|---|
+| **Trigger** | Before pushing or submitting an Obsidian plugin |
+| **Checks** | TypeScript compilation, ESLint, 21 manual rule checks, manifest validation, LICENSE |
+| **Output** | Structured report with severity grouping, file:line locations, and suggested fixes |
+
+---
+
 ## Usage Examples
 
 ### Python Development Workflow
@@ -1587,12 +1669,24 @@ alfio-claude-plugins/
 │   │   └── skills/
 │   │       ├── typescript-write/
 │   │       └── knip/
-│   └── workflows/
-│       └── commands/
-│           ├── feature-e2e.md
-│           ├── frontend-redesign.md
-│           ├── mobile-intel.md
-│           └── tauri-pipeline.md
+│   ├── workflows/
+│   │   └── commands/
+│   │       ├── feature-e2e.md
+│   │       ├── frontend-redesign.md
+│   │       ├── mobile-intel.md
+│   │       └── tauri-pipeline.md
+│   ├── app-explorer/
+│   │   └── skills/
+│   │       └── app-explorer/
+│   ├── browser-extensions/
+│   │   └── skills/
+│   │       └── firefox-extension-dev/
+│   └── obsidian-development/
+│       └── skills/
+│           ├── obsidian-plugin-development/
+│           │   └── references/
+│           ├── obsidian-scaffold/
+│           └── obsidian-check/
 ├── LICENSE
 └── README.md
 ```
@@ -1649,4 +1743,4 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
-**Total:** 21 Agents | 20 Skills | 18 Commands across 19 plugins
+**Total:** 21 Agents | 25 Skills | 18 Commands across 22 plugins
