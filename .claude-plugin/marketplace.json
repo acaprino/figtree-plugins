@@ -89,7 +89,7 @@
       "name": "frontend",
       "source": "./plugins/frontend",
       "description": "React performance optimization, UI polishing, UX design, comprehensive CSS (BEM, CSS Modules, SASS, accessibility, cross-browser), and orchestrated frontend builds from product brief to shipped UI",
-      "version": "2.9.0",
+      "version": "2.10.0",
       "author": {
         "name": "Alfio"
       },
@@ -121,7 +121,8 @@
       "skills": [
         "./skills/css-master",
         "./skills/ui-studio",
-        "./skills/premium-web-consultant"
+        "./skills/premium-web-consultant",
+        "./skills/frontend-design"
       ],
       "commands": [
         "./commands/review-design.md"
@@ -447,31 +448,6 @@
       "strict": false,
       "agents": [
         "./agents/or-tools-expert.md"
-      ]
-    },
-    {
-      "name": "frontend-design",
-      "source": "./plugins/frontend-design",
-      "description": "Create distinctive, production-grade frontend interfaces with high design quality, avoiding generic AI aesthetics",
-      "version": "1.0.0",
-      "author": {
-        "name": "Anthropic"
-      },
-      "license": "MIT",
-      "keywords": [
-        "frontend",
-        "design",
-        "ui",
-        "css",
-        "react",
-        "aesthetics",
-        "components",
-        "web"
-      ],
-      "category": "frontend",
-      "strict": false,
-      "skills": [
-        "./skills/frontend-design"
       ]
     },
     {

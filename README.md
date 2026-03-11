@@ -34,7 +34,7 @@
 - [Plugins Overview](#plugins-overview)
 - [Quick Start Workflows](#quick-start-workflows)
 - **Development** -- [Python](#python-development-plugin) | [TypeScript](#typescript-development-plugin) | [Tauri/Rust](#tauri-development-plugin) | [Obsidian](#obsidian-development-plugin) | [Browser Extensions](#browser-extensions-plugin)
-- **Frontend** -- [Frontend](#frontend-plugin) | [Frontend Design](#frontend-design-plugin)
+- **Frontend** -- [Frontend](#frontend-plugin)
 - **Review & Quality** -- [Code Review](#code-review-plugin) | [Humanize](#humanize-plugin) | [Deep Dive Analysis](#deep-dive-analysis-plugin) | [Code Documentation](#code-documentation-plugin)
 - **AI & Planning** -- [AI Tooling](#ai-tooling-plugin) | [Research](#research-plugin) | [Project Setup](#project-setup-plugin)
 - **Infrastructure** -- [Messaging](#messaging-plugin) | [CSP](#csp-plugin) | [Stripe](#stripe-plugin) | [Business](#business-plugin)
@@ -91,8 +91,7 @@ claude plugin list
 | [**deep-dive-analysis**](#deep-dive-analysis-plugin) | Understand any codebase in minutes with 7-phase systematic analysis | - | 1 | 1 |
 | [**code-review**](#code-review-plugin) | Catch bugs before they ship -- 3 agents review architecture, security, and patterns in parallel | 3 | - | 3 |
 | [**tauri-development**](#tauri-development-plugin) | Build cross-platform desktop and mobile apps with Tauri 2 and Rust | 2 | 1 | - |
-| [**frontend**](#frontend-plugin) | Optimize React performance, polish UI, design layouts, and master modern CSS | 5 | 3 | 1 |
-| [**frontend-design**](#frontend-design-plugin) | Design distinctive interfaces from scratch, avoiding generic AI aesthetics | - | 1 | - |
+| [**frontend**](#frontend-plugin) | Optimize React performance, polish UI, design layouts, and master modern CSS | 5 | 4 | 1 |
 | [**ai-tooling**](#ai-tooling-plugin) | Brainstorm, plan, and execute with structured AI-assisted workflows | 1 | 3 | 1 |
 | [**stripe**](#stripe-plugin) | Integrate Stripe payments without reading 500 pages of docs | - | 2 | - |
 | [**utilities**](#utilities-plugin) | Clean up messy folders, find duplicates, and remove dead code | - | 1 | 2 |
@@ -109,8 +108,6 @@ claude plugin list
 | [**app-explorer**](#app-explorer-plugin) | Map any webapp's screens and navigation with Playwright crawling | - | 1 | - |
 | [**browser-extensions**](#browser-extensions-plugin) | Build Firefox extensions with expert Manifest V2/V3 and AMO publishing guidance | - | 1 | - |
 | [**obsidian-development**](#obsidian-development-plugin) | Pass ObsidianReviewBot on first submission with compliant scaffolding and checks | - | 3 | - |
-
-> **frontend** vs **frontend-design**: Use `frontend` for React/CSS optimization and hands-on UI work. Use `frontend-design` for designing new interfaces from scratch with creative flair.
 
 ---
 
@@ -872,7 +869,7 @@ Expert guidance for Tauri 2 mobile app development (Android/iOS).
 
 ## Frontend Plugin
 
-> Five specialized agents and three skills for every layer of frontend work -- from strategic planning to React performance optimization. Use `frontend` for hands-on optimization; use [`frontend-design`](#frontend-design-plugin) for designing new interfaces from scratch.
+> Five specialized agents and four skills for every layer of frontend work -- from strategic planning and creative design direction to React performance optimization.
 >
 > **Which tool do I use?**
 > | Need | Tool | What it does |
@@ -1017,6 +1014,19 @@ Orchestrates full frontend development from a product goal to shipped UI. Establ
 
 ---
 
+#### `frontend-design`
+
+Create distinctive, production-grade frontend interfaces with bold aesthetic direction. Guides typography, color, motion, spatial composition, and visual details to avoid generic AI output.
+
+| | |
+|---|---|
+| **Invoke** | Skill reference |
+| **Use for** | Web components, landing pages, UI design, production-grade interfaces |
+
+**Source:** Ported from [anthropics/claude-code](https://github.com/anthropics/claude-code) frontend-design plugin.
+
+---
+
 ### Commands
 
 #### `/review-design`
@@ -1032,23 +1042,6 @@ Unified frontend design review -- auto-detects scope: diff mode for changed fron
 **Output:** `.design-review/report.md` -- actionable checklist with scores, grouped by category (UX, Layout, CSS).
 
 ---
-
-## Frontend Design Plugin
-
-> Design interfaces that look hand-crafted, not AI-generated. Creative, polished web components and pages that avoid the generic aesthetic of typical AI output.
-
-### Skills
-
-#### `frontend-design`
-
-Create polished web components, pages, and applications with creative design that avoids generic AI output.
-
-| | |
-|---|---|
-| **Invoke** | Skill reference |
-| **Use for** | Web components, landing pages, UI design, production-grade interfaces |
-
-**Source:** Ported from [anthropics/claude-code](https://github.com/anthropics/claude-code) frontend-design plugin.
 
 ---
 
@@ -1637,7 +1630,7 @@ Full frontend redesign pipeline: UX audit, layout system design, implementation,
 | **Pipeline** | ui-ux-designer -> ui-layout-designer -> frontend-design -> react-performance-optimizer -> ui-polisher -> design audit |
 | **Checkpoints** | After layout spec and polish phases |
 | **Output** | `.frontend-redesign/report.md` -- actionable checklist with before/after comparison |
-| **Dependencies** | frontend, frontend-design plugins |
+| **Dependencies** | frontend plugin |
 
 > **Not sure which to use?** `/frontend:premium-web-consultant` for strategy ("what to build"), `/frontend:ui-studio` for new builds ("build it from scratch"), `/frontend-redesign` for existing code ("improve what we have").
 
@@ -1798,12 +1791,12 @@ alfio-claude-plugins/
 │   │   │   ├── ui-layout-designer.md
 │   │   │   └── css-master.md
 │   │   ├── skills/
-│   │   │   └── css-master/
+│   │   │   ├── css-master/
+│   │   │   ├── ui-studio/
+│   │   │   ├── premium-web-consultant/
+│   │   │   └── frontend-design/
 │   │   └── commands/
 │   │       └── review-design.md
-│   ├── frontend-design/
-│   │   └── skills/
-│   │       └── frontend-design/
 │   ├── ai-tooling/
 │   │   ├── agents/
 │   │   │   └── prompt-engineer.md
