@@ -4,7 +4,7 @@
 [![Marketplace](https://img.shields.io/badge/marketplace-v1.56.0-green.svg)](.claude-plugin/marketplace.json)
 [![Plugins](https://img.shields.io/badge/plugins-22-orange.svg)](#plugins-overview)
 
-22 ready-to-install plugins for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) -- Anthropic's official AI coding CLI. Specialized agents, skills, and commands for Python, code review, frontend, Tauri/Rust, AI tooling, Obsidian, and more -- so you spend less time prompting and more time shipping.
+22 ready-to-install plugins for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) -- an AI coding CLI by Anthropic. Specialized agents, skills, and commands for Python, code review, frontend, Tauri/Rust, AI tooling, Obsidian, and more -- so you spend less time prompting and more time shipping.
 
 **22 plugins | 19 agents | 25 skills | 18 commands** -- install only what you need.
 
