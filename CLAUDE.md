@@ -14,7 +14,7 @@ plugins/
     commands/               # slash-command .md files
 ```
 
-19 plugins: humanize, deep-dive-analysis, tauri-development, frontend, ai-tooling, python-development, stripe, utilities, messaging, research, business, code-documentation, project-setup, mobile-development, typescript-development, csp, frontend-design, digital-marketing, comprehensive-review.
+19 plugins: humanize, deep-dive-analysis, tauri-development, frontend, ai-tooling, python-development, stripe, utilities, messaging, research, business, code-documentation, project-setup, mobile-development, typescript-development, csp, frontend-design, digital-marketing, code-review.
 
 ## Plugin anatomy
 

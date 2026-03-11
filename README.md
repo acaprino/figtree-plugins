@@ -11,7 +11,7 @@ Custom Claude Code plugin marketplace with development workflow agents, skills, 
 - [Python Development](#python-development-plugin)
 - [Humanize](#humanize-plugin)
 - [Deep Dive Analysis](#deep-dive-analysis-plugin)
-- [Comprehensive Review](#comprehensive-review-plugin)
+- [Code Review](#code-review-plugin)
 - [Tauri Development](#tauri-development-plugin)
 - [Frontend](#frontend-plugin)
 - [Frontend Design](#frontend-design-plugin)
@@ -49,7 +49,7 @@ claude plugin marketplace add acaprino/alfio-claude-plugins
 claude plugin install python-development@alfio-claude-plugins
 claude plugin install humanize@alfio-claude-plugins
 claude plugin install deep-dive-analysis@alfio-claude-plugins
-claude plugin install comprehensive-review@alfio-claude-plugins
+claude plugin install code-review@alfio-claude-plugins
 claude plugin install tauri-development@alfio-claude-plugins
 claude plugin install frontend@alfio-claude-plugins
 claude plugin install frontend-design@alfio-claude-plugins
@@ -94,7 +94,7 @@ claude plugin list
 | [**python-development**](#python-development-plugin) | Modern Python, Django, FastAPI, testing, packaging | 3 | 7 | 2 |
 | [**humanize**](#humanize-plugin) | Code humanization -- readable naming, no AI boilerplate | 1 | - | 1 |
 | [**deep-dive-analysis**](#deep-dive-analysis-plugin) | AI-powered systematic codebase analysis | - | 1 | 1 |
-| [**comprehensive-review**](#comprehensive-review-plugin) | Multi-agent review orchestration (architecture, security, patterns) | 3 | - | 3 |
+| [**code-review**](#code-review-plugin) | Multi-agent review orchestration (architecture, security, patterns) | 3 | - | 3 |
 | [**tauri-development**](#tauri-development-plugin) | Tauri 2 mobile/desktop and Rust engineering | 2 | 1 | - |
 | [**frontend**](#frontend-plugin) | React performance, UI polish, UX design, layout, modern CSS | 5 | 2 | 1 |
 | [**frontend-design**](#frontend-design-plugin) | Distinctive, production-grade frontend interfaces | - | 1 | - |
@@ -447,7 +447,7 @@ AI-powered systematic codebase analysis combining structure extraction with sema
 
 ---
 
-## Comprehensive Review Plugin
+## Code Review Plugin
 
 > Multi-agent code review orchestration with architecture, security, pattern analysis, and best practices across multiple phases.
 
@@ -1347,7 +1347,7 @@ End-to-end feature pipeline: brainstorm design, write implementation plan, execu
 | **Invoke** | `/feature-e2e <feature description> [--skip-brainstorm] [--skip-humanize] [--strict-mode]` |
 | **Pipeline** | brainstorming -> writing-plans -> executing-plans -> code-review -> humanize |
 | **Checkpoints** | After design, plan, execution, and review phases |
-| **Dependencies** | ai-tooling, comprehensive-review, humanize plugins |
+| **Dependencies** | ai-tooling, code-review, humanize plugins |
 
 #### `/frontend-redesign`
 
@@ -1397,7 +1397,7 @@ End-to-end Tauri 2 desktop app pipeline: Rust backend review, Tauri IPC optimiza
 4. Use python-testing-patterns for test coverage
 ```
 
-### Comprehensive Review Workflow
+### Code Review Workflow
 ```
 1. /full-review src/ --security-focus
 2. architect-review checks design patterns and scalability
@@ -1501,7 +1501,7 @@ alfio-claude-plugins/
 │   │   │   └── deep-dive-analysis/
 │   │   └── commands/
 │   │       └── deep-dive-analysis.md
-│   ├── comprehensive-review/
+│   ├── code-review/
 │   │   ├── agents/
 │   │   │   ├── architect-review.md
 │   │   │   ├── security-auditor.md
