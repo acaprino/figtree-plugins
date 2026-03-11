@@ -1,6 +1,30 @@
 # Alfio Claude Plugins
 
-Custom Claude Code plugin marketplace with development workflow agents, skills, and commands for Python development, code review, Tauri/Rust, frontend, AI tooling, Obsidian plugins, constraint programming, and more.
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Marketplace](https://img.shields.io/badge/marketplace-v1.54.0-green.svg)](.claude-plugin/marketplace.json)
+[![Plugins](https://img.shields.io/badge/plugins-22-orange.svg)](#plugins-overview)
+
+22 ready-to-install plugins for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) -- Anthropic's official AI coding CLI. Specialized agents, skills, and commands for Python, code review, frontend, Tauri/Rust, AI tooling, Obsidian, and more -- so you spend less time prompting and more time shipping.
+
+**22 plugins | 21 agents | 25 skills | 18 commands** -- install only what you need.
+
+---
+
+## Why Use These Plugins?
+
+- **Specialized agents outperform generic prompts** -- each plugin encodes domain expertise that took months to develop
+- **Multi-agent orchestration** -- code review runs architecture, security, and pattern analysis in parallel
+- **Cross-plugin workflows** -- chain brainstorming, planning, implementation, review, and cleanup into single commands
+- **Install only what you need** -- each plugin is independent with no runtime dependencies
+- **Community-driven and open source** -- MIT licensed, contributions welcome
+
+### Agents, Skills, and Commands
+
+| Type | What it is | How to use |
+|------|-----------|------------|
+| **Agent** | A specialized AI persona with domain expertise | `Use the python-pro agent to implement rate limiting` |
+| **Skill** | A knowledge module that enhances Claude's capabilities | Referenced automatically when relevant |
+| **Command** | A slash command that triggers a specific workflow | `/code-review`, `/python-scaffold`, `/feature-e2e` |
 
 ---
 
@@ -8,30 +32,13 @@ Custom Claude Code plugin marketplace with development workflow agents, skills, 
 
 - [Installation](#installation)
 - [Plugins Overview](#plugins-overview)
-- [Python Development](#python-development-plugin)
-- [Humanize](#humanize-plugin)
-- [Deep Dive Analysis](#deep-dive-analysis-plugin)
-- [Code Review](#code-review-plugin)
-- [Tauri Development](#tauri-development-plugin)
-- [Frontend](#frontend-plugin)
-- [Frontend Design](#frontend-design-plugin)
-- [AI Tooling](#ai-tooling-plugin)
-- [Stripe](#stripe-plugin)
-- [Utilities](#utilities-plugin)
-- [Business](#business-plugin)
-- [Project Setup](#project-setup-plugin)
-- [Code Documentation](#code-documentation-plugin)
-- [CSP](#csp-plugin)
-- [Digital Marketing](#digital-marketing-plugin)
-- [Messaging](#messaging-plugin)
-- [Research](#research-plugin)
-- [Mobile Development](#mobile-development-plugin)
-- [TypeScript Development](#typescript-development-plugin)
-- [Workflows](#workflows-plugin)
-- [App Explorer](#app-explorer-plugin)
-- [Browser Extensions](#browser-extensions-plugin)
-- [Obsidian Development](#obsidian-development-plugin)
-- [Usage Examples](#usage-examples)
+- [Quick Start Workflows](#quick-start-workflows)
+- **Development** -- [Python](#python-development-plugin) | [TypeScript](#typescript-development-plugin) | [Tauri/Rust](#tauri-development-plugin) | [Obsidian](#obsidian-development-plugin) | [Browser Extensions](#browser-extensions-plugin)
+- **Frontend** -- [Frontend](#frontend-plugin) | [Frontend Design](#frontend-design-plugin)
+- **Review & Quality** -- [Code Review](#code-review-plugin) | [Humanize](#humanize-plugin) | [Deep Dive Analysis](#deep-dive-analysis-plugin) | [Code Documentation](#code-documentation-plugin)
+- **AI & Planning** -- [AI Tooling](#ai-tooling-plugin) | [Research](#research-plugin) | [Project Setup](#project-setup-plugin)
+- **Infrastructure** -- [Messaging](#messaging-plugin) | [CSP](#csp-plugin) | [Stripe](#stripe-plugin) | [Business](#business-plugin)
+- **Tools & Workflows** -- [Utilities](#utilities-plugin) | [Workflows](#workflows-plugin) | [App Explorer](#app-explorer-plugin) | [Mobile Development](#mobile-development-plugin) | [Digital Marketing](#digital-marketing-plugin)
 - [Project Structure](#project-structure)
 - [Contributing](#contributing)
 - [License](#license)
@@ -49,29 +56,11 @@ claude plugin marketplace add acaprino/alfio-claude-plugins
 
 **Step 2:** Install the plugins you need
 ```bash
+# Install individual plugins (pick what you need)
 claude plugin install python-development@alfio-claude-plugins
-claude plugin install humanize@alfio-claude-plugins
-claude plugin install deep-dive-analysis@alfio-claude-plugins
 claude plugin install code-review@alfio-claude-plugins
-claude plugin install tauri-development@alfio-claude-plugins
 claude plugin install frontend@alfio-claude-plugins
-claude plugin install frontend-design@alfio-claude-plugins
-claude plugin install ai-tooling@alfio-claude-plugins
-claude plugin install stripe@alfio-claude-plugins
-claude plugin install business@alfio-claude-plugins
-claude plugin install project-setup@alfio-claude-plugins
-claude plugin install code-documentation@alfio-claude-plugins
-claude plugin install csp@alfio-claude-plugins
-claude plugin install digital-marketing@alfio-claude-plugins
-claude plugin install messaging@alfio-claude-plugins
-claude plugin install research@alfio-claude-plugins
-claude plugin install mobile-development@alfio-claude-plugins
-claude plugin install typescript-development@alfio-claude-plugins
-claude plugin install utilities@alfio-claude-plugins
-claude plugin install workflows@alfio-claude-plugins
-claude plugin install app-explorer@alfio-claude-plugins
-claude plugin install browser-extensions@alfio-claude-plugins
-claude plugin install obsidian-development@alfio-claude-plugins
+# ... see Plugins Overview for all 22 available plugins
 ```
 
 ### From Local Path (Development)
@@ -97,35 +86,110 @@ claude plugin list
 
 | Plugin | Description | Agents | Skills | Commands |
 |--------|-------------|:------:|:------:|:--------:|
-| [**python-development**](#python-development-plugin) | Modern Python, Django, FastAPI, testing, packaging | 3 | 8 | 2 |
-| [**humanize**](#humanize-plugin) | Code humanization -- readable naming, no AI boilerplate | 1 | - | 1 |
-| [**deep-dive-analysis**](#deep-dive-analysis-plugin) | AI-powered systematic codebase analysis | - | 1 | 1 |
-| [**code-review**](#code-review-plugin) | Multi-agent review orchestration (architecture, security, patterns) | 3 | - | 3 |
-| [**tauri-development**](#tauri-development-plugin) | Tauri 2 mobile/desktop and Rust engineering | 2 | 1 | - |
-| [**frontend**](#frontend-plugin) | React performance, UI polish, UX design, layout, modern CSS | 5 | 2 | 1 |
-| [**frontend-design**](#frontend-design-plugin) | Distinctive, production-grade frontend interfaces | - | 1 | - |
-| [**ai-tooling**](#ai-tooling-plugin) | Prompt engineering, brainstorming, and planning workflows | 1 | 3 | 1 |
-| [**stripe**](#stripe-plugin) | Payments, subscriptions, Connect, billing, revenue optimization | - | 2 | - |
-| [**utilities**](#utilities-plugin) | File organization, dead code cleanup, and directory management | - | 1 | 2 |
-| [**business**](#business-plugin) | Legal advisory, compliance, contracts, and risk management | - | 1 | - |
-| [**project-setup**](#project-setup-plugin) | .claude.md auditing, creation, and maintenance | 1 | - | 2 |
-| [**code-documentation**](#code-documentation-plugin) | Technical documentation engineering and maintenance | 1 | - | 2 |
-| [**csp**](#csp-plugin) | Constraint satisfaction and optimization with OR-Tools CP-SAT | 1 | - | - |
-| [**digital-marketing**](#digital-marketing-plugin) | SEO optimization, content marketing, and campaigns | 2 | - | 2 |
-| [**messaging**](#messaging-plugin) | RabbitMQ messaging, configuration, and optimization | 1 | - | - |
-| [**research**](#research-plugin) | Advanced search and information retrieval | 1 | - | - |
-| [**mobile-development**](#mobile-development-plugin) | Android app competitive analysis via ADB | - | 1 | - |
-| [**typescript-development**](#typescript-development-plugin) | TypeScript/JavaScript with Metabase coding standards | - | 2 | - |
-| [**workflows**](#workflows-plugin) | Cross-plugin orchestration pipelines | - | - | 4 |
-| [**app-explorer**](#app-explorer-plugin) | Automated webapp crawling with Playwright BFS | - | 1 | - |
-| [**browser-extensions**](#browser-extensions-plugin) | Firefox WebExtension development (Manifest V2/V3) | - | 1 | - |
-| [**obsidian-development**](#obsidian-development-plugin) | Obsidian plugin development, scaffolding, and compliance checks | - | 3 | - |
+| [**python-development**](#python-development-plugin) | Build production-ready Python apps faster with Django, FastAPI, testing, and packaging agents | 3 | 8 | 2 |
+| [**humanize**](#humanize-plugin) | Make AI-generated code look human-written -- fixes names, removes boilerplate | 1 | - | 1 |
+| [**deep-dive-analysis**](#deep-dive-analysis-plugin) | Understand any codebase in minutes with 7-phase systematic analysis | - | 1 | 1 |
+| [**code-review**](#code-review-plugin) | Catch bugs before they ship -- 3 agents review architecture, security, and patterns in parallel | 3 | - | 3 |
+| [**tauri-development**](#tauri-development-plugin) | Build cross-platform desktop and mobile apps with Tauri 2 and Rust | 2 | 1 | - |
+| [**frontend**](#frontend-plugin) | Optimize React performance, polish UI, design layouts, and master modern CSS | 5 | 2 | 1 |
+| [**frontend-design**](#frontend-design-plugin) | Design distinctive interfaces from scratch, avoiding generic AI aesthetics | - | 1 | - |
+| [**ai-tooling**](#ai-tooling-plugin) | Brainstorm, plan, and execute with structured AI-assisted workflows | 1 | 3 | 1 |
+| [**stripe**](#stripe-plugin) | Integrate Stripe payments without reading 500 pages of docs | - | 2 | - |
+| [**utilities**](#utilities-plugin) | Clean up messy folders, find duplicates, and remove dead code | - | 1 | 2 |
+| [**business**](#business-plugin) | Navigate tech law, compliance, contracts, and risk management | - | 1 | - |
+| [**project-setup**](#project-setup-plugin) | Create and maintain accurate CLAUDE.md files with ground truth verification | 1 | - | 2 |
+| [**code-documentation**](#code-documentation-plugin) | Generate accurate docs by analyzing your code first, not guessing | 1 | - | 2 |
+| [**csp**](#csp-plugin) | Solve scheduling, routing, and assignment problems with OR-Tools CP-SAT | 1 | - | - |
+| [**digital-marketing**](#digital-marketing-plugin) | Run SEO audits, content strategy, and conversion optimization | 2 | - | 2 |
+| [**messaging**](#messaging-plugin) | Design and optimize RabbitMQ messaging with expert AMQP patterns | 1 | - | - |
+| [**research**](#research-plugin) | Find precise answers fast with advanced multi-source search strategies | 1 | - | - |
+| [**mobile-development**](#mobile-development-plugin) | Analyze competitor Android apps via ADB with automated screenshots | - | 1 | - |
+| [**typescript-development**](#typescript-development-plugin) | Write clean TypeScript with coding standards and Knip dead code detection | - | 2 | - |
+| [**workflows**](#workflows-plugin) | Run entire dev workflows with one command -- brainstorm to review to cleanup | - | - | 4 |
+| [**app-explorer**](#app-explorer-plugin) | Map any webapp's screens and navigation with Playwright crawling | - | 1 | - |
+| [**browser-extensions**](#browser-extensions-plugin) | Build Firefox extensions with expert Manifest V2/V3 and AMO publishing guidance | - | 1 | - |
+| [**obsidian-development**](#obsidian-development-plugin) | Pass ObsidianReviewBot on first submission with compliant scaffolding and checks | - | 3 | - |
+
+> **frontend** vs **frontend-design**: Use `frontend` for React/CSS optimization and hands-on UI work. Use `frontend-design` for designing new interfaces from scratch with creative flair.
+
+---
+
+## Quick Start Workflows
+
+### Python Development
+```
+1. /python-scaffold FastAPI microservice
+2. Implement features with python-pro agent
+3. /python-refactor on complex modules
+4. Use python-testing-patterns for test coverage
+```
+
+### Code Review
+```
+1. /code-review -- auto-detect: uncommitted changes, commits, or PRs
+2. /full-review src/ --security-focus -- deep multi-agent review
+3. /review-design -- diff mode or full frontend audit
+```
+
+### Cross-Plugin Pipelines
+```
+1. /feature-e2e "add user authentication" -- brainstorm to review to cleanup
+2. /frontend-redesign src/ --framework react -- UX audit to polish
+3. /tauri-pipeline --rust-only -- Rust backend + Tauri IPC review
+4. /mobile-intel com.competitor.app -- competitive analysis to scaffold
+```
+
+### AI-Assisted Planning
+```
+1. Use brainstorming skill to explore requirements
+2. Use writing-plans skill to create implementation plan
+3. Use executing-plans skill to implement with checkpoints
+```
+
+### Legacy Code Modernization
+```
+1. /deep-dive-analysis to understand codebase
+2. /python-refactor on legacy modules
+3. Use python-testing-patterns to add test coverage
+4. /humanize to clean up naming and comments
+```
+
+<details>
+<summary>More workflow examples</summary>
+
+### Tauri App Optimization
+```
+1. Use tauri-optimizer for IPC and Rust backend
+2. Use react-performance-optimizer for React frontend
+3. Use ui-layout-designer for page composition
+4. Use ui-polisher for animations and polish
+```
+
+### CLAUDE.md Maintenance
+```
+1. /maintain-claude-md for quarterly maintenance
+2. Review audit findings
+3. Choose: audit-only or apply improvements
+4. Or /create-claude-md to start fresh
+```
+
+### Optimization & Scheduling with CSP
+```
+1. Use or-tools-expert agent for constraint programming
+2. Model problem with variables, domains, and constraints
+3. Enable parallelism and performance optimizations
+4. Test on small instances before scaling up
+```
+
+**Example problems:** Employee shift scheduling, job shop scheduling, bin packing, vehicle routing, assignment problems with cost minimization.
+
+</details>
 
 ---
 
 ## Python Development Plugin
 
-> Modern Python development ecosystem with frameworks, testing, packaging, and code refactoring.
+> Stop wrestling with boilerplate. Get production-ready Python projects scaffolded in seconds, with built-in refactoring workflows and testing patterns that enforce best practices.
 
 ### Agents
 
@@ -369,7 +433,7 @@ Metrics-driven 4-phase refactoring with checkpoint approval before execution and
 
 ## Humanize Plugin
 
-> Rewrites source code to be more readable and human-friendly without changing behavior -- improves naming and comments only, with mandatory test validation.
+> Make AI-generated code indistinguishable from human-written code. Fixes vague names, removes boilerplate comments, and adds meaningful documentation -- with mandatory test validation.
 
 ### Agents
 
@@ -420,7 +484,7 @@ Quick command to humanize source files.
 
 ## Deep Dive Analysis Plugin
 
-> AI-powered systematic codebase analysis combining mechanical structure extraction with semantic understanding to document WHAT, WHY, HOW, and CONSEQUENCES of code.
+> Understand any codebase in minutes. Seven-phase analysis maps structure, traces flows, identifies risks, and documents the WHY behind the code -- not just what it does.
 
 ### Skills
 
@@ -458,7 +522,7 @@ AI-powered systematic codebase analysis combining structure extraction with sema
 
 ## Code Review Plugin
 
-> Multi-agent code review orchestration with architecture, security, pattern analysis, and best practices across multiple phases.
+> Catch bugs before they ship. Three specialized agents review architecture, security, and code patterns in parallel -- like having a senior architect, security auditor, and quality engineer on every PR.
 
 ### Agents
 
@@ -567,7 +631,7 @@ Analyze current branch changes, generate comprehensive PR description with risk 
 
 ## Tauri Development Plugin
 
-> Specialized tools for Tauri 2 cross-platform development and Rust engineering.
+> Build fast, secure cross-platform apps. Expert Rust engineering plus Tauri 2 optimization for desktop and mobile -- with concrete performance targets for startup time, memory, and IPC latency.
 
 ### Agents
 
@@ -640,7 +704,7 @@ Expert guidance for Tauri 2 mobile app development (Android/iOS).
 
 ## Frontend Plugin
 
-> React performance optimization, UI polish, UX design, layout composition, and modern CSS.
+> Five specialized agents for every layer of frontend work -- React performance, UI polish, UX design, layout composition, and modern CSS. Use `frontend` for hands-on optimization; use [`frontend-design`](#frontend-design-plugin) for designing new interfaces from scratch.
 
 ### Agents
 
@@ -766,7 +830,7 @@ Unified frontend design review -- auto-detects scope: diff mode for changed fron
 
 ## Frontend Design Plugin
 
-> Create distinctive, production-grade frontend interfaces with high design quality, avoiding generic AI aesthetics.
+> Design interfaces that look hand-crafted, not AI-generated. Creative, polished web components and pages that avoid the generic aesthetic of typical AI output.
 
 ### Skills
 
@@ -785,7 +849,7 @@ Create polished web components, pages, and applications with creative design tha
 
 ## AI Tooling Plugin
 
-> Prompt engineering, brainstorming, and planning workflows for AI-powered development.
+> Think before you build. Structured brainstorming, planning, and execution workflows that prevent wasted effort and keep complex projects on track.
 
 ### Agents
 
@@ -869,7 +933,7 @@ Analyze, score, and optimize prompts for LLMs -- evaluates clarity, specificity,
 
 ## Stripe Plugin
 
-> Comprehensive Stripe integration for payments, subscriptions, marketplaces, and billing.
+> Integrate Stripe without reading 500 pages of docs. Covers payments, subscriptions, Connect marketplaces, billing, webhooks, and revenue optimization with ready-to-use patterns.
 
 ### Skills
 
@@ -938,7 +1002,7 @@ Monetization expert that analyzes codebases to discover features, calculate serv
 
 ## Utilities Plugin
 
-> File organization, dead code cleanup, duplicate detection, and directory management.
+> Tame messy folders and bloated codebases. Organizes files, finds duplicates, removes dead code, and cleans up directories with approval before any changes.
 
 ### Skills
 
@@ -993,7 +1057,7 @@ Find and remove dead code -- auto-detects language: Knip for TypeScript/JavaScri
 
 ## Business Plugin
 
-> Business operations support for legal advisory, compliance, contracts, and risk management.
+> Navigate tech law without a lawyer on retainer. Contract review, GDPR/CCPA compliance, IP protection, and risk assessment tailored to software businesses.
 
 ### Skills
 
@@ -1026,7 +1090,7 @@ Expert legal advisor specializing in technology law, compliance, and risk mitiga
 
 ## Project Setup Plugin
 
-> Tools for auditing, creating, and improving `.claude.md` files with ground truth verification.
+> Keep your CLAUDE.md accurate and effective. Audits every claim against your actual codebase, detects outdated information, and generates tailored configuration through interactive questionnaires.
 
 ### Agents
 
@@ -1070,7 +1134,7 @@ Audits and optionally improves your existing `.claude.md` file with ground truth
 
 ## Code Documentation Plugin
 
-> Technical documentation engineering with AI-powered codebase analysis and management.
+> Generate docs that match reality. Analyzes your code bottom-up before writing a single line -- so documentation reflects what the code actually does, not what someone assumed.
 
 ### Agents
 
@@ -1121,7 +1185,7 @@ Audit and refactor existing documentation to ensure accuracy and completeness.
 
 ## CSP Plugin
 
-> Constraint Satisfaction Problems and combinatorial optimization with Google OR-Tools CP-SAT solver.
+> Solve complex scheduling, routing, and assignment problems that would take days to model from scratch. Expert constraint programming with Google OR-Tools CP-SAT.
 
 ### Agents
 
@@ -1166,7 +1230,7 @@ uv add ortools
 
 ## Digital Marketing Plugin
 
-> SEO optimization, content marketing, keyword research, and engagement-driven campaigns.
+> Drive organic traffic and conversions. Technical SEO audits, content strategy, and marketing optimization with Playwright-powered analysis and persistent reports.
 
 ### Agents
 
@@ -1250,7 +1314,7 @@ Marketing and conversion audit using 3 parallel agents (UX/Conversion, Content/C
 
 ## Messaging Plugin
 
-> Message broker expertise for RabbitMQ configuration, optimization, and high availability.
+> Design reliable messaging systems from the start. Expert AMQP patterns, queue design, high availability configuration, and performance tuning for RabbitMQ.
 
 ### Agents
 
@@ -1272,7 +1336,7 @@ Use the rabbitmq-expert agent to [design/configure/optimize] [messaging system]
 
 ## Research Plugin
 
-> Advanced search and information retrieval specialist for precise knowledge discovery.
+> Find precise answers fast. Advanced multi-source search strategies with query optimization across codebases and web sources -- when you need more than a simple grep.
 
 ### Agents
 
@@ -1294,7 +1358,7 @@ Use the search-specialist agent to research [topic/question]
 
 ## Mobile Development Plugin
 
-> Automated competitive analysis of Android mobile apps via ADB.
+> Know your competition inside out. Automated Android app analysis via ADB -- navigate, screenshot, and document UX/UI patterns into comprehensive competitive reports.
 
 ### Skills
 
@@ -1317,7 +1381,7 @@ Mobile app competitive analyzer with automated ADB-based navigation, screenshot 
 
 ## TypeScript Development Plugin
 
-> TypeScript and JavaScript development with Metabase coding standards, Knip dead code detection, and best practices.
+> Write clean TypeScript that follows established standards. Metabase coding patterns plus Knip dead code detection for unused files, exports, and dependencies.
 
 ### Skills
 
@@ -1343,7 +1407,7 @@ Knip finds unused files, dependencies, exports, and types in JavaScript/TypeScri
 
 ## Workflows Plugin
 
-> Cross-plugin orchestration pipelines that chain agents and skills from multiple plugins into end-to-end workflows.
+> Run entire development workflows with one command. Chains brainstorming, planning, implementation, code review, and cleanup into automated pipelines with checkpoints at each stage.
 
 ### Commands
 
@@ -1459,98 +1523,21 @@ Scaffold a new Obsidian community plugin project that is bot-compliant from day 
 
 #### `obsidian-check`
 
-Pre-submission lint and review. Scans all `.ts` files against ObsidianReviewBot rules and produces a structured pass/fail report.
+Pre-submission lint and review. Auto-installs `eslint-plugin-obsidianmd` if missing, runs all 28 ESLint rules (including `ui/sentence-case`), plus additional manual checks not covered by the linter.
 
 | | |
 |---|---|
 | **Trigger** | Before pushing or submitting an Obsidian plugin |
-| **Checks** | TypeScript compilation, ESLint, 21 manual rule checks, manifest validation, LICENSE |
+| **Auto-setup** | Installs `eslint-plugin-obsidianmd` with recommended config if not present |
+| **Checks** | TypeScript compilation, 28 ESLint rules (sentence case, inline styles, commands, manifest, etc.), 6 manual checks, manifest validation, LICENSE |
 | **Output** | Structured report with severity grouping, file:line locations, and suggested fixes |
 
 ---
 
-## Usage Examples
-
-### Python Development Workflow
-```
-1. /python-scaffold FastAPI microservice
-2. Implement features with python-pro agent
-3. /python-refactor on complex modules
-4. Use python-testing-patterns for test coverage
-```
-
-### Code Review Workflow
-```
-1. /full-review src/ --security-focus
-2. architect-review checks design patterns and scalability
-3. security-auditor runs OWASP and compliance checks
-4. pattern-quality-scorer generates quality scores
-5. Review consolidated findings and action plan
-```
-
-### Quick Session Review
-```
-1. /code-review -- review uncommitted changes, commits, or PRs
-2. /review-design -- auto-detect: diff mode or full frontend audit
-```
-
-### Tauri App Optimization
-```
-1. Use tauri-optimizer for IPC and Rust backend
-2. Use react-performance-optimizer for React frontend
-3. Use ui-layout-designer for page composition
-4. Use ui-polisher for animations and polish
-```
-
-### AI-Assisted Planning
-```
-1. Use brainstorming skill to explore requirements
-2. Use writing-plans skill to create implementation plan
-3. Use executing-plans skill to implement with checkpoints
-```
-
-### Legacy Code Modernization
-```
-1. /deep-dive-analysis to understand codebase
-2. /python-refactor on legacy modules
-3. Use python-testing-patterns to add test coverage
-4. /humanize to clean up naming and comments
-```
-
-### .claude.md Maintenance
-```
-1. /maintain-claude-md for quarterly maintenance
-2. Review audit findings
-3. Choose: audit-only or apply improvements
-4. Or /create-claude-md to start fresh
-```
-
-### Cross-Plugin Workflows
-```
-1. /feature-e2e "add user authentication" -- full brainstorm-to-humanize pipeline
-2. /frontend-redesign src/ --framework react -- redesign with HTML audit report
-3. /mobile-intel com.competitor.app --device emulator-5554 -- competitive analysis to scaffold
-4. /tauri-pipeline --rust-only -- Rust backend + Tauri IPC review only
-```
-
-### Optimization & Scheduling with CSP
-```
-1. Use or-tools-expert agent for constraint programming
-2. Model problem with variables, domains, and constraints
-3. Enable parallelism and performance optimizations
-4. Test on small instances before scaling up
-```
-
-**Example problems:**
-- Employee shift scheduling with fairness constraints
-- Job shop scheduling to minimize makespan
-- Bin packing and resource allocation
-- Vehicle routing and delivery optimization
-- Assignment problems with cost minimization
-
 ---
 
-## Project Structure
+<details>
+<summary><h2>Project Structure</h2></summary>
 
 ```
 alfio-claude-plugins/
@@ -1691,6 +1678,8 @@ alfio-claude-plugins/
 └── README.md
 ```
 
+</details>
+
 ---
 
 ## Contributing
@@ -1741,6 +1730,4 @@ description: Brief description of the skill's purpose
 
 MIT License - see [LICENSE](LICENSE) for details.
 
----
-
-**Total:** 21 Agents | 25 Skills | 18 Commands across 22 plugins
+Created and maintained by [Alfio](https://github.com/acaprino).
