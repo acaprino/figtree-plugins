@@ -157,6 +157,25 @@ Every section of documentation MUST have one of these status markers:
 > When you find documentation containing historical language, **DELETE IT**.
 > Git blame exists for archaeology. Documentation exists for the present.
 
+## Output Usage Guide
+
+After analysis completes, consult the right file for your task:
+
+| Your Task | Start With | Also Check |
+|-----------|-----------|------------|
+| Onboarding / understanding the project | 07-final-report, 01-structure | 04-semantics |
+| Writing new feature | 01-structure (Where to Add), 02-interfaces | 04-semantics |
+| Fixing a bug | 03-flows, 05-risks | 01-structure |
+| Refactoring | 01-structure, 04-semantics, 05-risks | 03-flows |
+| Code review | 02-interfaces, 05-risks | 06-documentation |
+| Updating documentation | 06-documentation, 04-semantics | 02-interfaces |
+| Creating report/presentation | 07-final-report, 01-structure | 04-semantics |
+| Finding doc vs code discrepancies | 06-documentation | 03-flows, 05-risks |
+
+## Forbidden Files
+
+The analysis NEVER reads or includes contents from sensitive files: `.env`, `.env.*`, `credentials.*`, `secrets.*`, `*.pem`, `*.key`, `*.p12`, `*.pfx`, `id_rsa*`, `id_ed25519*`, `.npmrc`, `.pypirc`, `.netrc`, or any file containing API keys, passwords, or tokens. If encountered, note file existence only - never quote contents.
+
 ## Available Commands
 
 ### 1. Analyze Single File

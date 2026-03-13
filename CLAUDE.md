@@ -82,6 +82,7 @@ Some plugins are ported from external repositories and should be kept in sync wi
 | `ai-tooling` (writing-plans) | `obra/superpowers` - `skills/writing-plans/SKILL.md` | `plugins/ai-tooling/skills/writing-plans/SKILL.md` |
 | `ai-tooling` (executing-plans) | `obra/superpowers` - `skills/executing-plans/SKILL.md` | `plugins/ai-tooling/skills/executing-plans/SKILL.md` |
 | `frontend` (css-master) | `paulirish/dotfiles` - `agents/paulirish-skills/skills/modern-css/SKILL.md` | `plugins/frontend/skills/css-master/SKILL.md`, `plugins/frontend/skills/css-master/references/argyle-cacadia-2025-deck.md` |
+| `deep-dive-analysis` (inspiration) | `gsd-build/get-shit-done` - `agents/gsd-codebase-mapper.md` | `plugins/deep-dive-analysis/commands/deep-dive-analysis.md` (patterns adopted, not direct copy) |
 
 ### How to sync a plugin
 
@@ -96,6 +97,10 @@ gh api repos/obra/superpowers/contents/skills/brainstorming/SKILL.md \
 
 # Fetch latest SKILL.md from upstream (paulirish/dotfiles example)
 gh api repos/paulirish/dotfiles/contents/agents/paulirish-skills/skills/modern-css/SKILL.md \
+  --jq '.content' | base64 -d
+
+# Fetch latest gsd-codebase-mapper.md from upstream (gsd-build/get-shit-done example)
+gh api repos/gsd-build/get-shit-done/contents/agents/gsd-codebase-mapper.md \
   --jq '.content' | base64 -d
 ```
 
