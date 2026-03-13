@@ -1,7 +1,13 @@
 {
   "permissions": {
     "allow": [
-      "Skill(superpowers:brainstorming)"
+      "Skill(superpowers:brainstorming)",
+      "WebFetch(domain:users.rust-lang.org)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:cocalc.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(git add:*)"
     ]
   }
 }

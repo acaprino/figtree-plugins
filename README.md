@@ -1,10 +1,10 @@
-# Alfio Claude Plugins
+# Anvil Toolset
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Marketplace](https://img.shields.io/badge/marketplace-v1.56.0-green.svg)](.claude-plugin/marketplace.json)
 [![Plugins](https://img.shields.io/badge/plugins-22-orange.svg)](#plugins)
 
-22 ready-to-install plugins for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) -- an AI coding CLI by Anthropic. Specialized agents, skills, and commands for Python, code review, frontend, Tauri/Rust, AI tooling, Obsidian, and more -- so you spend less time prompting and more time shipping.
+Plugin set for [Anvil](https://github.com/acaprino/anvil). 22 ready-to-install plugins for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) -- an AI coding CLI by Anthropic. Specialized agents, skills, and commands for Python, code review, frontend, Tauri/Rust, AI tooling, Obsidian, and more -- so you spend less time prompting and more time shipping.
 
 **22 plugins | 19 agents | 25 skills | 18 commands** -- install only what you need.
 
@@ -32,23 +32,23 @@
 
 **Step 1:** Add the marketplace
 ```bash
-claude plugin marketplace add acaprino/alfio-claude-plugins
+claude plugin marketplace add acaprino/anvil-toolset
 ```
 
 **Step 2:** Install the plugins you need
 ```bash
 # Install individual plugins (pick what you need)
-claude plugin install python-development@alfio-claude-plugins
-claude plugin install code-review@alfio-claude-plugins
-claude plugin install frontend@alfio-claude-plugins
+claude plugin install python-development@anvil-toolset
+claude plugin install code-review@anvil-toolset
+claude plugin install frontend@anvil-toolset
 # ... see Plugins table below for all 22 available plugins
 ```
 
 ### From Local Path (Development)
 
 ```bash
-git clone https://github.com/acaprino/alfio-claude-plugins.git
-claude plugin install ./alfio-claude-plugins/plugins/python-development
+git clone https://github.com/acaprino/anvil-toolset.git
+claude plugin install ./anvil-toolset/plugins/python-development
 ```
 
 ---
@@ -88,7 +88,7 @@ See [Quick Start Workflows](docs/workflows.md) for end-to-end pipelines like `/f
 <summary><h2>Project Structure</h2></summary>
 
 ```
-alfio-claude-plugins/
+anvil-toolset/
 ├── .claude-plugin/
 │   └── marketplace.json
 ├── docs/
