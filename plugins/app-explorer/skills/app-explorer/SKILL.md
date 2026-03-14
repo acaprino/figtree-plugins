@@ -114,7 +114,7 @@ For each screen:
    a. browser_click the element
    b. browser_snapshot to see if screen changed
    c. If new screen: record it, take screenshot, add to queue
-   d. If overlay/modal: screenshot it, explore ALL its contents (tabs, buttons, sub-sections), then dismiss with Escape or close button
+   d. If overlay/modal: follow the "Overlay / modal / dialog handling (depth-first)" procedure below -- explore ALL tabs, click ALL action buttons, open ALL sub-dialogs, THEN dismiss
    e. browser_navigate back or click back-nav to return to current screen
    f. Mark element as explored
 6. Do NOT move to the next screen until all elements on the current screen have been explored
@@ -143,19 +143,37 @@ Explore in this order to maximize coverage efficiently:
 5. **Modal triggers** - buttons that open overlays, dialogs, bottom sheets
 6. **Contextual actions** - icon buttons, kebab menus, swipe actions
 7. **Pagination / date navigation** - week selectors, page controls (sample 1-2)
-8. **Form interactions** - dropdowns to see options (don't submit forms)
+8. **Form interactions and action buttons** - open dropdowns to see options, click "Add"/"Create"/"Edit"/"New" buttons to reveal their forms/dialogs (don't submit forms that create or modify real data, but DO open them to explore their UI)
 
-### Overlay / modal handling
+### Overlay / modal / dialog handling (depth-first)
 
-When clicking an element opens an overlay:
+When clicking an element opens an overlay, treat it as a **mini-screen that requires full exploration before dismissing**. Do NOT just screenshot and close.
+
 ```
-1. browser_snapshot to detect overlay content
+1. browser_snapshot to read the overlay's full accessibility tree
 2. browser_take_screenshot (viewport only, not full page)
-3. Catalog overlay elements
-4. If overlay has tabs/navigation, explore each tab
-5. Dismiss: browser_press_key "Escape", or click close button
-6. browser_snapshot to confirm overlay dismissed
+3. Catalog ALL interactive elements inside the overlay:
+   - Tabs, segmented controls, sub-navigation
+   - Buttons ("Save", "Add", "Edit", "Create", "Delete", etc.)
+   - Form fields (inputs, dropdowns, toggles, checkboxes)
+   - Expandable sections, accordions
+   - Links, list items, cards
+   - Sub-dialog triggers (buttons that open ANOTHER overlay on top)
+4. Explore the overlay depth-first:
+   a. If the overlay has tabs: click each tab, snapshot + screenshot each
+   b. Click every action button that could reveal new UI (e.g., "Add item",
+      "Edit", "Create quiz", "Advanced settings"). If it opens a sub-dialog
+      or new form, explore THAT fully before returning
+   c. Open every dropdown/select to see its options, screenshot, then close it
+   d. Expand every accordion/collapsible section, screenshot expanded state
+   e. If a button triggers a multi-step flow (wizard/stepper), follow all steps
+   f. Do NOT click destructive actions (delete, remove) but DO catalog them
+5. Only after ALL overlay elements are explored:
+   Dismiss with Escape or close button
+6. browser_snapshot to confirm overlay dismissed and you're back on the parent screen
 ```
+
+**Sub-dialog rule**: If clicking a button inside an overlay opens ANOTHER overlay or navigates to a new view, explore that fully before returning. This can nest multiple levels deep -- always complete the deepest level first before unwinding.
 
 ### SPA fingerprinting
 
@@ -181,6 +199,20 @@ Before declaring exploration complete, you MUST perform this self-audit:
 6. Check: did you open every modal/bottom sheet trigger?
 7. Check: did you click at least one item in every list/card grid?
 8. Check: did you try every distinct input method or action type?
+```
+
+**Screenshot verification pass** (do this AFTER the checklist above):
+```
+1. For each screenshot you captured, re-read it using the Read tool
+2. Look at every visible button, link, icon, tab, and interactive element in the image
+3. For each element: confirm you have a record of clicking/exploring it
+4. If you spot ANY element you did not explore (a tab you missed, a button you skipped,
+   an icon you overlooked), go back to that screen and explore it NOW
+5. Pay special attention to:
+   - Small icon buttons in corners or headers (gear, pencil, share, info)
+   - Secondary tabs inside dialogs you may have dismissed too quickly
+   - "More options" / kebab menus you may not have opened
+   - Footer links or secondary navigation you scrolled past
 ```
 
 Only proceed to Phase 5 when ALL elements on ALL screens have been explored or explicitly skipped (with a documented reason, e.g., "destructive action", "external link", "logout").
