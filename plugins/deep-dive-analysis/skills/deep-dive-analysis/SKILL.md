@@ -1,8 +1,6 @@
 ---
 name: deep-dive-analysis
 description: AI-powered systematic codebase analysis. Combines mechanical structure extraction with Claude's semantic understanding to produce documentation that captures not just WHAT code does, but WHY it exists and HOW it fits into the system. Includes pattern recognition, red flag detection, flow tracing, and quality assessment. Use for codebase analysis, documentation generation, architecture understanding, or code review.
-version: 3.1.0
-dependencies: python>=3.13
 ---
 
 # Deep Dive Analysis Skill
@@ -43,7 +41,6 @@ This skill combines **mechanical structure extraction** with **Claude's semantic
 - Identifying architectural patterns and anti-patterns
 - Performing code review with semantic understanding
 - Onboarding to a new project
-- Creating documentation for new contributors
 
 ## Prerequisites
 
@@ -56,44 +53,6 @@ This skill combines **mechanical structure extraction** with **Claude's semantic
 >
 > **ANY INFORMATION NOT VERIFIED WITH IRREFUTABLE EVIDENCE FROM SOURCE CODE IS FALSE, UNRELIABLE, AND UNACCEPTABLE.**
 
-### IMPORTANT LIMITATION: Verification is Multi-Layer
-
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                     VERIFICATION TRUST MODEL                                  ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║  Layer 1: TOOL-VALIDATED                                                     ║
-║    └── Automated checks: file exists, line in range, AST symbol match        ║
-║    └── Marker: [VALIDATED: file.py:123 @ 2025-12-20]                         ║
-║                                                                              ║
-║  Layer 2: HUMAN-VERIFIED                                                     ║
-║    └── Manual review: semantic correctness, behavior match                   ║
-║    └── Marker: [VERIFIED: file.py:123 by @reviewer @ 2025-12-20]             ║
-║                                                                              ║
-║  Layer 3: RUNTIME-CONFIRMED                                                  ║
-║    └── Log/trace evidence of actual behavior                                 ║
-║    └── Marker: [CONFIRMED: trace_id=abc123 @ 2025-12-20]                     ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-
-Tool validation catches STRUCTURAL issues (file moved, line shifted, symbol renamed).
-Human verification ensures SEMANTIC correctness (code does what doc says).
-Runtime confirmation proves BEHAVIORAL truth (system actually works this way).
-
-ALL THREE LAYERS are required for critical documentation.
-```
-
-### The Iron Law of Documentation
-
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║  DOCUMENTATION = f(SOURCE_CODE) + VERIFICATION                               ║
-║                                                                              ║
-║  If NOT verified_against_code(statement) → statement is FALSE                ║
-║  If NOT exists_in_codebase(reference)    → reference is FABRICATED           ║
-║  If NOT traceable_to_source(claim)       → claim is SPECULATION              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
-
 ### Mandatory Rules (VIOLATION = FAILURE)
 
 1. **NEVER** document anything without reading the actual source code first
@@ -105,57 +64,7 @@ ALL THREE LAYERS are required for critical documentation.
 7. **TREAT** all pre-existing docs as unverified claims requiring validation
 8. **MARK** any unverifiable statement as `[UNVERIFIED - REQUIRES CODE CHECK]`
 
-### Verification Requirements
-
-| Documentation Type | Required Evidence |
-|-------------------|-------------------|
-| **Enum/State values** | Exact match with source code enum definition |
-| **Function behavior** | Code path tracing, actual implementation reading |
-| **Constants/Timeouts** | Variable definition in source with file:line |
-| **Message formats** | Message class definition, field validation |
-| **Architecture claims** | Import graph analysis, actual class relationships |
-| **Flow diagrams** | Verified against runtime logs OR code path analysis |
-
-### Documentation Verification Status
-
-Every section of documentation MUST have one of these status markers:
-
-- `[VERIFIED: source_file.py:123]` - Confirmed against source code
-- `[VERIFIED: trace_id=xyz]` - Confirmed against runtime logs
-- `[UNVERIFIED]` - Requires verification before trusting
-- `[DEPRECATED]` - Code has changed, documentation outdated
-
-**UNVERIFIED documentation is UNTRUSTED documentation.**
-
-### CRITICAL PRINCIPLE: NO HISTORICAL DEPTH
-
-> **DOCUMENTATION DESCRIBES ONLY THE CURRENT STATE OF THE ART.**
->
-> **NO HISTORY. NO ARCHAEOLOGY. NO "WAS". ONLY "IS".**
-
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                     THE TEMPORAL PURITY PRINCIPLE                            ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║  Documentation = PRESENT_TENSE(current_implementation)                       ║
-║                                                                              ║
-║  FORBIDDEN:                                                                  ║
-║  ✗ "was/were/previously/formerly/used to"                                    ║
-║  ✗ "deprecated since version X" → just REMOVE it                             ║
-║  ✗ "changed from X to Y" → only describe Y                                   ║
-║  ✗ "in the old system..." → irrelevant, delete                               ║
-║  ✗ inline changelogs → use CHANGELOG.md or git                               ║
-║                                                                              ║
-║  REQUIRED:                                                                   ║
-║  ✓ Present tense: "The system uses..." not "The system used..."              ║
-║  ✓ Current state only: Document what IS, not what WAS                        ║
-║  ✓ Git for archaeology: History lives in version control, not docs           ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
-
-**The Rule:**
-> When you find documentation containing historical language, **DELETE IT**.
-> Git blame exists for archaeology. Documentation exists for the present.
+See `references/analysis-templates.md` for the full verification trust model, temporal purity principle, and documentation status markers.
 
 ## Output Usage Guide
 
@@ -169,8 +78,6 @@ After analysis completes, consult the right file for your task:
 | Refactoring | 01-structure, 04-semantics, 05-risks | 03-flows |
 | Code review | 02-interfaces, 05-risks | 06-documentation |
 | Updating documentation | 06-documentation, 04-semantics | 02-interfaces |
-| Creating report/presentation | 07-final-report, 01-structure | 04-semantics |
-| Finding doc vs code discrepancies | 06-documentation | 03-flows, 05-risks |
 
 ## Forbidden Files
 
@@ -180,8 +87,6 @@ The analysis NEVER reads or includes contents from sensitive files: `.env`, `.en
 
 ### 1. Analyze Single File
 
-Extract structure, dependencies, and usages for one file:
-
 ```bash
 python .claude/skills/deep-dive-analysis/scripts/analyze_file.py \
   --file src/utils/circuit_breaker.py \
@@ -189,56 +94,30 @@ python .claude/skills/deep-dive-analysis/scripts/analyze_file.py \
 ```
 
 **Parameters:**
-- `--file` / `-f`: Relative path to file to analyze - **REQUIRED**
+- `--file` / `-f`: Relative path to file - **REQUIRED**
 - `--output-format` / `-o`: Output format (json, markdown, summary) - default: summary
-- `--find-usages` / `-u`: Also find all usages of exported symbols - default: false
+- `--find-usages` / `-u`: Find all usages of exported symbols - default: false
 - `--update-progress` / `-p`: Update analysis_progress.json - default: false
-
-**Output includes:**
-- File classification (Critical/High-Complexity/Standard/Utility)
-- Classes with methods and attributes
-- Functions with signatures
-- Internal imports (within project)
-- External imports (third-party)
-- External calls (database, network, filesystem, messaging, ipc)
-- State mutations identified
-- Error handling patterns
 
 ### 2. Check Progress
 
-View analysis progress by phase:
-
 ```bash
 python .claude/skills/deep-dive-analysis/scripts/check_progress.py \
-  --phase 1 \
-  --status pending
+  --phase 1 --status pending
 ```
-
-**Parameters:**
-- `--phase` / `-p`: Filter by phase number (1-7)
-- `--status` / `-s`: Filter by status (pending, analyzing, done, blocked)
-- `--classification` / `-c`: Filter by classification (critical, high-complexity, standard, utility)
-- `--verification-needed`: Show only files needing runtime verification
 
 ### 3. Find Usages
 
-Find all usages of a symbol across the codebase:
-
 ```bash
 python .claude/skills/deep-dive-analysis/scripts/analyze_file.py \
-  --symbol CircuitBreaker \
-  --file src/utils/circuit_breaker.py
+  --symbol CircuitBreaker --file src/utils/circuit_breaker.py
 ```
 
 ### 4. Generate Phase Report
 
-Generate documentation for an entire phase:
-
 ```bash
 python .claude/skills/deep-dive-analysis/scripts/analyze_file.py \
-  --phase 1 \
-  --output-format markdown \
-  --output-file docs/01_domains/COMMON_LIBRARY.md
+  --phase 1 --output-format markdown --output-file docs/01_domains/COMMON_LIBRARY.md
 ```
 
 ---
@@ -247,55 +126,26 @@ python .claude/skills/deep-dive-analysis/scripts/analyze_file.py \
 
 ### 5. Scan Documentation Health
 
-Discover all documentation files and generate health report:
-
 ```bash
 python .claude/skills/deep-dive-analysis/scripts/doc_review.py scan \
-  --path docs/ \
-  --output doc_health_report.json
+  --path docs/ --output doc_health_report.json
 ```
-
-**Output includes:**
-- Total file count per directory
-- Files with TODO/FIXME/TBD markers
-- Files missing last_updated metadata
-- Large files (>1500 lines) candidates for splitting
 
 ### 6. Validate Links
 
-Find all broken links in documentation:
-
 ```bash
 python .claude/skills/deep-dive-analysis/scripts/doc_review.py validate-links \
-  --path docs/ \
-  --fix  # Optional: auto-remove broken links
+  --path docs/ --fix
 ```
-
-**Actions:**
-- Extracts all relative markdown links `](../path/to/file.md)`
-- Verifies target files exist
-- Reports broken links with source file and line number
-- With `--fix`: removes or updates broken references
 
 ### 7. Verify Against Source Code
 
-Verify documentation accuracy against actual source code:
-
 ```bash
 python .claude/skills/deep-dive-analysis/scripts/doc_review.py verify \
-  --doc docs/agents/lifecycle.md \
-  --source src/agents/lifecycle.py
+  --doc docs/agents/lifecycle.md --source src/agents/lifecycle.py
 ```
 
-**Verification includes:**
-- Documented states vs actual enum values
-- Documented methods vs actual class methods
-- Documented constants vs actual values
-- Flags discrepancies as DRIFT
-
 ### 8. Update Navigation Indexes
-
-Refresh SEARCH_INDEX.md and BY_DOMAIN.md with current file counts:
 
 ```bash
 python .claude/skills/deep-dive-analysis/scripts/doc_review.py update-indexes \
@@ -303,164 +153,51 @@ python .claude/skills/deep-dive-analysis/scripts/doc_review.py update-indexes \
   --by-domain docs/00_navigation/BY_DOMAIN.md
 ```
 
-**Updates:**
-- Total file counts
-- Files per directory statistics
-- Version and last_updated timestamps
-- Removes references to deleted files
-
 ### 9. Full Documentation Maintenance
-
-Run complete Phase 8 workflow:
 
 ```bash
 python .claude/skills/deep-dive-analysis/scripts/doc_review.py full-maintenance \
-  --path docs/ \
-  --auto-fix \
-  --output doc_health_report.json
+  --path docs/ --auto-fix --output doc_health_report.json
 ```
 
-**Executes in order:**
-1. Scan documentation health
-2. Validate and fix broken links
-3. Identify obsolete files (no inbound links, references deleted code)
-4. Update navigation indexes
-5. Generate final health report
+Executes: scan health, validate/fix links, identify obsolete files, update indexes, generate report.
 
 ---
 
 ## Comment Quality Commands (Antirez Standards)
 
-These commands analyze and rewrite code comments following the [antirez commenting standards](https://antirez.com/news/124).
-
 ### 10. Analyze Comment Quality
-
-Analyze comments in a single file:
 
 ```bash
 python .claude/skills/deep-dive-analysis/scripts/rewrite_comments.py analyze \
-  src/main.py \
-  --report
+  src/main.py --report
 ```
-
-**Options:**
-- `--report` / `-r`: Generate detailed markdown report
-- `--json`: Output as JSON for programmatic use
-- `--issues-only` / `-i`: Show only problematic comments
-
-**Output includes:**
-- Comment classification (function, design, why, teacher, checklist, guide)
-- Issue detection (trivial, debt, backup comments)
-- Suggested rewrites for problematic comments
-- Statistics and ratios
 
 ### 11. Scan Directory for Comment Issues
 
-Analyze all Python files in a directory:
-
 ```bash
 python .claude/skills/deep-dive-analysis/scripts/rewrite_comments.py scan \
-  src/ \
-  --recursive \
-  --issues-only
+  src/ --recursive --issues-only
 ```
-
-**Options:**
-- `--recursive` / `-r`: Include subdirectories
-- `--issues-only` / `-i`: Show only files with issues
-- `--json`: Output as JSON
 
 ### 12. Generate Comment Health Report
 
-Create comprehensive markdown report for entire codebase:
-
 ```bash
 python .claude/skills/deep-dive-analysis/scripts/rewrite_comments.py report \
-  src/ \
-  --output comment_health.md
+  src/ --output comment_health.md
 ```
-
-**Report includes:**
-- Executive summary with totals
-- Comment quality breakdown (keep/enhance/rewrite/delete)
-- Comment type distribution
-- Files needing attention (ranked by issue count)
-- Sample issues with file:line references
-- Actionable recommendations
 
 ### 13. Rewrite Comments
 
-Apply comment improvements to a file:
-
 ```bash
-# Dry run (preview changes)
 python .claude/skills/deep-dive-analysis/scripts/rewrite_comments.py rewrite \
-  src/main.py
-
-# Apply changes with backup
-python .claude/skills/deep-dive-analysis/scripts/rewrite_comments.py rewrite \
-  src/main.py \
-  --apply \
-  --backup
+  src/main.py --apply --backup
 ```
-
-**Options:**
-- `--apply` / `-a`: Actually modify the file (default: dry run)
-- `--backup` / `-b`: Create .bak backup before modifying
-- `--output` / `-o`: Write to different file instead of in-place
-
-**Actions taken:**
-- DELETE: Remove trivial comments and backup (commented-out code)
-- REWRITE: Add suggested improvements for debt comments (TODO/FIXME)
 
 ### 14. View Standards Reference
 
-Display the antirez commenting standards:
-
 ```bash
 python .claude/skills/deep-dive-analysis/scripts/rewrite_comments.py standards
-```
-
-Shows the complete taxonomy of good vs bad comments with examples.
-
----
-
-### Comment Type Classification
-
-| Type | Category | Description | Action |
-|------|----------|-------------|--------|
-| **function** | GOOD | API docs at function/class top | Keep/Enhance |
-| **design** | GOOD | File-level algorithm explanations | Keep |
-| **why** | GOOD | Explains reasoning behind code | Keep |
-| **teacher** | GOOD | Educates about domain concepts | Keep |
-| **checklist** | GOOD | Reminds of coordinated changes | Keep |
-| **guide** | GOOD | Section dividers, structure | Keep sparingly |
-| **trivial** | BAD | Restates what code says | Delete |
-| **debt** | BAD | TODO/FIXME without plan | Rewrite/Resolve |
-| **backup** | BAD | Commented-out code | Delete |
-
-### Comment Quality Workflow
-
-```
-1. SCAN
-   ├── Run: rewrite_comments.py scan <dir> --recursive
-   ├── Review files with most issues
-   └── Generate: rewrite_comments.py report <dir> --output report.md
-
-2. TRIAGE
-   ├── Identify high-priority files (critical modules)
-   ├── Focus on DEBT comments (convert to issues or design docs)
-   └── Plan bulk TRIVIAL/BACKUP deletions
-
-3. REWRITE
-   ├── Run: rewrite_comments.py rewrite <file> --apply --backup
-   ├── Review changes in diff
-   └── Verify no functional changes
-
-4. VERIFY
-   ├── Run tests to confirm no breakage
-   ├── Re-scan to confirm improvements
-   └── Update comment_health.md report
 ```
 
 ---
@@ -478,24 +215,6 @@ Shows the complete taxonomy of good vs bad comments with examples.
 
 ## AI-Powered Semantic Analysis
 
-This skill leverages Claude's code comprehension capabilities for deep semantic analysis beyond mechanical structure extraction.
-
-### The Semantic Analysis Mandate
-
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                    STRUCTURE vs MEANING                                      ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║  Scripts extract STRUCTURE:  "class Foo with method bar()"                   ║
-║  Claude extracts MEANING:    "Foo implements Repository pattern for         ║
-║                               caching user sessions with TTL expiration"     ║
-║                                                                              ║
-║  NEVER stop at structure. ALWAYS pursue understanding.                      ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
-
 ### Five Layers of Understanding
 
 | Layer | What | Who Does It |
@@ -506,33 +225,7 @@ This skill leverages Claude's code comprehension capabilities for deep semantic 
 | **4. WHEN** | Triggers, lifecycle, concurrency | Claude's behavioral analysis |
 | **5. CONSEQUENCES** | Side effects, failure modes | Claude's systems thinking |
 
-### Semantic Analysis Questions
-
-For every code unit, Claude must answer:
-
-**Identity:**
-- What is this code's single responsibility?
-- What abstraction does it represent?
-- What would break if this didn't exist?
-
-**Behavior:**
-- What are ALL inputs and outputs (including side effects)?
-- What state does it read? What does it mutate?
-- What are preconditions and postconditions?
-
-**Integration:**
-- Who calls this? Under what circumstances?
-- What does this call? Why those dependencies?
-- What contracts does it fulfill?
-
-**Quality:**
-- What could go wrong? How is failure handled?
-- Are there implicit assumptions that could break?
-- Are there race conditions or timing dependencies?
-
 ### Pattern Recognition
-
-Claude should actively recognize and document common patterns:
 
 | Pattern Type | Examples | Documentation Focus |
 |-------------|----------|---------------------|
@@ -542,202 +235,68 @@ Claude should actively recognize and document common patterns:
 | **Data** | DTO, Value Object, Aggregate | Invariants, relationships |
 | **Concurrency** | Producer-Consumer, Worker Pool | Thread safety, backpressure |
 
-See `references/SEMANTIC_PATTERNS.md` for detailed recognition guides.
-
 ### Red Flags to Identify
-
-Claude should actively flag these issues:
 
 ```
 ARCHITECTURE:
-⚠ GOD CLASS: >10 public methods or >500 LOC
-⚠ CIRCULAR DEPENDENCY: A → B → C → A
-⚠ LEAKY ABSTRACTION: Implementation details in interface
+- GOD CLASS: >10 public methods or >500 LOC
+- CIRCULAR DEPENDENCY: A -> B -> C -> A
+- LEAKY ABSTRACTION: Implementation details in interface
 
 RELIABILITY:
-⚠ SWALLOWED EXCEPTION: Empty catch blocks
-⚠ MISSING TIMEOUT: Network calls without timeout
-⚠ RACE CONDITION: Shared mutable state without sync
+- SWALLOWED EXCEPTION: Empty catch blocks
+- MISSING TIMEOUT: Network calls without timeout
+- RACE CONDITION: Shared mutable state without sync
 
 SECURITY:
-⚠ HARDCODED SECRET: Passwords, API keys in code
-⚠ SQL INJECTION: String concatenation in queries
-⚠ MISSING VALIDATION: Unsanitized user input
+- HARDCODED SECRET: Passwords, API keys in code
+- SQL INJECTION: String concatenation in queries
+- MISSING VALIDATION: Unsanitized user input
 ```
-
-### Semantic Analysis Template
-
-Use `templates/semantic_analysis.md` for comprehensive per-file analysis that includes:
-
-- Executive summary (purpose, responsibility, patterns)
-- Behavioral analysis (triggers, processing, side effects)
-- Dependency analysis (why each dependency exists)
-- Quality assessment (strengths, concerns, red flags)
-- Contract documentation (full interface semantics)
-- Flow tracing (primary and error paths)
-- Testing implications (what must be tested)
 
 ### AI Analysis Workflow
 
 ```
-1. SCRIPTS RUN FIRST
-   ├── classifier.py → File classification
-   ├── ast_parser.py → Structure extraction
-   └── usage_finder.py → Cross-references
-
-2. CLAUDE ANALYZES
-   ├── Read actual source code
-   ├── Apply semantic questions
-   ├── Recognize patterns
-   ├── Identify red flags
-   └── Trace flows
-
-3. CLAUDE DOCUMENTS
-   ├── Use semantic_analysis.md template
-   ├── Explain WHY, not just WHAT
-   ├── Document contracts and invariants
-   └── Flag concerns with severity
-
-4. VERIFY
-   ├── Check against runtime behavior
-   ├── Validate with code traces
-   └── Mark verification status
+1. SCRIPTS RUN FIRST -> classifier.py, ast_parser.py, usage_finder.py
+2. CLAUDE ANALYZES -> Read source, apply semantic questions, recognize patterns, identify red flags
+3. CLAUDE DOCUMENTS -> Use template, explain WHY not just WHAT, document contracts
+4. VERIFY -> Check against runtime behavior, validate with code traces
 ```
-
-### Reference Documents
-
-- `references/AI_ANALYSIS_METHODOLOGY.md` - Complete analysis methodology
-- `references/SEMANTIC_PATTERNS.md` - Pattern recognition guide
-- `templates/semantic_analysis.md` - Per-file analysis template
-
----
 
 ## Analysis Loop Workflow
 
-When analyzing a file, follow this sequence:
-
 ```
-1. CLASSIFY
-   ├── Count lines of code
-   ├── Count dependencies
-   ├── Check for critical patterns (auth, security, encryption)
-   └── Assign classification
-
-2. READ & MAP
-   ├── Parse AST to extract structure
-   ├── Identify classes and their methods
-   ├── Identify standalone functions
-   ├── Find global variables and constants
-   └── Detect state mutations
-
-3. DEPENDENCY CHECK
-   ├── Internal imports (from project modules)
-   ├── External imports (third-party)
-   └── External calls (database, network, filesystem, messaging, ipc)
-
-4. CONTEXT ANALYSIS
-   ├── Where are exported symbols used?
-   ├── What modules import this file?
-   └── What message types flow through here?
-
-5. RUNTIME VERIFICATION (if Critical/High-Complexity)
-   ├── Use log analysis to trace actual behavior
-   ├── Verify documented flow matches actual flow
-   └── Note any discrepancies
-
-6. DOCUMENTATION
-   ├── Update analysis_progress.json
-   ├── Generate module report section
-   └── Cross-reference with CONTEXT.md
+1. CLASSIFY -> LOC, dependencies, critical patterns, assign classification
+2. READ & MAP -> AST structure, classes, functions, constants, state mutations
+3. DEPENDENCY CHECK -> Internal imports, external imports, external calls
+4. CONTEXT ANALYSIS -> Symbol usages, importing modules, message flows
+5. RUNTIME VERIFICATION (Critical/High-Complexity) -> Log analysis, flow verification
+6. DOCUMENTATION -> Update progress, generate report, cross-reference
 ```
-
-## Runtime Verification Integration
-
-For runtime verification of critical/high-complexity files, use your project's log aggregation system:
-
-- Trace actual behavior through components using correlation IDs
-- Verify that documented flows match actual runtime behavior
-- Use distributed tracing or structured logs to follow request paths
-
-The goal is to confirm that code paths match documented behavior through runtime evidence.
-
-## Output Interpretation
-
-### JSON Output Structure
-
-```json
-{
-  "file": "src/utils/circuit_breaker.py",
-  "classification": "critical",
-  "metrics": {
-    "lines_of_code": 245,
-    "num_classes": 2,
-    "num_functions": 8,
-    "num_dependencies": 12
-  },
-  "structure": {
-    "classes": [...],
-    "functions": [...],
-    "constants": [...]
-  },
-  "dependencies": {
-    "internal": [...],
-    "external": [...],
-    "external_calls": [...]
-  },
-  "usages": [...],
-  "verification_required": true
-}
-```
-
-### Markdown Output Format
-
-The markdown output follows the template in `templates/analysis_report.md` and produces sections suitable for inclusion in phase deliverable documents.
 
 ## Best Practices
 
 ### Source Code Analysis (Phases 1-7)
-1. **Start with Phase 1**: Foundation modules inform understanding of everything else
-2. **Track Progress**: Always use `--update-progress` when completing analysis
-3. **Verify Critical Files**: Never skip runtime verification for critical/high-complexity
-4. **Cross-Reference**: After analysis, update CONTEXT.md links
-5. **Document Drift**: Note any discrepancies between existing docs and actual code
+1. Start with Phase 1 - foundation modules inform everything else
+2. Track progress with `--update-progress`
+3. Never skip runtime verification for critical/high-complexity files
+4. Cross-reference with CONTEXT.md after analysis
 
 ### Documentation Maintenance (Phase 8)
-1. **Run scan first**: Always start with `doc_review.py scan` to understand current state
-2. **Fix links before content**: Broken links indicate structural issues to address first
-3. **Verify against code**: Never update documentation without verifying against actual source
-4. **Update indexes last**: Navigation indexes should reflect final state after all changes
-5. **Generate health report**: Always produce `doc_health_report.json` as evidence of completion
+1. Run scan first to understand current state
+2. Fix links before content - broken links indicate structural issues
+3. Verify against code before updating documentation
+4. Update indexes last to reflect final state
 
-## Documentation Maintenance Workflow
+## References
 
-When invoking Phase 8 documentation maintenance, follow this sequence:
-
-```
-1. PLANNING
-   ├── Run: doc_review.py scan --path docs/
-   ├── Review health report
-   ├── Identify priority fixes (broken links, obsolete files)
-   └── Create todo list with specific actions
-
-2. EXECUTION (in batches)
-   ├── Batch 1: Fix broken links
-   │   └── Run: doc_review.py validate-links --fix
-   ├── Batch 2: Verify critical docs against source
-   │   └── Run: doc_review.py verify --doc <file> --source <code>
-   ├── Batch 3: Delete obsolete files
-   │   └── Manual review + deletion
-   ├── Batch 4: Update navigation indexes
-   │   └── Run: doc_review.py update-indexes
-   └── Batch 5: Update timestamps
-       └── Set last_updated on verified files
-
-3. VERIFICATION
-   ├── Run: doc_review.py scan (confirm improvements)
-   ├── Run: doc_review.py validate-links (confirm zero broken)
-   └── Generate final doc_health_report.json
-```
+- `references/analysis-templates.md` - Verification trust model, temporal purity principle, documentation status markers, comment classification, maintenance workflows
+- `references/AI_ANALYSIS_METHODOLOGY.md` - Complete analysis methodology
+- `references/SEMANTIC_PATTERNS.md` - Pattern recognition guide
+- `references/ANTIREZ_COMMENTING_STANDARDS.md` - Comment taxonomy
+- `references/DEEP_DIVE_PLAN.md` - Master analysis plan with all phase definitions
+- `templates/semantic_analysis.md` - AI-powered per-file analysis template
+- `templates/analysis_report.md` - Module-level report template
 
 ## Resources
 
@@ -745,16 +304,5 @@ When invoking Phase 8 documentation maintenance, follow this sequence:
   - `analyze_file.py` - Source code analysis (Phases 1-7)
   - `check_progress.py` - Progress tracking
   - `doc_review.py` - Documentation maintenance (Phase 8)
-  - `comment_rewriter.py` - Comment analysis engine (antirez standards)
+  - `comment_rewriter.py` - Comment analysis engine
   - `rewrite_comments.py` - Comment quality CLI tool
-- **Templates**: `templates/` - Output templates
-  - `analysis_report.md` - Module-level report template
-  - `semantic_analysis.md` - AI-powered per-file analysis template
-- **References**: `references/` - Analysis methodology docs
-  - `DEEP_DIVE_PLAN.md` - Master analysis plan with all phase definitions
-  - `ANTIREZ_COMMENTING_STANDARDS.md` - Complete antirez comment taxonomy
-  - `AI_ANALYSIS_METHODOLOGY.md` - AI semantic analysis methodology
-  - `SEMANTIC_PATTERNS.md` - Pattern recognition guide for Claude
-- **analysis_progress.json**: Progress tracking state
-- **doc_health_report.json**: Documentation health metrics (generated)
-- **comment_health.md**: Comment quality report (generated)

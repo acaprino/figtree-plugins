@@ -1,5 +1,5 @@
 ---
-description: "Audit and improve existing CLAUDE.md with ground truth verification and guided improvements"
+description: "Audit and improve existing project documentation with ground truth verification and guided improvements"
 ---
 
 # Maintain Documentation

@@ -5,7 +5,7 @@ description: "Mobile App Competitive Analyzer. Automated competitive analysis of
 
 # Mobile App Competitive Analyzer
 
-Analisi competitiva automatizzata di app mobile Android via ADB. Naviga l'app, cattura screenshot, documenta UX/UI, genera report completi.
+Automated competitive analysis of Android mobile apps via ADB. Navigate the app, capture screenshots, document UX/UI, generate complete reports.
 
 ## Trigger
 
@@ -18,7 +18,7 @@ Analisi competitiva automatizzata di app mobile Android via ADB. Naviga l'app, c
 ## Config
 
 ```yaml
-adb_path: D:\Software\Android\Sdk\platform-tools\adb.exe
+adb_path: adb
 screenshot_format: "{app}_{seq:02d}.png"
 output_structure:
   - docs/{APP}_ANALYSIS.md
@@ -31,38 +31,38 @@ output_structure:
 
 ### 1. SETUP
 ```bash
-# Verifica connessione
+# Verify connection
 adb devices
 # Output: emulator-5554  device
 
-# Info device
+# Device info
 adb shell wm size
 
-# Package app corrente
+# Current app package
 adb shell dumpsys window | grep mCurrentFocus
 ```
 
-### 2. LOOP PRINCIPALE (ripetere per ogni schermata)
+### 2. MAIN LOOP (repeat for each screen)
 ```bash
 # A) Screenshot
 adb exec-out screencap -p > {app}_{seq:02d}.png
 
-# B) Analizza screenshot visivamente (Read tool)
+# B) Analyze screenshot visually (Read tool)
 
-# C) UI dump per coordinate
+# C) UI dump for coordinates
 adb shell uiautomator dump /sdcard/ui.xml
 adb shell cat /sdcard/ui.xml
 
-# D) Trova bounds: [left,top][right,bottom]
-# E) Calcola centro: x=(left+right)/2, y=(top+bottom)/2
+# D) Find bounds: [left,top][right,bottom]
+# E) Calculate center: x=(left+right)/2, y=(top+bottom)/2
 
 # F) Tap
 adb shell input tap X Y
 
-# G) Ripeti da A)
+# G) Repeat from A)
 ```
 
-### 3. COMANDI NAVIGAZIONE
+### 3. NAVIGATION COMMANDS
 ```bash
 adb shell input tap X Y                      # Tap
 adb shell input swipe 540 1500 540 500 300   # Scroll down
@@ -73,18 +73,18 @@ adb shell input swipe X Y X Y 1000           # Long press
 adb shell input keyevent 4                   # Back
 adb shell input keyevent 3                   # Home
 adb shell input keyevent 66                  # Enter
-adb shell input text "testo"                 # Type
+adb shell input text "text"                  # Type
 ```
 
-## Analisi
+## Analysis
 
 ### Visual Design
-- Colori (hex), tipografia, spaziature, icone, illustrazioni, brand
+- Colors (hex), typography, spacing, icons, illustrations, brand
 
 ### UX Patterns
-- Navigazione, gerarchia info, CTA, form, onboarding, stati vuoti/errore
+- Navigation, info hierarchy, CTA, forms, onboarding, empty/error states
 
-### Psicologia
+### Psychology
 - Social proof, scarcity, commitment, gamification, loss aversion
 
 ### Business Model
@@ -207,7 +207,7 @@ th{background:var(--bg)}
 </head>
 <body>
 <div class="container">
-<h1>{APP} - Analisi Competitiva</h1>
+<h1>{APP} - Competitive Analysis</h1>
 <div class="card"><h2>Screenshots</h2>
 <div class="gallery">
 <img src="../img/{app}_01.png">
@@ -220,17 +220,17 @@ th{background:var(--bg)}
 
 ## Checklist
 
-- [ ] Onboarding completo
-- [ ] Tutti i tab esplorati
-- [ ] Settings catturati
-- [ ] Paywall documentato
-- [ ] Input methods testati
-- [ ] User flows creati
-- [ ] Design tokens estratti
-- [ ] Psicologia analizzata
-- [ ] Business model mappato
-- [ ] Raccomandazioni scritte
-- [ ] ZIP creato
+- [ ] Onboarding complete
+- [ ] All tabs explored
+- [ ] Settings captured
+- [ ] Paywall documented
+- [ ] Input methods tested
+- [ ] User flows created
+- [ ] Design tokens extracted
+- [ ] Psychology analyzed
+- [ ] Business model mapped
+- [ ] Recommendations written
+- [ ] ZIP created
 
 ## Troubleshooting
 
@@ -242,31 +242,30 @@ adb kill-server && adb start-server && adb devices
 adb shell uiautomator dump /data/local/tmp/ui.xml
 adb shell cat /data/local/tmp/ui.xml
 
-# Screenshot nero
+# Black screenshot
 adb shell screencap -p /sdcard/s.png && adb pull /sdcard/s.png
 
-# Tap non funziona
-# → Ricalcola coordinate da UI dump fresco
-# → Verifica clickable="true"
-# → Aggiungi sleep 1 prima
+# Tap not working
+# -> Recalculate coordinates from fresh UI dump
+# -> Verify clickable="true"
+# -> Add sleep 1 before
 ```
 
 ## PowerShell Helpers
 
 ```powershell
-$ADB="D:\Software\Android\Sdk\platform-tools\adb.exe"
-function ss($p){& $ADB exec-out screencap -p|Set-Content $p -Enc Byte}
-function ui{& $ADB shell uiautomator dump /sdcard/ui.xml;& $ADB shell cat /sdcard/ui.xml}
-function tap($x,$y){& $ADB shell input tap $x $y}
-function sd{& $ADB shell input swipe 540 1500 540 500 300}
-function su{& $ADB shell input swipe 540 500 540 1500 300}
-function bk{& $ADB shell input keyevent 4}
+function ss($p){adb exec-out screencap -p|Set-Content $p -Enc Byte}
+function ui{adb shell uiautomator dump /sdcard/ui.xml;adb shell cat /sdcard/ui.xml}
+function tap($x,$y){adb shell input tap $x $y}
+function sd{adb shell input swipe 540 1500 540 500 300}
+function su{adb shell input swipe 540 500 540 1500 300}
+function bk{adb shell input keyevent 4}
 ```
 
 ## Example
 
 ```
-User: Analizza Yazio
+User: Analyze Yazio
 
 Agent:
 1. adb devices → emulator-5554 ✓
@@ -275,8 +274,8 @@ Agent:
 4. tap 540 1850
 5. ss "yazio_02.png" → goal selection
 ... [50+ screens] ...
-6. Genera YAZIO_ANALYSIS.md
-7. Genera YAZIO_REPORT.html
-8. Genera YAZIO_USER_FLOWS.md
+6. Generate YAZIO_ANALYSIS.md
+7. Generate YAZIO_REPORT.html
+8. Generate YAZIO_USER_FLOWS.md
 9. ZIP → Desktop
 ```
