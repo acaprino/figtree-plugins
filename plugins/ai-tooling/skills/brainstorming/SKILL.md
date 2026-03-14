@@ -1,6 +1,8 @@
 ---
 name: brainstorming
-description: "You MUST use this before any creative work - creating features, building components, adding functionality, or modifying behavior. Explores user intent, requirements and design before implementation."
+description: "You MUST use this before any creative work - creating features, building components, adding functionality, or modifying behavior. Explores user intent, requirements and design before implementation.
+TRIGGER when: user says 'brainstorm', 'let's design', 'I want to build', 'create a feature', 'new feature', 'add functionality', 'I have an idea', 'let's think about', 'how should we build', 'design this', 'plan a feature', or describes building something new without a spec.
+DO NOT TRIGGER when: user has a written spec/plan ready, is asking to fix a bug, or wants to execute existing code."
 ---
 
 Source: Ported from [obra/superpowers](https://github.com/obra/superpowers) - `skills/brainstorming`

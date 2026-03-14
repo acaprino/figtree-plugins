@@ -1,6 +1,8 @@
 ---
 name: writing-plans
 description: Use when you have a spec or requirements for a multi-step task, before touching code. Also use after brainstorming when the task involves 3+ files, multiple implementation steps, or any non-trivial feature -- a written plan prevents mistakes and keeps execution focused.
+  TRIGGER when: user says 'write a plan', 'create a plan', 'implementation plan', 'plan this', 'plan the implementation', 'break this into tasks', 'TDD plan', 'step by step plan', or after brainstorming completes and implementation involves multiple files.
+  DO NOT TRIGGER when: user wants to brainstorm first (use brainstorming), wants to execute an existing plan (use executing-plans), or is doing a simple one-file change.
 ---
 
 Source: Ported from [obra/superpowers](https://github.com/obra/superpowers) -- `skills/writing-plans`

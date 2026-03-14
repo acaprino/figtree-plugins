@@ -35,19 +35,19 @@ graph TD
 
 ---
 
-## Senior Review (`/senior-review`)
+## Code Review (`/code-review`)
 
 Auto-detects scope (uncommitted changes, commits, or PR) and fires 4 agents in parallel.
 
 ```
-/senior-review              # auto-detect scope
-/senior-review 42           # review PR #42
-/senior-review --auto-comment  # post findings as PR comments
+/code-review              # auto-detect scope
+/code-review 42           # review PR #42
+/code-review --auto-comment  # post findings as PR comments
 ```
 
 ```mermaid
 graph TD
-    A["/senior-review"] --> B{"Auto-detect scope"}
+    A["/code-review"] --> B{"Auto-detect scope"}
     B --> |"uncommitted"| C["Gather diff + context"]
     B --> |"PR number"| C
     B --> |"branch diff"| C
@@ -71,7 +71,7 @@ graph TD
 
 ## Full Review (`/full-review`)
 
-Deep 6-phase review with progressive parallelization -- each wave builds on prior findings.
+Deep 6-phase review with progressive parallelization -- each wave builds on prior findings. Available in both `senior-review` (standalone review) and `workflows` (deep-dive + review combined) plugins.
 
 ```
 /full-review src/ --security-focus

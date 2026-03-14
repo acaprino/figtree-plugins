@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Custom development workflow agents and skills for code quality, Tauri/Rust development, frontend optimization, AI tooling, and constraint programming optimization",
-    "version": "1.85.0"
+    "version": "1.86.0"
   },
   "plugins": [
     {
@@ -88,8 +88,8 @@
     {
       "name": "frontend",
       "source": "./plugins/frontend",
-      "description": "React performance optimization, UI polishing, UX design, comprehensive CSS (BEM, CSS Modules, SASS, accessibility, cross-browser), and orchestrated frontend builds from product brief to shipped UI",
-      "version": "2.13.0",
+      "description": "React performance optimization, UI polishing, UX design, comprehensive CSS (BEM, CSS Modules, SASS, accessibility, cross-browser), and premium web consulting",
+      "version": "2.14.0",
       "author": {
         "name": "Alfio"
       },
@@ -120,7 +120,6 @@
       ],
       "skills": [
         "./skills/css-master",
-        "./skills/ui-studio",
         "./skills/premium-web-consultant",
         "./skills/frontend-design"
       ],
@@ -486,7 +485,7 @@
       "name": "senior-review",
       "source": "./plugins/senior-review",
       "description": "Multi-agent code review orchestration with architecture, security, pattern analysis, and best practices across 5 phases",
-      "version": "2.7.0",
+      "version": "2.8.0",
       "author": {
         "name": "Alfio"
       },
@@ -542,8 +541,8 @@
     {
       "name": "workflows",
       "source": "./plugins/workflows",
-      "description": "Cross-plugin orchestration pipelines -- end-to-end feature development, frontend redesign with UX audit, competitive mobile intelligence, and Tauri desktop app review",
-      "version": "1.3.0",
+      "description": "Cross-plugin orchestration pipelines -- feature development, frontend redesign, UI studio, full code review, mobile intelligence, mobile Tauri, and Tauri desktop review",
+      "version": "2.0.0",
       "author": {
         "name": "Alfio"
       },
@@ -554,7 +553,9 @@
         "orchestration",
         "cross-plugin",
         "end-to-end",
-        "automation"
+        "automation",
+        "review",
+        "ui-studio"
       ],
       "category": "workflow",
       "strict": false,
@@ -564,13 +565,17 @@
         "humanize",
         "ai-tooling",
         "tauri-development",
-        "mobile-development"
+        "mobile-development",
+        "deep-dive-analysis"
       ],
       "commands": [
         "./commands/feature-e2e.md",
         "./commands/frontend-redesign.md",
         "./commands/mobile-intel.md",
-        "./commands/tauri-pipeline.md"
+        "./commands/tauri-pipeline.md",
+        "./commands/full-review.md",
+        "./commands/mobile-tauri-pipeline.md",
+        "./commands/ui-studio.md"
       ]
     },
     {

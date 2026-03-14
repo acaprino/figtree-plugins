@@ -52,3 +52,36 @@ End-to-end Tauri 2 desktop app pipeline: Rust backend review, Tauri IPC optimiza
 | **Checkpoints** | After Tauri IPC review |
 | **Pre-flight** | Verifies `src-tauri/` directory and `tauri.conf.json` exist |
 | **Dependencies** | tauri-development, frontend plugins |
+
+### `/full-review`
+
+Full codebase review pipeline: deep-dive structural analysis followed by senior multi-agent code review with consolidated scoring.
+
+| | |
+|---|---|
+| **Invoke** | `/full-review <target path or description> [--skip-deep-dive] [--security-focus] [--performance-critical] [--strict-mode] [--framework react\|spring\|django\|rails]` |
+| **Pipeline** | deep-dive-analysis -> architect-review -> security-auditor -> pattern-quality-scorer -> consolidated report |
+| **Checkpoints** | After deep-dive and after architecture/security phases |
+| **Dependencies** | deep-dive-analysis, senior-review plugins |
+
+### `/mobile-tauri-pipeline`
+
+End-to-end mobile app pipeline: competitor analysis via ADB, brainstorm features, UX design, implementation plan, scaffold Tauri 2 mobile app, Rust backend review, and IPC optimization.
+
+| | |
+|---|---|
+| **Invoke** | `/mobile-tauri-pipeline <app-package-name or description> [--device <device-id>] [--skip-scaffold] [--skip-review] [--strict-mode]` |
+| **Pipeline** | analyze-mobile-app -> brainstorming -> ui-ux-designer -> writing-plans -> tauri2-mobile -> rust-engineer -> tauri-optimizer |
+| **Checkpoints** | After analysis, brainstorm, plan, and scaffold phases |
+| **Dependencies** | mobile-development, ai-tooling, frontend, tauri-development plugins |
+
+### `/ui-studio`
+
+End-to-end UI development pipeline: brainstorm product concept, design direction, layout, UX patterns, write implementation plan, execute with TDD, polish, performance review, and code review.
+
+| | |
+|---|---|
+| **Invoke** | `/ui-studio <product goal or feature description> [--skip-brainstorm] [--skip-review] [--skip-humanize] [--strict-mode] [--framework react\|vue\|svelte\|html]` |
+| **Pipeline** | brainstorming -> ui-ux-designer -> ui-layout-designer -> writing-plans -> executing-plans -> ui-polisher -> react-performance-optimizer -> code-review -> humanize |
+| **Checkpoints** | After design, plan, execution, polish, and review phases |
+| **Dependencies** | ai-tooling, frontend, senior-review, humanize plugins |

@@ -37,7 +37,7 @@ plugins/
 - Default model: `opus` (Opus 4.6) for all agents
 - Agent body style: terse keyword lists, imperative tone, structured with markdown headers
 - Skills supplementary subdirs: `references/`, `scripts/`, `templates/`, `assets/` as needed
-- No runtime dependencies - all plugins are pure markdown
+- No build step or runtime framework - plugins are markdown with optional helper scripts (Python, JS) in skills' `scripts/` subdirs
 - Never use the em dash character anywhere - in code, comments, commit messages, or documentation. Use a regular hyphen `-` or double hyphen `--` instead
 
 ## Marketplace update workflow
@@ -58,7 +58,7 @@ Key fields in `.claude-plugin/marketplace.json`:
 
 1. Create `plugins/<name>/` with `agents/`, `skills/`, and/or `commands/` subdirectories as needed
 2. Write agent/skill/command markdown files following existing patterns
-3. Register the plugin in `.claude-plugin/marketplace.json` - add entry to `plugins[]` with `name`, `source`, `description`, `version` (start at `1.0.0`), `author`, `license`, `keywords`, `category`, `strict`, and paths to agents/skills/commands
+3. Register the plugin in `.claude-plugin/marketplace.json` - add entry to `plugins[]` with `name`, `source`, `description`, `version` (start at `1.0.0`), `author`, `license`, `keywords`, `category`, `strict`, paths to agents/skills/commands, and optionally `dependencies`/`optionalDependencies` (arrays of plugin names)
 4. Bump `metadata.version` and commit everything together
 
 ## Git workflow
