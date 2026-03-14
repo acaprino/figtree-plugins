@@ -44,15 +44,16 @@ ROOT_X = 4120
 ROOT_Y = 3700
 
 # Horizontal offsets per level (from parent)
-OFFSET_L2 = 280
-OFFSET_L3 = 150
-OFFSET_L4 = 140
+# Index 0 = L2, index 1 = L3, index 2 = L4, etc.
+OFFSETS = [280, 150, 140, 130, 120, 110]
 
 # Vertical spacing between sibling nodes
 V_SPACING = 33
 
 # Gap between branch clusters
 BRANCH_GAP = 12
+
+MAX_DEPTH_LIMIT = len(OFFSETS)
 
 
 def generate_id(prefix="node"):
@@ -61,29 +62,29 @@ def generate_id(prefix="node"):
     return f"{prefix}-{short}"
 
 
-def slugify(text, max_len=12):
-    """Create a short slug from text for readable IDs."""
-    clean = ""
-    for ch in text.lower():
-        if ch.isalnum():
-            clean += ch
-        elif ch == " " and clean and clean[-1] != "-":
-            clean += "-"
-    return clean.strip("-")[:max_len]
-
-
-def count_leaves(branch):
-    """Count the total number of leaf (terminal) nodes in a branch subtree."""
+def count_leaves_depth(branch, max_depth, current_depth=1):
+    """Count leaf nodes respecting max_depth limit."""
+    if current_depth >= max_depth:
+        return 1
     children = branch.get("children", [])
     if not children:
         return 1
-    return sum(count_leaves(c) for c in children)
+    return sum(count_leaves_depth(c, max_depth, current_depth + 1) for c in children)
 
 
-def build_nodes(outline):
+def cumulative_x_offset(level_index, sign):
+    """Calculate x position for a given depth level (0-indexed from L2)."""
+    total = 0
+    for i in range(level_index + 1):
+        offset = OFFSETS[i] if i < len(OFFSETS) else OFFSETS[-1]
+        total += offset
+    return ROOT_X + sign * total
+
+
+def build_nodes(outline, max_depth=4):
     """
     Convert the brainstorming outline into a flat list of MarkMind nodes
-    with calculated coordinates.
+    with calculated coordinates. Supports arbitrary depth up to max_depth.
     """
     nodes = []
     root_text = outline["root"]
@@ -122,37 +123,64 @@ def build_nodes(outline):
     def side_leaf_count(branch_list):
         total = 0
         for b in branch_list:
-            total += count_leaves(b)
-        # Add gaps between branches
+            total += count_leaves_depth(b, max_depth)
         total_gaps = max(0, len(branch_list) - 1)
         return total, total_gaps
 
-    def layout_side(branch_list, side, start_y_offset):
-        """
-        Layout all branches on one side.
-        side: 'right' or 'left'
-        start_y_offset: y offset from ROOT_Y for the first leaf of this side
-        """
-        sign = 1 if side == "right" else -1
-        x_l2 = ROOT_X + sign * OFFSET_L2
-        x_l3 = ROOT_X + sign * (OFFSET_L2 + OFFSET_L3)
-        x_l4 = ROOT_X + sign * (OFFSET_L2 + OFFSET_L3 + OFFSET_L4)
+    def layout_children(children, parent_id, color, sign, depth, y_cursor):
+        """Recursively layout child nodes at any depth."""
+        if depth > max_depth or not children:
+            return y_cursor
 
+        x = cumulative_x_offset(depth - 1, sign)
+
+        for child in children:
+            child_id = generate_id(f"n{depth + 1}")
+            child_leaves = count_leaves_depth(child, max_depth, depth)
+
+            child_y_start = y_cursor
+            child_y_end = y_cursor + (child_leaves - 1) * V_SPACING
+            child_y = (child_y_start + child_y_end) / 2
+
+            nodes.append({
+                "id": child_id,
+                "text": child.get("text", ""),
+                "stroke": color,
+                "style": {},
+                "x": x,
+                "y": round(child_y),
+                "layout": None,
+                "isExpand": True,
+                "pid": parent_id
+            })
+
+            grandchildren = child.get("children", [])
+            if grandchildren and depth < max_depth:
+                y_cursor = layout_children(
+                    grandchildren, child_id, color, sign, depth + 1, child_y_start
+                )
+            else:
+                y_cursor += V_SPACING
+
+        return y_cursor
+
+    def layout_side(branch_list, side, start_y_offset):
+        """Layout all branches on one side."""
+        sign = 1 if side == "right" else -1
+        x_l2 = cumulative_x_offset(0, sign)
         current_y = start_y_offset
 
         for branch in branch_list:
             color = branch.get("color", "#888888")
             branch_id = generate_id("br")
-            branch_leaves = count_leaves(branch)
+            branch_leaves = count_leaves_depth(branch, max_depth)
 
-            # Branch L2 node y = center of its leaf span
             branch_y_start = current_y
             branch_y_end = current_y + (branch_leaves - 1) * V_SPACING
             branch_y = (branch_y_start + branch_y_end) / 2
-
             nodes.append({
                 "id": branch_id,
-                "text": branch["text"],
+                "text": branch.get("text", ""),
                 "stroke": color,
                 "style": {},
                 "x": x_l2,
@@ -162,68 +190,27 @@ def build_nodes(outline):
                 "pid": root_id
             })
 
-            children_l3 = branch.get("children", [])
-            if not children_l3:
+            children = branch.get("children", [])
+            if not children:
                 current_y += V_SPACING + BRANCH_GAP
                 continue
 
-            # Layout L3 children
-            l3_y_cursor = branch_y_start
-            for child_l3 in children_l3:
-                child_l3_id = generate_id("n3")
-                child_l3_leaves = count_leaves(child_l3)
+            if max_depth > 1:
+                current_y = layout_children(
+                    children, branch_id, color, sign, 2, branch_y_start
+                )
+            else:
+                current_y = branch_y_start + V_SPACING
 
-                l3_y_start = l3_y_cursor
-                l3_y_end = l3_y_cursor + (child_l3_leaves - 1) * V_SPACING
-                l3_y = (l3_y_start + l3_y_end) / 2
-
-                nodes.append({
-                    "id": child_l3_id,
-                    "text": child_l3["text"],
-                    "stroke": color,
-                    "style": {},
-                    "x": x_l3,
-                    "y": round(l3_y),
-                    "layout": None,
-                    "isExpand": True,
-                    "pid": branch_id
-                })
-
-                # Layout L4 children
-                children_l4 = child_l3.get("children", [])
-                l4_y_cursor = l3_y_start
-                for child_l4 in children_l4:
-                    child_l4_id = generate_id("n4")
-
-                    nodes.append({
-                        "id": child_l4_id,
-                        "text": child_l4["text"],
-                        "stroke": color,
-                        "style": {},
-                        "x": x_l4,
-                        "y": round(l4_y_cursor),
-                        "layout": None,
-                        "isExpand": True,
-                        "pid": child_l3_id
-                    })
-                    l4_y_cursor += V_SPACING
-
-                # If no L4 children, the L3 node itself is a leaf
-                if not children_l4:
-                    l3_y_cursor += V_SPACING
-                else:
-                    l3_y_cursor = l4_y_cursor
-
-            current_y = l3_y_cursor + BRANCH_GAP
+            current_y += BRANCH_GAP
 
     # ── Calculate vertical extents ──
     right_leaves, right_gaps = side_leaf_count(right_branches)
     left_leaves, left_gaps = side_leaf_count(left_branches)
 
-    right_total_height = (right_leaves - 1) * V_SPACING + right_gaps * BRANCH_GAP
-    left_total_height = (left_leaves - 1) * V_SPACING + left_gaps * BRANCH_GAP
+    right_total_height = right_leaves * V_SPACING + right_gaps * BRANCH_GAP
+    left_total_height = left_leaves * V_SPACING + left_gaps * BRANCH_GAP
 
-    # Center both sides around ROOT_Y
     right_start_y = ROOT_Y - right_total_height / 2
     left_start_y = ROOT_Y - left_total_height / 2
 
@@ -303,41 +290,57 @@ def main():
         default=None,
         help="Input JSON file (default: stdin)"
     )
+    parser.add_argument(
+        "--max-depth",
+        type=int,
+        default=4,
+        help=f"Maximum depth levels below root (default: 4, range: 1-{MAX_DEPTH_LIMIT})"
+    )
     args = parser.parse_args()
 
+    # Clamp max_depth to valid range
+    if args.max_depth < 1 or args.max_depth > MAX_DEPTH_LIMIT:
+        print(f"Warning: max-depth clamped to range 1-{MAX_DEPTH_LIMIT} (was {args.max_depth})", file=sys.stderr)
+        args.max_depth = max(1, min(MAX_DEPTH_LIMIT, args.max_depth))
+
     # Read input
-    if args.input:
-        with open(args.input, "r", encoding="utf-8") as f:
-            outline = json.load(f)
-    else:
-        outline = json.load(sys.stdin)
+    try:
+        if args.input:
+            with open(args.input, "r", encoding="utf-8") as f:
+                outline = json.load(f)
+        else:
+            outline = json.load(sys.stdin)
+    except FileNotFoundError:
+        print(f"Error: input file not found: {args.input}", file=sys.stderr)
+        sys.exit(1)
+    except json.JSONDecodeError as e:
+        print(f"Error: invalid JSON input: {e.msg}", file=sys.stderr)
+        sys.exit(1)
 
     # Validate
-    if "root" not in outline:
-        print("Error: JSON must have a 'root' key", file=sys.stderr)
+    if not isinstance(outline.get("root"), str):
+        print("Error: JSON must have a 'root' string key", file=sys.stderr)
         sys.exit(1)
-    if "branches" not in outline:
-        print("Error: JSON must have a 'branches' key", file=sys.stderr)
+    if not isinstance(outline.get("branches"), list):
+        print("Error: JSON must have a 'branches' list key", file=sys.stderr)
         sys.exit(1)
 
     # Build
-    nodes = build_nodes(outline)
+    nodes = build_nodes(outline, max_depth=args.max_depth)
     markmind = build_markmind_json(nodes)
     json_str = json.dumps(markmind, ensure_ascii=False, separators=(",", ":"))
 
     # Write
     md_content = wrap_markdown(json_str)
-    with open(args.output, "w", encoding="utf-8") as f:
-        f.write(md_content)
-
-    # Summary
-    node_count = len(nodes)
-    l2_count = sum(1 for n in nodes if n.get("pid") and not any(
-        nn.get("pid") == n["id"] for nn in nodes
-    ) == False and n.get("pid") == nodes[0]["id"])
+    try:
+        with open(args.output, "w", encoding="utf-8") as f:
+            f.write(md_content)
+    except OSError as e:
+        print(f"Error: could not write output file: {e}", file=sys.stderr)
+        sys.exit(1)
 
     print(f"Generated: {args.output}", file=sys.stderr)
-    print(f"Total nodes: {node_count}", file=sys.stderr)
+    print(f"Total nodes: {len(nodes)}", file=sys.stderr)
 
 
 if __name__ == "__main__":
