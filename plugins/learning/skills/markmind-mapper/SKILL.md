@@ -34,6 +34,10 @@ A JSON file with the standard mindmap outline format:
 
 ## Workflow
 
+### Step 0: Check for input
+
+If no mindmap JSON is available (no file path, no prior `generate-mindmap` output, no inline JSON in the conversation), invoke the `learning:generate-mindmap` skill first to brainstorm and produce the JSON outline from the user's topic or content. Then continue with Step 1.
+
 ### Step 1: Locate the mindmap JSON
 
 Find the mindmap outline JSON -- either a file path provided by the user, output from a prior `generate-mindmap` invocation, or inline JSON.
