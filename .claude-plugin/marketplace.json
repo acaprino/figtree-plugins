@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Custom development workflow agents and skills for code quality, Tauri/Rust development, frontend optimization, AI tooling, and constraint programming optimization",
-    "version": "1.94.0"
+    "version": "1.95.0"
   },
   "plugins": [
     {
@@ -734,8 +734,8 @@
     {
       "name": "anvil-hooks",
       "source": "./plugins/anvil-hooks",
-      "description": "Anvil session hooks -- ASCII logo on startup and security gate for hardcoded secrets detection on Write/Edit",
-      "version": "1.0.0",
+      "description": "Anvil session hooks -- ASCII logo on startup, security gate for hardcoded secrets, and autocompact when context is high",
+      "version": "1.1.0",
       "author": {
         "name": "Alfio"
       },
@@ -746,7 +746,9 @@
         "logo",
         "security",
         "secrets",
-        "guard"
+        "guard",
+        "autocompact",
+        "context"
       ],
       "category": "security",
       "strict": false
