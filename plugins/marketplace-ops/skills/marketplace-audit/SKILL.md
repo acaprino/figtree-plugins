@@ -19,7 +19,11 @@ Run a comprehensive structural validation of the anvil-toolset marketplace.
 Execute the audit script to get a machine-readable report:
 
 ```bash
+# Validate only
 python plugins/marketplace-ops/skills/marketplace-audit/scripts/audit_marketplace.py
+
+# Validate and auto-fix color issues (invalid, missing, disharmonious)
+python plugins/marketplace-ops/skills/marketplace-audit/scripts/audit_marketplace.py --fix
 ```
 
 ### Step 2: Review findings
@@ -32,10 +36,17 @@ The script checks:
    - Agents: must have `name`, `description`, `model`, `color`
    - Skills: must have `name`, `description`
    - Commands: must have `description`
-4. **Color consistency**
+4. **Color consistency and harmony**
    - All agents within a plugin should use the same color
    - Warn when a single color is overused across too many plugins (>3)
    - Report color distribution across all plugins
+   - Semantic harmony check: compares each plugin's color against a category-based recommendation
+     - Cool spectrum (analytical): review=blue, research=teal, optimization=cyan
+     - Cool spectrum (development): development=indigo, frontend=violet
+     - Warm spectrum (creative): marketing=orange, documentation=green
+     - Earthy/neutral (tooling): ai-ml=magenta, infrastructure=rust, utilities=gold
+     - Warm accent (specialized): payments=yellow, testing=pink, mobile=red, workflow=purple
+   - Use `--fix` to auto-apply harmonized colors to all agents
 5. **Naming conventions**
    - All names are kebab-case
    - Agent filename matches frontmatter `name` field

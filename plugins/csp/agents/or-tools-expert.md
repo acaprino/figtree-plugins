@@ -2,7 +2,7 @@
 name: or-tools-expert
 description: Expert in Constraint Satisfaction Problems and optimization with Google OR-Tools CP-SAT solver. Masters CSP modeling, scheduling, routing, assignment problems, and performance optimization. Use PROACTIVELY for optimization problems, constraint programming, and combinatorial problem solving.
 model: opus
-color: indigo
+color: cyan
 tools: Read, Write, Edit, Bash, Glob, Grep, WebFetch
 ---
 

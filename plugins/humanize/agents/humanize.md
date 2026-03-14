@@ -7,7 +7,7 @@ description: >
   more maintainable.
 tools: Read, Edit, Write, Glob, Grep, Bash, Task
 model: opus
-color: green
+color: blue
 ---
 
 # Code Humanizer

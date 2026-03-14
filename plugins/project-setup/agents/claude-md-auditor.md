@@ -3,7 +3,7 @@ name: claude-md-auditor
 description: Expert auditor for CLAUDE.md files that verifies ground truth, detects obsolete information, and ensures alignment with best practices. Validates all claims against the actual codebase and provides actionable improvements.
 tools: Read, Write, Edit, Glob, Grep, Bash, WebFetch
 model: opus
-color: cyan
+color: gold
 ---
 
 > **Purpose:** This agent ensures `CLAUDE.md` files contain accurate, concise, and relevant information grounded in the actual codebase, following the principles from humanlayer.dev's guide on writing effective CLAUDE.md files.

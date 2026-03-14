@@ -2,7 +2,7 @@
 name: rabbitmq-expert
 description: "Use when configuring RabbitMQ exchanges, designing queue topologies, troubleshooting message delivery, setting up clustering/HA, or optimizing AMQP throughput"
 model: opus
-color: orange
+color: rust
 tools: Read, Write, Edit, Bash, Glob, Grep, WebFetch
 ---
 
