@@ -1,5 +1,5 @@
 {
-  "description": "Anvil startup logo and security gate hooks",
+  "description": "Anvil session hooks -- startup logo, skill awareness, security gate, and autocompact",
   "hooks": {
     "SessionStart": [
       {
@@ -7,6 +7,11 @@
           {
             "type": "command",
             "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/handlers/anvil-logo.js\"",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/handlers/skill-awareness.js\"",
             "timeout": 5
           }
         ]

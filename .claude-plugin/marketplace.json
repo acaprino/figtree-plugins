@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Custom development workflow agents and skills for code quality, Tauri/Rust development, frontend optimization, AI tooling, and constraint programming optimization",
-    "version": "1.95.0"
+    "version": "1.96.0"
   },
   "plugins": [
     {
@@ -134,7 +134,7 @@
       "name": "ai-tooling",
       "source": "./plugins/ai-tooling",
       "description": "AI development workflow -- prompt engineering and optimization, structured brainstorming with design approval gates, and implementation planning with TDD execution",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "author": {
         "name": "Alfio"
       },
@@ -734,8 +734,8 @@
     {
       "name": "anvil-hooks",
       "source": "./plugins/anvil-hooks",
-      "description": "Anvil session hooks -- ASCII logo on startup, security gate for hardcoded secrets, and autocompact when context is high",
-      "version": "1.1.0",
+      "description": "Anvil session hooks -- ASCII logo on startup, skill awareness injection, security gate for hardcoded secrets, and autocompact when context is high",
+      "version": "1.2.0",
       "author": {
         "name": "Alfio"
       },
@@ -751,7 +751,10 @@
         "context"
       ],
       "category": "security",
-      "strict": false
+      "strict": false,
+      "optionalDependencies": [
+        "ai-tooling"
+      ]
     },
     {
       "name": "cc-usage",

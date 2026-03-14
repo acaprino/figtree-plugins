@@ -1,8 +1,6 @@
 ---
 name: brainstorming
-description: "You MUST use this before ANY creative or implementation work - creating features, building components, adding functionality, modifying behavior, or any non-trivial task. Explores user intent, requirements and design before implementation. Saves tokens by clarifying the request upfront instead of guessing and redoing work.
-TRIGGER when: user describes building something new, wants to add/change functionality, asks for a feature, says 'brainstorm', 'design', 'build', 'create', 'add', 'implement', 'develop', 'make', or gives any task that involves writing new code. Also trigger when the request is ambiguous or could be interpreted multiple ways.
-DO NOT TRIGGER when: user has a written spec/plan ready, is asking to fix a specific bug with clear reproduction steps, wants to execute existing code, or is doing a simple one-line change."
+description: "You MUST use this before ANY creative or implementation work -- creating features, building components, adding functionality, modifying behavior, or any non-trivial task. Explores user intent, requirements and design before implementation. TRIGGER when: user says 'brainstorm', 'design', 'build', 'create', 'add', 'implement', 'develop', 'make', or gives any task involving new code. DO NOT TRIGGER when: user has a spec/plan ready, is fixing a specific bug, or doing a one-line change."
 ---
 
 Source: Ported from [obra/superpowers](https://github.com/obra/superpowers) - `skills/brainstorming`

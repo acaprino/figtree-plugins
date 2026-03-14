@@ -1,6 +1,6 @@
 {
   "name": "anvil-hooks",
-  "description": "Anvil session hooks -- ASCII logo on startup, security gate for hardcoded secrets, and autocompact when context is high",
+  "description": "Anvil session hooks -- ASCII logo on startup, skill awareness injection, security gate for hardcoded secrets, and autocompact when context is high",
   "author": {
     "name": "Alfio"
   }

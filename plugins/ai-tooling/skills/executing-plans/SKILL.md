@@ -1,8 +1,6 @@
 ---
 name: executing-plans
-description: Use when you have a written implementation plan to execute in a separate session with review checkpoints. Also use when a plan file exists in docs/plans/ or when resuming complex multi-step work from a previous session -- executes tasks in batches with verification between each batch.
-  TRIGGER when: user says 'execute the plan', 'run the plan', 'implement the plan', 'start implementing', 'execute this', 'follow the plan', or a plan file exists in docs/plans/ and user wants to build it.
-  DO NOT TRIGGER when: user wants to write a plan (use writing-plans), wants to brainstorm (use brainstorming), or is doing ad-hoc implementation without a plan file.
+description: "Use when you have a written implementation plan to execute with review checkpoints. Also use when a plan file exists in docs/plans/ or when resuming multi-step work. TRIGGER when: user says 'execute the plan', 'run the plan', 'implement the plan', 'start implementing'. DO NOT TRIGGER when: user wants to write a plan (use writing-plans), wants to brainstorm (use brainstorming), or is doing ad-hoc implementation."
 ---
 
 Source: Ported from [obra/superpowers](https://github.com/obra/superpowers) -- `skills/executing-plans`
