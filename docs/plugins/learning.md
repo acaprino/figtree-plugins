@@ -1,6 +1,6 @@
 # Learning Plugin
 
-> Generate mind maps in Obsidian MarkMind Rich format from any content -- books, articles, topics, notes, or conversations.
+> Generate mind maps from any content -- books, articles, topics, notes, or conversations. Export to Obsidian MarkMind Rich format or interactive force-graph HTML.
 
 ## Skills
 
@@ -10,21 +10,21 @@ Brainstorm and generate a structured mindmap JSON outline from any content. Hand
 
 | | |
 |---|---|
-| **Invoke** | Skill reference or via `/build-mindmap` |
+| **Invoke** | Skill reference or via `/export-to-markmind` |
 | **Use for** | Content analysis, brainstorming, hierarchy extraction, concept mapping |
 
 **Workflow:**
 1. **Analyze** -- identify subject matter, key themes, and relationships
 2. **Build outline** -- extract central theme, main branches (L2), sub-concepts (L3), leaf details (L4+)
-3. **Output** -- JSON file with root, branches, children, colors, and emoji
+3. **Output** -- JSON (default) or markdown nested list with root, branches, children, colors, and emoji
 
-### `markmind-mapper`
+### `markmind-exporter`
 
 Render a mindmap JSON outline into Obsidian MarkMind Rich format. Takes a pre-built JSON structure and converts it into a `.md` file for the MarkMind plugin.
 
 | | |
 |---|---|
-| **Invoke** | Skill reference or via `/build-mindmap` |
+| **Invoke** | Skill reference or via `/export-to-markmind` |
 | **Use for** | Converting mindmap JSON to MarkMind Rich format for Obsidian |
 
 **Workflow:**
@@ -36,18 +36,35 @@ Render a mindmap JSON outline into Obsidian MarkMind Rich format. Takes a pre-bu
 - `references/markmind-rich-spec.md` -- MarkMind Rich format specification
 - `scripts/generate_markmind.py` -- JSON-to-MarkMind generator script
 
+### `forcegraph-exporter`
+
+Export a mindmap JSON outline as a single self-contained interactive HTML file using force-graph. Produces a zoomable, draggable visualization that opens in any browser.
+
+| | |
+|---|---|
+| **Invoke** | Skill reference |
+| **Use for** | Interactive web-based mindmap visualization |
+
+**Workflow:**
+1. **Locate** -- find the mindmap outline JSON
+2. **Export** -- run `generate_forcegraph.py` to produce a self-contained HTML file
+3. **Output** -- single `.html` file with embedded force-directed graph
+
+**Includes:**
+- `scripts/generate_forcegraph.py` -- JSON-to-HTML force-graph generator script
+
 ---
 
 ## Commands
 
-### `/build-mindmap`
+### `/export-to-markmind`
 
-Generate a MarkMind mind map from any topic, text, or file. Chains `generate-mindmap` (brainstorming) and `markmind-mapper` (rendering).
+Generate a MarkMind mind map from any topic, text, or file. Chains `generate-mindmap` (brainstorming) and `markmind-exporter` (rendering).
 
 ```
-/build-mindmap Python asyncio patterns
-/build-mindmap "text to map"
-/build-mindmap path/to/file.md
+/export-to-markmind Python asyncio patterns
+/export-to-markmind "text to map"
+/export-to-markmind path/to/file.md
 ```
 
 **Output:** `.md` file ready for Obsidian MarkMind plugin.

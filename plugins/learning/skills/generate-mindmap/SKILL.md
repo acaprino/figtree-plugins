@@ -1,6 +1,6 @@
 ---
 name: generate-mindmap
-description: "Brainstorm and generate a structured mindmap JSON outline from any content (books, articles, topics, notes, conversations). Use this skill whenever the user asks to create a mind map, mappa mentale, mappa concettuale, concept map, or visual summary. Also trigger when the user says 'mindmap', 'mind map', 'mappa', or asks to visualize/map/schematize any content. The skill handles content analysis, hierarchy design, emoji assignment, and color coding -- outputting a JSON structure that can be rendered by markmind-mapper or any other renderer."
+description: "Brainstorm and generate a structured mindmap JSON outline from any content (books, articles, topics, notes, conversations). Use this skill whenever the user asks to create a mind map, mappa mentale, mappa concettuale, concept map, or visual summary. Also trigger when the user says 'mindmap', 'mind map', 'mappa', or asks to visualize/map/schematize any content. The skill handles content analysis, hierarchy design, emoji assignment, and color coding -- outputting a JSON structure that can be rendered by markmind-exporter or any other renderer."
 ---
 
 # Generate Mindmap
@@ -41,9 +41,11 @@ Identify the subject matter, key themes, and relationships. For file inputs, rea
 
 Do NOT skip this phase. The quality of the map depends entirely on the brainstorming outline.
 
-### Step 3: Output JSON
+### Step 3: Output
 
-Write the outline as a JSON file with the following structure:
+Write the mindmap in the requested format. Default is **JSON** unless the user explicitly asks for markdown.
+
+#### JSON format (default)
 
 ```json
 {
@@ -66,7 +68,30 @@ Write the outline as a JSON file with the following structure:
 }
 ```
 
-Save the JSON to a temporary file (e.g., `/tmp/mindmap-outline.json` or next to the target output) so downstream renderers can consume it.
+Save to a file (e.g., `/tmp/mindmap-outline.json` or next to the target output) so downstream renderers (markmind-exporter, forcegraph-exporter) can consume it.
+
+#### Markdown format
+
+When the user requests markdown output, produce a nested bullet list:
+
+```markdown
+# Central Theme
+
+- Branch One
+  - Sub-concept A
+    - Detail 1
+    - Detail 2
+- Branch Two
+  - Sub-concept B
+```
+
+Rules for markdown output:
+- Root becomes an H1 heading
+- L2 branches are top-level bullets
+- Each deeper level adds one indent (2 spaces)
+- Preserve emoji prefixes on all nodes
+- Colors are omitted (markdown has no color support)
+- Save as `.md` file
 
 ## Content Principles
 

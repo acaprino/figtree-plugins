@@ -1,9 +1,9 @@
 ---
-name: markmind-mapper
+name: markmind-exporter
 description: "Render a mindmap JSON outline into Obsidian MarkMind Rich format. Use this skill after generating a mindmap outline (via generate-mindmap or any other source) to convert it into a .md file ready for the Obsidian MarkMind plugin. Trigger when the user says 'markmind', 'render to markmind', or needs MarkMind Rich output from an existing mindmap JSON structure."
 ---
 
-# MarkMind Mapper
+# MarkMind Exporter
 
 Render a mindmap JSON outline into Obsidian MarkMind Rich format. This skill takes a pre-built mindmap JSON structure (produced by `generate-mindmap` or any other source) and converts it into a `.md` file the user can drop directly into their Obsidian vault and open with the MarkMind plugin.
 

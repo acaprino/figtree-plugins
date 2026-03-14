@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Custom development workflow agents and skills for code quality, Tauri/Rust development, frontend optimization, AI tooling, and constraint programming optimization",
-    "version": "1.73.0"
+    "version": "1.75.0"
   },
   "plugins": [
     {
@@ -38,7 +38,7 @@
       "name": "deep-dive-analysis",
       "source": "./plugins/deep-dive-analysis",
       "description": "AI-powered systematic codebase analysis combining mechanical structure extraction with semantic understanding to document WHAT, WHY, HOW, and CONSEQUENCES of code",
-      "version": "1.2.0",
+      "version": "1.3.0",
       "author": {
         "name": "Alfio"
       },
@@ -615,7 +615,7 @@
       "name": "learning",
       "source": "./plugins/learning",
       "description": "Learning and knowledge management tools -- mind map generation, visual summaries, and study aids",
-      "version": "1.4.0",
+      "version": "1.5.0",
       "author": {
         "name": "Alfio"
       },
@@ -628,13 +628,16 @@
         "obsidian",
         "knowledge",
         "study",
-        "visual"
+        "visual",
+        "force-graph",
+        "interactive"
       ],
       "category": "productivity",
       "strict": false,
       "skills": [
         "./skills/generate-mindmap",
-        "./skills/markmind-exporter"
+        "./skills/markmind-exporter",
+        "./skills/forcegraph-exporter"
       ],
       "commands": [
         "./commands/export-to-markmind"
