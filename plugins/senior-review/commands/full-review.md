@@ -1,6 +1,6 @@
 ---
-description: "Orchestrate comprehensive multi-dimensional code review using specialized review agents across architecture, security, pattern analysis, performance, testing, and best practices"
-argument-hint: "<target path or description> [--security-focus] [--performance-critical] [--strict-mode] [--framework react|spring|django|rails]"
+description: "Orchestrate comprehensive multi-dimensional code review using specialized review agents. Optionally enriched with deep-dive structural and semantic analysis for deeper context."
+argument-hint: "<target path or description> [--deep-dive] [--security-focus] [--performance-critical] [--strict-mode] [--framework react|spring|django|rails]"
 ---
 
 # Comprehensive Code Review Orchestrator
@@ -46,6 +46,7 @@ Create `.full-review/` directory and `state.json`:
   "target": "$ARGUMENTS",
   "status": "in_progress",
   "flags": {
+    "deep_dive": false,
     "security_focus": false,
     "performance_critical": false,
     "strict_mode": false,
@@ -60,7 +61,7 @@ Create `.full-review/` directory and `state.json`:
 }
 ```
 
-Parse `$ARGUMENTS` for `--security-focus`, `--performance-critical`, `--strict-mode`, and `--framework` flags. Update the flags object accordingly.
+Parse `$ARGUMENTS` for `--deep-dive`, `--security-focus`, `--performance-critical`, `--strict-mode`, and `--framework` flags. Update the flags object accordingly.
 
 ### 3. Identify review target
 
@@ -85,6 +86,7 @@ Determine what code to review from `$ARGUMENTS`:
 
 ## Flags
 
+- Deep Dive: [yes/no]
 - Security Focus: [yes/no]
 - Performance Critical: [yes/no]
 - Strict Mode: [yes/no]
@@ -101,6 +103,128 @@ Determine what code to review from `$ARGUMENTS`:
 ```
 
 Update `state.json`: add `"00-scope.md"` to `files_created`, add step 0 to `completed_steps`.
+
+---
+
+## Phase 0: Deep Dive Context Gathering (if --deep-dive)
+
+Skip this phase entirely if `--deep-dive` flag is not set.
+
+When `--deep-dive` is active, run deep-dive analysis on the target path to gather structural and semantic context that strengthens all subsequent review phases.
+
+Spawn 3 agents in parallel using the Agent tool:
+
+### Agent A: Structure + Interfaces
+
+```
+Task:
+  subagent_type: "general-purpose"
+  description: "Deep dive structure and interfaces for review context"
+  prompt: |
+    Analyze the target code and produce two output files.
+
+    ## Target
+    [Insert target path from 00-scope.md]
+
+    ## Phase 1: Structure Extraction
+    Scan all files and build a structural map. For each file extract:
+    - Module/file name and path
+    - Language and framework
+    - Imports and dependencies
+    - Exported symbols (functions, classes, constants)
+    - File size and complexity indicators
+
+    Write to `.full-review/dd-01-structure.md`
+
+    ## Phase 2: Interface Analysis
+    For each module, document the public interface:
+    - Function signatures with parameter types and return types
+    - Class hierarchies and method signatures
+    - API endpoints with request/response shapes
+    - Configuration interfaces and event contracts
+
+    Write to `.full-review/dd-02-interfaces.md`
+```
+
+### Agent B: Flows + Semantics
+
+```
+Task:
+  subagent_type: "general-purpose"
+  description: "Deep dive flows and semantics for review context"
+  prompt: |
+    Analyze the target code and produce two output files.
+
+    ## Target
+    [Insert target path from 00-scope.md]
+
+    ## Phase 3: Flow Tracing
+    Trace critical execution paths:
+    - Request lifecycle (entry -> processing -> response)
+    - Data transformation pipelines
+    - Error propagation paths
+    - State mutation flows and side effects
+
+    Write to `.full-review/dd-03-flows.md`
+
+    ## Phase 4: Semantic Understanding
+    Understand the WHY behind the code:
+    - Business purpose of each module
+    - Design decisions and trade-offs
+    - Assumptions embedded in the code
+    - Implicit contracts not documented anywhere
+
+    Write to `.full-review/dd-04-semantics.md`
+```
+
+### Agent C: Risks
+
+```
+Task:
+  subagent_type: "general-purpose"
+  description: "Deep dive risk detection for review context"
+  prompt: |
+    Analyze the target code for risks and anti-patterns.
+
+    ## Target
+    [Insert target path from 00-scope.md]
+
+    ## Phase 5: Pattern & Risk Detection
+    Scan for:
+    - Anti-patterns: god objects, spaghetti code, shotgun surgery, feature envy
+    - Red flags: swallowed exceptions, hardcoded credentials, race conditions, N+1 queries
+    - Technical debt: TODO/FIXME comments, deprecated APIs, outdated patterns
+    - Failure modes: what breaks under load, edge cases, missing error handling
+
+    Write to `.full-review/dd-05-risks.md`
+```
+
+After all 3 agents complete, produce `.full-review/00-deep-dive-context.md` summarizing key findings from all 5 deep-dive files. This summary will be injected into subsequent review agent prompts.
+
+Update `state.json`: add `"phase_0"` to `completed_steps`.
+
+---
+
+## Deep Dive Context Injection
+
+When `--deep-dive` flag is active, each review agent prompt in Phases 1-5 gets this additional section inserted after the existing context sections:
+
+```
+## Deep Dive Context
+
+[Insert relevant deep-dive findings from .full-review/00-deep-dive-context.md:
+- For architect-review (Phase 1): structure, interfaces, flows, semantics
+- For security-auditor (Phase 2A): flows (data paths), semantics (assumptions), risks
+- For performance agent (Phase 2B): structure, flows
+- For test/docs agents (Phase 3): interfaces, flows, risks
+- For best practices agents (Phase 4): all deep-dive findings
+- For pattern-quality-scorer (Phase 5): all deep-dive findings]
+
+Use this context to strengthen your analysis. Do NOT re-report findings already
+covered in the deep dive -- instead focus on new issues the deep dive missed or
+issues that become apparent when combining deep-dive context with your
+specialized perspective.
+```
 
 ---
 

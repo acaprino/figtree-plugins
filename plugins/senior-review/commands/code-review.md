@@ -1,5 +1,5 @@
 ---
-description: "Unified code review -- auto-detects scope: uncommitted/staged changes, recent commits, PR number, or branch diff. Runs architecture, security, and pattern analysis agents in parallel with confidence scoring"
+description: "Unified code review -- auto-detects scope and runs architecture, security, and pattern analysis agents in parallel. Automatically uses deep-dive context if available."
 argument-hint: "[PR number | --branch <name> | --commits N] [--auto-comment] [--strict] [--security-focus]"
 ---
 
@@ -85,6 +85,37 @@ gh api repos/{owner}/{repo}/pulls/{number}/comments --jq '.[].path' | sort -u
 ```
 
 5. **Read CLAUDE.md** if it exists -- note project conventions, naming rules, patterns
+
+6. **Check for deep-dive context** -- if `.deep-dive/` exists and contains completed analysis files:
+   - Read `.deep-dive/01-structure.md` for structural context
+   - Read `.deep-dive/03-flows.md` for execution flow context
+   - Read `.deep-dive/04-semantics.md` for design decision context
+   - Read `.deep-dive/05-risks.md` for known risk context
+   - Include a "Deep Dive Context" section in each agent's prompt (see template below)
+   - Note in the review output that deep-dive context was used
+   - If `.deep-dive/` does not exist or is incomplete, proceed normally without it
+
+### Deep Dive Context Template
+
+When deep-dive output is available, append this section to each agent prompt after existing context sections:
+
+```
+## Deep Dive Context
+
+The following context was gathered from a prior deep-dive analysis. Use it to
+strengthen your review. Do NOT re-report findings already covered here --
+instead focus on new issues or issues that become apparent when combining
+this context with your specialized perspective.
+
+### Structure & Flows
+[Insert relevant excerpts from 01-structure.md and 03-flows.md]
+
+### Design Decisions & Assumptions
+[Insert relevant excerpts from 04-semantics.md]
+
+### Known Risks
+[Insert relevant excerpts from 05-risks.md]
+```
 
 ## Step 3: Run Parallel Review Agents
 

@@ -463,13 +463,22 @@ After presenting the action plan, ask the user:
 What would you like to do next?
 
 1. Start fixing - execute the action plan (all or selected items)
-2. Deep dive further - run additional phases or re-analyze specific areas
-3. Generate documentation - create/update docs based on findings
-4. Export report - save the final report in a different format
-5. Nothing for now - end the session
+2. Apply quick fixes - fix stale comments, outdated references, type hints, and naming issues directly in code
+3. Deep dive further - run additional phases or re-analyze specific areas
+4. Generate documentation - create/update docs based on findings
+5. Export report - save the final report in a different format
+6. Nothing for now - end the session
 ```
 
 Wait for the user's choice before proceeding. If the user picks option 1, confirm which actions to execute and in what order before starting.
+
+If the user picks option 2, apply low-risk code fixes directly without further confirmation. These include:
+- Updating stale names/references in comments (e.g., old project names)
+- Fixing type hint syntax (e.g., `float = None` to `float | None = None`)
+- Replacing deprecated patterns with modern equivalents
+- Fixing obvious typos in strings and comments
+
+Present a summary of changes made after applying fixes.
 
 ## Quick Examples
 
@@ -478,3 +487,7 @@ Wait for the user's choice before proceeding. If the user picks option 1, confir
 - `/deep-dive-analysis src/ --docs-only` -- Documentation health check only
 - `/deep-dive-analysis src/ --comments` -- Include comment quality audit
 - `/deep-dive-analysis src/ --phase 5` -- Jump to pattern & risk detection
+
+## Integration with Code Review
+
+Deep dive output in `.deep-dive/` is automatically picked up by `/code-review` and can be explicitly used by `/full-review --deep-dive`. Run a deep dive first, then run a code review for the most thorough analysis possible.
