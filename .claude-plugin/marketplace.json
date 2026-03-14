@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Custom development workflow agents and skills for code quality, Tauri/Rust development, frontend optimization, AI tooling, and constraint programming optimization",
-    "version": "1.92.0"
+    "version": "1.94.0"
   },
   "plugins": [
     {
@@ -206,7 +206,7 @@
       "name": "stripe",
       "source": "./plugins/stripe",
       "description": "Stripe payments, subscriptions, Connect marketplaces, and revenue optimization for SaaS monetization",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "author": {
         "name": "Alfio"
       },
@@ -231,7 +231,7 @@
       "name": "utilities",
       "source": "./plugins/utilities",
       "description": "File organization and cleanup utilities -- sort messy folders, find duplicates, and multi-language dead code detection dispatching to language-specific tools",
-      "version": "1.4.0",
+      "version": "1.5.0",
       "author": {
         "name": "ComposioHQ"
       },
@@ -308,7 +308,7 @@
       "name": "business",
       "source": "./plugins/business",
       "description": "Legal advisory for technology companies -- contract review, data privacy (GDPR/CCPA), intellectual property, compliance frameworks, and risk mitigation",
-      "version": "1.2.0",
+      "version": "1.3.0",
       "author": {
         "name": "Alfio"
       },
@@ -332,7 +332,7 @@
       "name": "code-documentation",
       "source": "./plugins/code-documentation",
       "description": "Bottom-up technical documentation -- codebase analysis, API reference generation, doc refactoring and consolidation, ground truth verification, and tutorial creation",
-      "version": "1.4.0",
+      "version": "1.5.0",
       "author": {
         "name": "Alfio"
       },
@@ -360,7 +360,7 @@
       "name": "project-setup",
       "source": "./plugins/project-setup",
       "description": "Project configuration and setup tools including CLAUDE.md creation and maintenance with ground truth validation",
-      "version": "1.4.0",
+      "version": "1.5.0",
       "author": {
         "name": "Alfio"
       },
@@ -388,7 +388,7 @@
       "name": "mobile-development",
       "source": "./plugins/mobile-development",
       "description": "Analyze and document Android mobile apps via ADB -- competitive analysis, UX/UI review, screenshot capture, user flow mapping, and structured report generation",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "author": {
         "name": "Alfio"
       },
