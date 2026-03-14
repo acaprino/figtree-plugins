@@ -38,18 +38,9 @@ Look for these patterns:
 Example feature inventory output:
 ```
 Features Discovered:
-├── Core Features (low cost)
-│   ├── User authentication (Cognito/Auth0)
-│   ├── Dashboard views (read-only)
-│   └── Basic CRUD operations
-├── Premium Features (medium cost)
-│   ├── PDF export (uses Puppeteer/Lambda)
-│   ├── Email notifications (SendGrid)
-│   └── File storage (S3)
-└── High-Value Features (high cost)
-    ├── AI analysis (OpenAI API)
-    ├── Video processing (FFmpeg/Lambda)
-    └── Real-time sync (WebSockets)
+├── Core (low cost): Auth, dashboard, CRUD
+├── Premium (medium cost): PDF export, email, file storage
+└── High-Value (high cost): AI analysis, video processing, real-time sync
 ```
 
 ## Cost Analysis
@@ -66,56 +57,21 @@ Scan for these cost sources:
 
 ### Cost Mapping
 
-```
-Cost Analysis Output:
-├── Fixed Costs (monthly)
-│   ├── Hosting: $50 (Vercel Pro)
-│   ├── Database: $25 (PlanetScale)
-│   └── Monitoring: $20 (Datadog)
-│   └── Total Fixed: $95/month
-├── Variable Costs (per user/month)
-│   ├── Auth: $0.05/MAU (Auth0)
-│   ├── Storage: $0.023/GB (S3)
-│   └── Email: $0.001/email (SendGrid)
-├── Feature Costs (per use)
-│   ├── AI Analysis: $0.03/request (GPT-4)
-│   ├── PDF Export: $0.01/export (Lambda)
-│   └── SMS: $0.0075/message (Twilio)
-└── Recommended Minimums:
-    ├── Break-even at 100 users: $0.95/user
-    ├── With 70% margin: $3.17/user
-    └── AI feature: charge $0.10/use or limit free tier
-```
+Map fixed costs, variable costs (per user), and feature costs (per use). See [references/cost-analysis.md](references/cost-analysis.md) for detailed cost mapping patterns and output format.
 
 ## Pricing Strategy Design
 
 Combine feature value + cost data:
 
-```
-Pricing Strategy Framework:
-1. Calculate cost floor (break-even)
+1. Calculate cost floor (break-even per user)
 2. Assess feature value (what users pay for alternatives)
 3. Set price = max(cost + margin, perceived value)
-4. Group features into tiers by cost similarity
-```
+4. Group features into tiers by cost similarity:
+   - **Free**: Low-cost features only, cap variable costs, goal < $0.50/user/month
+   - **Pro**: Medium-cost features, price at 3-5x cost, primary revenue driver
+   - **Enterprise**: High-cost features (AI, video), value-based pricing (10x+ cost OK)
 
-### Cost-Informed Tier Design
-
-```
-Tier Design Process:
-├── Free Tier
-│   ├── Include: Low-cost features only
-│   ├── Limit: Usage caps on variable costs
-│   └── Goal: < $0.50 cost/user/month
-├── Pro Tier  
-│   ├── Include: Medium-cost features
-│   ├── Price: 3-5x your cost (healthy margin)
-│   └── Goal: Primary revenue driver
-└── Enterprise
-    ├── Include: High-cost features (AI, video, etc.)
-    ├── Price: Value-based (10x+ cost acceptable)
-    └── Goal: High-margin, lower volume
-```
+Optimal Price = (Cost Floor x 0.3) + (Value Ceiling x 0.7) where Cost Floor = Cost to Serve / (1 - Target Margin).
 
 See [references/pricing-patterns.md](references/pricing-patterns.md) for implementation examples.
 
@@ -124,113 +80,58 @@ See [references/pricing-patterns.md](references/pricing-patterns.md) for impleme
 When asked to create a pricing strategy, produce a full analysis:
 
 ```
-═══════════════════════════════════════════════════════════
-                    PRICING STRATEGY REPORT
-═══════════════════════════════════════════════════════════
+PRICING STRATEGY REPORT
+=======================================
 
-📁 CODEBASE ANALYSIS
-───────────────────────────────────────────────────────────
-Services Detected:
-  • AWS S3 (file storage)
-  • OpenAI GPT-4 (AI features)
-  • SendGrid (email)
-  • Auth0 (authentication)
-  • Vercel (hosting)
-  • PlanetScale (database)
+CODEBASE ANALYSIS
+---------------------------------------
+Services: AWS S3, OpenAI GPT-4, SendGrid, Auth0, Vercel, PlanetScale
 
-Features Discovered:
-  ├── Core (6 features)
-  │   ├── User dashboard
-  │   ├── Project management
-  │   ├── Team collaboration
-  │   └── Basic reporting
-  ├── Premium (3 features)
-  │   ├── PDF export → uses Lambda
-  │   ├── Advanced analytics → uses Postgres aggregations
-  │   └── API access → rate-limited endpoints
-  └── AI-Powered (2 features)
-      ├── AI writing assistant → uses GPT-4
-      └── Smart suggestions → uses GPT-4
+Features:
+  Core (6): Dashboard, project mgmt, collaboration, reporting
+  Premium (3): PDF export (Lambda), analytics (Postgres), API access
+  AI-Powered (2): AI writing + smart suggestions (GPT-4)
 
-💰 COST BREAKDOWN
-───────────────────────────────────────────────────────────
-Fixed Costs (Monthly):
-  Vercel Pro .............. $20
-  PlanetScale Scaler ...... $29
-  Auth0 (base) ............ $0
-  ─────────────────────────────
-  Total Fixed             $49/month
+COST BREAKDOWN
+---------------------------------------
+Fixed (Monthly):
+  Vercel $20 + PlanetScale $29 + Auth0 $0 = $49/month
 
-Variable Costs (Per Active User):
-  Auth0 MAU ............... $0.02
-  Storage (avg 500MB) ..... $0.01
-  Email (avg 10/month) .... $0.01
-  ─────────────────────────────
-  Total Variable          $0.04/user/month
+Variable (Per User/Month):
+  Auth0 $0.02 + Storage $0.01 + Email $0.01 = $0.04/user
 
-Feature Costs (Per Use):
-  AI Writing (1K tokens) .. $0.03/use
-  PDF Export .............. $0.01/use
-  API Call ................ $0.001/call
+Feature (Per Use):
+  AI Writing $0.03 | PDF Export $0.01 | API $0.001
 
-📊 USAGE PATTERN ANALYSIS
-───────────────────────────────────────────────────────────
-Feature Usage Distribution:
+USAGE PATTERNS
+---------------------------------------
+  API Calls/month:   Casual 50% ~50 | Regular 40% ~500 | Power 10% ~5K
+  AI Generations:    Casual ~5 | Regular ~50 | Power ~300
 
-  API Calls/month:
-  ├── Casual (50%):     ~50 calls    │██░░░░░░░░│
-  ├── Regular (40%):    ~500 calls   │██████░░░░│
-  └── Power (10%):      ~5,000 calls │██████████│
-  
-  AI Generations/month:
-  ├── Casual (50%):     ~5 uses      │█░░░░░░░░░│
-  ├── Regular (40%):    ~50 uses     │█████░░░░░│
-  └── Power (10%):      ~300 uses    │██████████│
+Tier Limits: Free 100 API/10 AI | Pro 5K API/100 AI | Business unlimited
 
-Tier Limit Strategy:
-  ├── Free:   100 API, 10 AI     (80% casual under)
-  ├── Pro:    5,000 API, 100 AI  (95% regular under)
-  └── Business: Unlimited
-
-📈 REVENUE MODEL
-───────────────────────────────────────────────────────────
-User Distribution: Free 80% │ Pro 15% │ Business 5%
-
-ARPU: (80%×$0) + (15%×$19) + (5%×$49) = $5.30/user
-
-LTV = (ARPU × Margin) / Churn
-    = ($5.30 × 0.87) / 0.04 = $115
-
-Cost to Serve:
-  Free: $0.10 │ Pro: $2.50 │ Business: $12
-
+REVENUE MODEL
+---------------------------------------
+Distribution: Free 80% | Pro 15% | Business 5%
+ARPU: (80% x $0) + (15% x $19) + (5% x $49) = $5.30/user
+LTV: ($5.30 x 0.87) / 0.04 = $115
+Cost to Serve: Free $0.10 | Pro $2.50 | Business $12
 Break-Even: 62 users
 
 12-Month Projection (15% growth):
-  M1:  100 users │ $530 MRR
-  M6:  266 users │ $1,410 MRR  
-  M12: 814 users │ $4,314 MRR → $51,768 ARR
+  M1: 100 users, $530 MRR
+  M6: 266 users, $1,410 MRR
+  M12: 814 users, $4,314 MRR -- $51,768 ARR
 
-🏷️ RECOMMENDED TIERS
-───────────────────────────────────────────────────────────
-FREE ($0)
-  ✓ 3 projects │ 100 API │ 10 AI │ 500MB
-  Cost: $0.10 │ Purpose: Lead generation
+RECOMMENDED TIERS
+---------------------------------------
+FREE ($0)       3 projects | 100 API | 10 AI | 500MB
+PRO ($19/mo)    Unlimited | 5K API | 100 AI | 10GB | Margin 87%
+BUSINESS ($49)  All Pro + 50K API | 500 AI | 50GB | 5 seats | Margin 76%
+ENTERPRISE      Custom $200+ | Unlimited | SSO | SLA
 
-PRO ($19/mo · $190/yr save 17%)
-  ✓ Unlimited │ 5K API │ 100 AI │ 10GB │ Email support
-  Cost: $2.50 │ Margin: 87%
-
-BUSINESS ($49/mo · $490/yr) ⭐ RECOMMENDED
-  ✓ All Pro + 50K API │ 500 AI │ 50GB │ 5 seats │ Priority
-  Cost: $12 │ Margin: 76%
-
-ENTERPRISE (Custom · $200+)
-  ✓ Unlimited │ SSO │ SLA │ Dedicated support
-
-⚠️ OVERAGE: AI $0.10/use │ API $0.005/call
-
-═══════════════════════════════════════════════════════════
+Overage: AI $0.10/use | API $0.005/call
+=======================================
 ```
 
 ## Payment Provider Selection
@@ -264,85 +165,6 @@ Key components:
 4. **Billing portal** - Self-service plan management
 
 For subscription system patterns, see [references/subscription-patterns.md](references/subscription-patterns.md).
-
-## Usage Pattern Analysis
-
-Analyze how users consume features to set optimal tier limits:
-
-```
-Usage Analysis Output:
-├── Feature Usage Distribution
-│   ├── API Calls
-│   │   ├── Casual users (50%): ~50/month
-│   │   ├── Regular users (40%): ~500/month
-│   │   └── Power users (10%): ~5,000/month
-│   └── AI Generations
-│       ├── Casual: ~5/month
-│       ├── Regular: ~50/month
-│       └── Power: ~500/month
-├── Consumption Patterns
-│   ├── Peak usage: Mon-Fri, 9am-6pm
-│   ├── Seasonal spikes: Q4 (+30%)
-│   └── Growth trend: +15%/month
-└── Tier Limit Recommendations
-    ├── Free: 100 API calls (covers 80% of casual)
-    ├── Pro: 5,000 API calls (covers 95% of regular)
-    └── Enterprise: Unlimited
-```
-
-Set limits so users naturally upgrade:
-- **Free tier**: Limit at 80th percentile of casual users
-- **Pro tier**: Limit at 95th percentile of regular users
-- **Enterprise**: Unlimited or custom
-
-See [references/usage-revenue-modeling.md](references/usage-revenue-modeling.md) for detailed patterns.
-
-## Revenue Modeling
-
-Calculate key SaaS metrics for pricing decisions:
-
-```
-Revenue Model:
-├── ARPU (Average Revenue Per User)
-│   ├── Free (80%): $0
-│   ├── Pro (15%): $29
-│   ├── Enterprise (5%): $99
-│   └── Blended ARPU: $9.30
-├── LTV Calculation
-│   ├── ARPU: $9.30
-│   ├── Gross Margin: 85%
-│   ├── Monthly Churn: 3%
-│   └── LTV = ($9.30 × 0.85) / 0.03 = $263
-├── Break-Even Analysis
-│   ├── Fixed costs: $500/month
-│   ├── Variable cost/user: $0.50
-│   ├── ARPU: $9.30
-│   └── Break-even: 57 users
-└── 12-Month Projection
-    ├── Month 1: 100 users, $930 MRR
-    ├── Month 6: 400 users, $3,720 MRR
-    └── Month 12: 1,200 users, $11,160 MRR
-```
-
-### Optimal Tier Pricing Formula
-
-```
-Optimal Price = (Cost Floor × 0.3) + (Value Ceiling × 0.7)
-
-Where:
-- Cost Floor = Cost to Serve / (1 - Target Margin)
-- Value Ceiling = min(Perceived Value, Competitor Price × 1.2)
-
-Example:
-- Cost to serve Pro user: $3/month
-- Target margin: 80%
-- Cost floor: $3 / 0.20 = $15
-- Competitor price: $25
-- Value ceiling: $30
-- Optimal: ($15 × 0.3) + ($30 × 0.7) = $25.50 → $25/month
-```
-
-See [references/usage-revenue-modeling.md](references/usage-revenue-modeling.md) for full revenue modeling.
 
 ## Checkout Optimization
 
