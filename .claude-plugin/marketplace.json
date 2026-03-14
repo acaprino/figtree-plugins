@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Custom development workflow agents and skills for code quality, Tauri/Rust development, frontend optimization, AI tooling, and constraint programming optimization",
-    "version": "1.96.0"
+    "version": "1.98.0"
   },
   "plugins": [
     {
@@ -285,7 +285,7 @@
       "name": "research",
       "source": "./plugins/research",
       "description": "Complex multi-source research specialist -- use when initial searches fail, when research needs systematic coverage across codebase, docs, and web, or when finding specific information requires query optimization and iterative refinement",
-      "version": "1.3.0",
+      "version": "1.4.0",
       "author": {
         "name": "Alfio"
       },
@@ -307,8 +307,8 @@
     {
       "name": "business",
       "source": "./plugins/business",
-      "description": "Legal advisory for technology companies -- contract review, data privacy (GDPR/CCPA), intellectual property, compliance frameworks, and risk mitigation",
-      "version": "1.3.0",
+      "description": "Legal advisory and compliance document generation -- Privacy Policies, Cookie Policies, DPAs, DPIA reports, GDPR/ePrivacy/CCPA compliance, contract review, IP, and risk mitigation",
+      "version": "1.4.0",
       "author": {
         "name": "Alfio"
       },
@@ -324,6 +324,9 @@
       ],
       "category": "business",
       "strict": false,
+      "agents": [
+        "./agents/privacy-compliance-generator.md"
+      ],
       "skills": [
         "./skills/legal-advisor"
       ]
