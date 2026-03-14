@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Custom development workflow agents and skills for code quality, Tauri/Rust development, frontend optimization, AI tooling, and constraint programming optimization",
-    "version": "1.88.0"
+    "version": "1.89.0"
   },
   "plugins": [
     {
@@ -63,7 +63,7 @@
       "name": "tauri-development",
       "source": "./plugins/tauri-development",
       "description": "Tauri 2 desktop and mobile development -- IPC optimization, Rust backend patterns, cross-platform builds, and React integration for high-performance apps",
-      "version": "1.4.0",
+      "version": "1.5.0",
       "author": {
         "name": "Alfio"
       },
@@ -89,7 +89,7 @@
       "name": "frontend",
       "source": "./plugins/frontend",
       "description": "React performance optimization, UI polishing, UX design, comprehensive CSS (BEM, CSS Modules, SASS, accessibility, cross-browser), and premium web consulting",
-      "version": "2.14.0",
+      "version": "2.15.0",
       "author": {
         "name": "Alfio"
       },
@@ -277,7 +277,7 @@
       "name": "research",
       "source": "./plugins/research",
       "description": "Advanced search and information retrieval specialist for precise knowledge discovery across codebases and web sources",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "author": {
         "name": "Alfio"
       },
@@ -454,7 +454,7 @@
       "name": "digital-marketing",
       "source": "./plugins/digital-marketing",
       "description": "SEO optimization and content marketing with technical audits, keyword research, content strategy, and engagement-driven campaigns",
-      "version": "1.4.0",
+      "version": "1.5.0",
       "author": {
         "name": "Alfio"
       },
@@ -486,7 +486,7 @@
       "name": "senior-review",
       "source": "./plugins/senior-review",
       "description": "Multi-agent code review orchestration with architecture, security, pattern analysis, and calibrated quality scoring",
-      "version": "2.9.0",
+      "version": "2.10.0",
       "author": {
         "name": "Alfio"
       },

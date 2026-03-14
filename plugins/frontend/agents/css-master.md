@@ -7,7 +7,7 @@ description: >
   passive reference.
 tools: Read, Write, Edit, Bash, Glob, Grep
 model: opus
-color: cyan
+color: violet
 ---
 
 # CSS Master
