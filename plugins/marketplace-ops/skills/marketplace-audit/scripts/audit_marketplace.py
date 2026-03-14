@@ -6,7 +6,7 @@ Validates marketplace.json consistency, checks file references,
 validates frontmatter, detects orphaned files, and reports issues.
 
 Usage:
-    python plugins/marketplace-ops/skills/marketplace-audit/scripts/audit_marketplace.py
+    python plugins/marketplace-ops/skills/marketplace-audit/scripts/audit_marketplace.py [--fix]
 """
 
 import json
@@ -145,7 +145,31 @@ def parse_frontmatter(filepath):
     return result, None
 
 
-def audit():
+def set_frontmatter_field(filepath, field, value):
+    """Set or replace a frontmatter field in a markdown file."""
+    content = filepath.read_text(encoding="utf-8")
+    if not content.startswith("---"):
+        return False
+
+    end = content.find("---", 3)
+    if end == -1:
+        return False
+
+    fm_block = content[3:end]
+    body = content[end:]
+
+    # Replace existing field or add before closing ---
+    field_pattern = re.compile(rf"^{re.escape(field)}:\s*.*$", re.MULTILINE)
+    if field_pattern.search(fm_block):
+        fm_block = field_pattern.sub(f"{field}: {value}", fm_block)
+    else:
+        fm_block = fm_block.rstrip("\n") + f"\n{field}: {value}\n"
+
+    filepath.write_text("---" + fm_block + body, encoding="utf-8")
+    return True
+
+
+def audit(fix=False):
     report = AuditReport()
 
     # Load marketplace.json
@@ -225,6 +249,23 @@ def audit():
 
             for field in REQUIRED_AGENT_FRONTMATTER:
                 if field not in fm:
+                    if fix and field == "color":
+                        fallback = "blue"
+                        for other_path in agents:
+                            ofp = source_path / other_path.lstrip("./")
+                            if ofp == full_path or not ofp.exists():
+                                continue
+                            ofm, _ = parse_frontmatter(ofp)
+                            if ofm and ofm.get("color") in VALID_COLORS:
+                                fallback = ofm["color"]
+                                break
+                        if set_frontmatter_field(full_path, "color", fallback):
+                            report.add(
+                                "info",
+                                f"[FIXED] Plugin '{pname}': agent {agent_path} "
+                                f"added missing color '{fallback}'",
+                            )
+                            continue
                     report.add("warning", f"Plugin '{pname}': agent {agent_path} missing frontmatter '{field}'")
 
             # Check name matches filename
@@ -236,7 +277,32 @@ def audit():
             # Check color validity
             color = fm.get("color", "")
             if color and color not in VALID_COLORS:
-                report.add("warning", f"Plugin '{pname}': agent {agent_path} has invalid color '{color}'")
+                if fix:
+                    # Pick the first valid color used by other agents in this plugin,
+                    # or fall back to "blue"
+                    fallback = "blue"
+                    for other_path in agents:
+                        ofp = source_path / other_path.lstrip("./")
+                        if ofp == full_path or not ofp.exists():
+                            continue
+                        ofm, _ = parse_frontmatter(ofp)
+                        if ofm and ofm.get("color") in VALID_COLORS:
+                            fallback = ofm["color"]
+                            break
+                    if set_frontmatter_field(full_path, "color", fallback):
+                        report.add(
+                            "info",
+                            f"[FIXED] Plugin '{pname}': agent {agent_path} "
+                            f"color '{color}' -> '{fallback}'",
+                        )
+                    else:
+                        report.add(
+                            "warning",
+                            f"Plugin '{pname}': agent {agent_path} has invalid "
+                            f"color '{color}' (auto-fix failed)",
+                        )
+                else:
+                    report.add("warning", f"Plugin '{pname}': agent {agent_path} has invalid color '{color}'")
 
         # Check skills
         skills = plugin.get("skills", [])
@@ -380,6 +446,51 @@ def audit():
         except Exception:
             pass
 
+    # Color consistency checks
+    plugin_colors = {}  # plugin_name -> set of colors used by its agents
+    color_to_plugins = {}  # color -> list of plugin names
+    for plugin in plugins:
+        pname = plugin.get("name", "<unnamed>")
+        source = plugin.get("source", "")
+        source_path = PROJECT_ROOT / source.lstrip("./")
+        colors_in_plugin = set()
+        for agent_path in plugin.get("agents", []):
+            full_path = source_path / agent_path.lstrip("./")
+            if not full_path.exists():
+                continue
+            fm, _ = parse_frontmatter(full_path)
+            if fm and "color" in fm:
+                colors_in_plugin.add(fm["color"])
+        if colors_in_plugin:
+            plugin_colors[pname] = colors_in_plugin
+            for c in colors_in_plugin:
+                color_to_plugins.setdefault(c, []).append(pname)
+
+    # Warn if agents within the same plugin use different colors
+    for pname, colors in plugin_colors.items():
+        if len(colors) > 1:
+            report.add(
+                "warning",
+                f"Plugin '{pname}': agents use inconsistent colors: "
+                f"{', '.join(sorted(colors))} (expected one color per plugin)",
+            )
+
+    # Report color distribution across plugins
+    color_summary = []
+    for color, pnames in sorted(color_to_plugins.items()):
+        color_summary.append(f"{color} ({', '.join(sorted(pnames))})")
+    if color_summary:
+        report.add("info", f"Color distribution: {'; '.join(color_summary)}")
+
+    # Warn about colors shared by many plugins (potential confusion)
+    for color, pnames in sorted(color_to_plugins.items()):
+        if len(pnames) > 3:
+            report.add(
+                "warning",
+                f"Color '{color}' is overused ({len(pnames)} plugins): "
+                f"{', '.join(sorted(pnames))} - consider diversifying",
+            )
+
     # Category analysis
     categories = {}
     for plugin in plugins:
@@ -420,4 +531,5 @@ def audit():
 
 
 if __name__ == "__main__":
-    sys.exit(audit())
+    fix_mode = "--fix" in sys.argv
+    sys.exit(audit(fix=fix_mode))

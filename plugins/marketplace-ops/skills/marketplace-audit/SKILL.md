@@ -32,7 +32,11 @@ The script checks:
    - Agents: must have `name`, `description`, `model`, `color`
    - Skills: must have `name`, `description`
    - Commands: must have `description`
-4. **Naming conventions**
+4. **Color consistency**
+   - All agents within a plugin should use the same color
+   - Warn when a single color is overused across too many plugins (>3)
+   - Report color distribution across all plugins
+5. **Naming conventions**
    - All names are kebab-case
    - Agent filename matches frontmatter `name` field
    - Plugin directory name matches marketplace.json `name` field
@@ -40,15 +44,15 @@ The script checks:
    - No naming collisions between commands in different plugins (e.g., two plugins both defining `full-review.md`)
    - Skill directory name matches frontmatter `name` field
    - No em dash characters anywhere (use hyphen `-` or double hyphen `--`)
-5. **Cross-reference consistency**
+6. **Cross-reference consistency**
    - Marketplace `name` matches git remote repo name
    - Each plugin `name` matches its source directory name
    - Marketplace `name` matches CLAUDE.md project header
-6. **Marketplace.json schema**
+7. **Marketplace.json schema**
    - Every plugin has: name, source, description, version, author, license, keywords, category, strict
    - No duplicate plugin names
    - No duplicate keywords across plugins (warning only)
-6. **Version sanity**
+8. **Version sanity**
    - All versions are valid semver
    - metadata.version is present
 
@@ -57,7 +61,7 @@ The script checks:
 Address findings by severity:
 
 - **CRITICAL**: Missing referenced files, broken paths, missing required frontmatter
-- **WARNING**: Orphaned files, naming mismatches, overlapping keywords
+- **WARNING**: Orphaned files, naming mismatches, overlapping keywords, color inconsistencies
 - **INFO**: Suggestions for improvement, consolidation opportunities
 
 ### Step 4: Re-validate
