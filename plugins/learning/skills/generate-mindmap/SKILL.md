@@ -1,153 +1,122 @@
 ---
 name: generate-mindmap
-description: "Brainstorm and generate a structured mindmap JSON outline from any content (books, articles, topics, notes, conversations). Use this skill whenever the user asks to create a mind map, mappa mentale, mappa concettuale, concept map, or visual summary. Also trigger when the user says 'mindmap', 'mind map', 'mappa', or asks to visualize/map/schematize any content. The skill handles content analysis, hierarchy design, emoji assignment, and color coding -- outputting a JSON structure that can be rendered by markmind-exporter or any other renderer."
+description: "Brainstorm and generate a Buzan-style structured mindmap JSON outline from any content. Use this skill whenever the user asks to create a mind map, mappa mentale, concept map, or visual summary. The skill prioritizes COGNITIVE EFFECTIVENESS over structural efficiency: it uses single keywords, strong visual associations (emojis), organic radiant thinking, and cross-linking to maximize memory retention and idea generation."
 ---
 
-# Generate Mindmap
+# Generate Mindmap (Buzan Method)
 
-Analyze content and produce a structured mindmap JSON outline. This skill focuses on the intellectual work: extracting themes, building hierarchy, assigning visual attributes. The output is a renderer-agnostic JSON structure.
+Analyze content and produce a structured mindmap JSON outline. This skill focuses on the intellectual work: extracting core themes, building organic hierarchy, assigning visual attributes, and finding non-linear associations. The output is a renderer-agnostic JSON structure.
+
+## Philosophy: Effectiveness > Efficiency
+
+Do not force symmetrical or perfectly balanced branches. Human thought is organic. Prioritize **cognitive impact**: use highly evocative single words, vivid emojis, and let branches grow naturally based on the richness of the associations.
 
 ## Parameters
 
-The user can specify these parameters when requesting a mind map. If not specified, use **normal** complexity and the default max depth for that complexity.
+The user can specify these parameters. If not specified, use **normal** complexity.
 
 ### Complexity
 
-| Level        | L2 branches | L3 per branch | L4 per L3 | Default max depth | Description                       |
-| ------------ | ----------- | ------------- | --------- | ----------------- | --------------------------------- |
-| **essential** | 3-4         | 1-2           | 0         | 2                 | Minimal overview, few nodes       |
-| **normal**    | 5-7         | 2-4           | 1-3       | 4                 | Balanced coverage (default)       |
-| **detailed**  | 7-10        | 3-5           | 2-4       | 5                 | Deep, comprehensive exploration   |
+| Level         | L2 branches | Max depth | Description                                |
+| ------------- | ----------- | --------- | ------------------------------------------ |
+| **essential** | 3-5         | 2         | Core concepts only, high-impact synthesis. |
+| **normal**    | 5-7         | 4         | Balanced organic exploration (default).    |
+| **detailed**  | 7-9         | 6         | Deep, comprehensive associative dive.      |
 
-### Max depth
-
-Maximum number of hierarchy levels below root (L2 = depth 1, L3 = depth 2, etc.). Overrides the complexity default if specified. Range: 1-6.
+*Note: Node counts per branch are NOT fixed. Let them flow organically. Some L2 branches may have 10 children, others only 1.*
 
 ## Workflow
 
 ### Step 1: Analyze content
 
-Identify the subject matter, key themes, and relationships. For file inputs, read the file first.
+Identify the core subject, main radiating themes, and hidden connections between different concepts.
 
-### Step 2: Build outline
+### Step 2: Build outline (Radiant Thinking)
 
-1. **Identify the central theme** in 2-4 words
-2. **Extract main branches** (L2) -- count varies by complexity level
-3. **For each branch, extract sub-concepts** (L3) -- count varies by complexity level. Each is a keyword or micro-phrase (2-4 words max)
-4. **For deeper levels (L4+)** -- only if max depth allows. Single keyword or keyword pair
-5. **Assign emoji** to every L2 and L3 node using the semantic code below
-6. **Assign colors** to each L2 branch from the palette
-7. **Verify depth** -- no node exceeds the max depth limit
-
-Do NOT skip this phase. The quality of the map depends entirely on the brainstorming outline.
+1. **Identify the Central Nucleus:** 1-2 words maximum. Create a vivid `central_image_prompt` describing a visual representation of this core.
+2. **Extract Main Branches (L2):** The primary categories radiating from the center.
+3. **Extract Sub-branches (L3+):** Apply the **Rule of One**: use a SINGLE powerful keyword per node (absolute max 2 words if strictly necessary). Strip all articles, prepositions, and filler words.
+4. **Assign Emoji:** Every single node (L2, L3+) MUST have an emoji placed *before* the keyword to act as a visual anchor.
+5. **Assign Colors:** Assign a unique hex color to each L2 branch. All children of that branch conceptually inherit this color.
+6. **Identify Cross-Links:** Find 1 to 4 non-linear connections between different branches (e.g., a node in Branch 1 that heavily relates to a node in Branch 3).
 
 ### Step 3: Output
 
-Write the mindmap in the requested format. Default is **JSON** unless the user explicitly asks for markdown.
+Write the mindmap in the requested format. Default is **JSON**. Save to a file (e.g., `/tmp/mindmap-outline.json`).
 
 #### JSON format (default)
 
 ```json
 {
-  "root": "Central Theme",
-  "branches": [
+  "root": "🎯 Brainstorming",
+  "central_image_prompt": "A glowing human brain with colorful lightning bolts radiating outward",
+  "branches":[
     {
-      "text": "Branch One",
+      "id": "b1",
+      "text": "🎨 Creativity",
       "color": "#ff6b6b",
-      "children": [
-        {
-          "text": "Sub-concept A",
-          "children": [
-            { "text": "Detail 1" },
-            { "text": "Detail 2" }
-          ]
-        }
+      "children":[
+        { "id": "b1_1", "text": "💡 Ideas" },
+        { "id": "b1_2", "text": "🔗 Connections" }
+      ]
+    },
+    {
+      "id": "b2",
+      "text": "⚙️ Process",
+      "color": "#4ecdc4",
+      "children":[
+        { "id": "b2_1", "text": "⏳ Time" }
       ]
     }
+  ],
+  "cross_links":[
+    { "from": "b1_2", "to": "b2_1", "label": "accelerates" }
   ]
 }
 ```
 
-Save to a file (e.g., `/tmp/mindmap-outline.json` or next to the target output) so downstream renderers (markmind-exporter, forcegraph-exporter) can consume it.
-
 #### Markdown format
 
-When the user requests markdown output, produce a nested bullet list:
+If markdown is requested, produce a nested list. Omit colors and cross-links, but strictly maintain the single-keyword rule and emojis.
 
-```markdown
-# Central Theme
+## Content Principles (Buzan Rules)
 
-- Branch One
-  - Sub-concept A
-    - Detail 1
-    - Detail 2
-- Branch Two
-  - Sub-concept B
-```
+- **The Rule of One:** One node = ONE keyword. Never a phrase, never a sentence. Nouns and strong action verbs only.
+- **Visual Memory:** Emojis are not decorative; they are cognitive anchors. Match the emoji to the meaning, not just the word.
+- **Organic Growth:** Allow asymmetry. If a concept triggers a deep chain of associations, let it go deep (up to max depth).
+- **Opposites/Tensions:** Use contrasting symbols (e.g., ☀️/🌧️, ✅/❌).
 
-Rules for markdown output:
-- Root becomes an H1 heading
-- L2 branches are top-level bullets
-- Each deeper level adds one indent (2 spaces)
-- Preserve emoji prefixes on all nodes
-- Colors are omitted (markdown has no color support)
-- Save as `.md` file
+## Semantic Emoji Code (Fallback)
 
-## Content Principles
+Use specific emojis when applicable, otherwise use domain-specific ones:
 
-Follow the E-Myth model: **complete coverage, balanced branches, equal weight across all L2 rami**. No Pareto filtering. The goal is a comprehensive visual reference, not a highlight reel.
+| Function         | Emoji | Function         | Emoji |
+| :--------------- | :---- | :--------------- | :---- |
+| Central Concept  | 🎯    | Concrete Example | 💡    |
+| Definition/Core  | 📌    | Metric/Data      | 📊    |
+| Process/Action   | ⚙️    | Person/Role      | 👤    |
+| Advantage/Pro    | ✅    | Time/Phase       | ⏳    |
+| Limit/Con        | ❌    | Warning/Risk     | ⚠️    |
 
-- Every node = **keyword or micro-phrase**, never a full sentence
-- Prefer nouns and action verbs; strip articles and prepositions
-- Causal/sequential relations: use arrows in node text
-- Opposites/tensions: use contrasting symbols
-- Never use the em dash character
+## Color Palette (L2 branches)
 
-### Emoji Semantic Code
+Use these high-contrast, brain-friendly colors for L2 branches:
 
-| Function                     | Emoji |
-| ---------------------------- | ----- |
-| Central concept / nucleus    | 🎯    |
-| Definition / "what is it"    | 📌    |
-| Process / sequence           | ⚙️    |
-| Risk / warning               | ⚠️    |
-| Advantage / strength         | ✅    |
-| Disadvantage / limit         | ❌    |
-| Concrete example             | 💡    |
-| Cross-branch link            | 🔗    |
-| Open question / explore      | ❓    |
-| Numeric data / metric        | 📊    |
-| Person / role                | 👤    |
-| Time / phase                 | ⏳    |
+| #  | Color    | Hex     |
+| -- | -------- | ------- |
+| 1  | Coral    | #ff6b6b |
+| 2  | Teal     | #4ecdc4 |
+| 3  | Lime     | #95e77e |
+| 4  | Mint     | #a8e6cf |
+| 5  | Peach    | #ffd3b6 |
+| 6  | Lavender | #d4a5f5 |
+| 7  | Yellow   | #f7dc6f |
+| 8  | Sky      | #85c1e9 |
 
-Add domain-specific emoji where useful (🧠 psychology, 💻 tech, 💰 finance, 📖 book, etc.). Emoji always goes **before** the keyword.
+## JSON Schema Requirements
 
-### Color Palette (L2 branches)
-
-| Branch # | Hex       | Name       |
-| -------- | --------- | ---------- |
-| 1        | #ff6b6b   | Coral      |
-| 2        | #4ecdc4   | Teal       |
-| 3        | #95e77e   | Lime       |
-| 4        | #a8e6cf   | Mint       |
-| 5        | #ffd3b6   | Peach      |
-| 6        | #d4a5f5   | Lavender   |
-| 7        | #f7dc6f   | Yellow     |
-| 8        | #85c1e9   | Sky        |
-
-## JSON Schema
-
-### Root level
-
-| Field      | Type   | Required | Description                |
-| ---------- | ------ | -------- | -------------------------- |
-| root       | string | yes      | Central theme text (2-4 words, with emoji) |
-| branches   | array  | yes      | List of L2 branch objects  |
-
-### Branch / child node
-
-| Field      | Type   | Required | Description                |
-| ---------- | ------ | -------- | -------------------------- |
-| text       | string | yes      | Node label (keyword/micro-phrase with emoji for L2/L3) |
-| color      | string | L2 only  | Hex color from palette (only on L2 branches) |
-| children   | array  | no       | Nested child nodes         |
+- **root** (string): Central theme (1-2 words + emoji).
+- **central_image_prompt** (string): A short prompt describing a visual illustration of the root.
+- **branches** (array): List of branch objects.
+- **Branch object:** Must include `id` (unique string, e.g., "node_1"), `text` (emoji + single keyword), and `color` (L2 only).
+- **cross_links** (array): Objects containing `from` (id), `to` (id), and optional `label` (1 word).
