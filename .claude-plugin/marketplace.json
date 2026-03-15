@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Custom development workflow agents and skills for code quality, Tauri/Rust development, frontend optimization, AI tooling, and constraint programming optimization",
-    "version": "2.6.0"
+    "version": "2.7.0"
   },
   "plugins": [
     {
@@ -341,7 +341,7 @@
       "name": "code-documentation",
       "source": "./plugins/code-documentation",
       "description": "Bottom-up technical documentation -- codebase analysis, API reference generation, doc refactoring and consolidation, ground truth verification, and tutorial creation",
-      "version": "1.5.0",
+      "version": "1.6.0",
       "author": {
         "name": "Alfio"
       },
