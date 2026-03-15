@@ -31,22 +31,66 @@ Extract and confirm:
 
 If the brief is incomplete, ask targeted questions before proceeding.
 
+**Sector Ban List** - After extracting the brief, identify the 5-10 most overused prefixes, suffixes, and roots in the target sector. Create a BAN LIST that all generated names must avoid. Examples:
+- Fitness sector: ban `Fit`, `Nutri`, `Cal`, `Diet`, `Food`, `Meal`, `Gym`, `Health`, `Body`, `Lean`
+- AI/tech sector: ban `AI`, `Bot`, `Mind`, `Think`, `Brain`, `Smart`, `Logic`, `Synth`, `Cogni`, `Neural`
+- Finance sector: ban `Fin`, `Pay`, `Cash`, `Coin`, `Money`, `Wealth`, `Capital`, `Fund`
+- Travel sector: ban `Trip`, `Tour`, `Fly`, `Go`, `Wander`, `Roam`, `Trek`, `Voyage`
+
+Display the ban list before proceeding.
+
+### Step 1b: Instant Kill Pre-screening
+
+Hard constraints for all name generation - apply during generation, not post-hoc:
+
+- **NEVER propose single dictionary words** (any language) or common nouns as brand names
+- Assume all single common words in tech/app sectors are 100% taken (domains, trademarks, app stores)
+- **NEVER use banned morphemes** from the sector ban list
+- Skip directly to neologisms, blends, morphological inventions, or obscure foreign words
+- The only exception: truly obscure words from non-major languages (e.g., Basque, Swahili, Finnish) that have zero tech/brand presence - and even these must be verified
+
 ### Step 2: Massive Generation (Brainstorming)
 
-Generate at least 30 name candidates across three styles:
+Generate at least 30 name candidates across three styles. Before generating, identify the target emotions from the brief and map them to phonosymbolic sounds (see Phonosymbolism Quick Reference). Use these sounds as the starting palette for generation.
+
+**Phonosymbolic Priming** - Start generation from sound, not meaning:
+1. List 2-3 target emotions (e.g., Simplicity, AI, Fluidity)
+2. Map to ideal sounds (e.g., Simplicity -> `i`, `e`, `l`; Fluidity -> `f`, `v`, `s`, `l`; AI -> `i`, `k`, `t`)
+3. Assemble candidate syllables from the selected sound palette FIRST
+4. Then layer meaning on top of the phonetic skeleton
+5. Discard sounds that contradict the brand personality unless explicitly requested
 
 **Descriptive** (clear product connection, SEO-friendly, harder to trademark)
 - Combine keywords: product function + benefit + audience hint
+- Must be compound or blended - never a single word
 - Examples: MyFitnessPal, Booking.com, WeTransfer
 
-**Abstract/Invented** (distinctive, easy to trademark, requires brand-building)
-- Blending/portmanteau: fuse two relevant words (Pay+Pal=PayPal, Sky+Peer=Skype)
-- Phonetic invention: create new words with pleasant sounds
-- Vowel/consonant manipulation: alter existing words systematically
-- Examples: Noom, Oura, Kodak
+**Abstract/Invented** (distinctive, easy to trademark, requires brand-building) - Use morphological techniques:
+
+*Technique A: Clipping & Suffixing*
+- Extract root morpheme from a relevant word, apply non-standard suffixes (-io, -ia, -ly, -fy, -os, -ix, -ara, -ova, -ium, -eo, -ika)
+- Examples: Nutr- + -io = Nutrio, Lumin- + -a = Lumina, Spot- + -ify = Spotify
+
+*Technique B: Vowel Dropping / Consonant Shifting*
+- Deliberately alter spelling of a known word to make it registrable
+- Drop vowels, swap consonants, add/remove letters
+- Examples: Figma (from Figment), Tumblr (from Tumbler), Flickr (from Flicker)
+
+*Technique C: V-C-V-C-V Phonotactic Structures*
+- Force generation of words with alternating Vowel-Consonant patterns
+- These are universally pronounceable, app-store friendly, and sound clean
+- Target 2-3 syllable length
+- Examples: Oralo, Avion, Eluma, Ivori, Asana
+
+*Technique D: Cross-linguistic Blending*
+- Fuse morphemes from different languages (Latin + Japanese, Greek + Nordic, Sanskrit + Italian, etc.)
+- Both morphemes must carry relevant meaning
+- Examples: Auralux (Latin aura + lux), Zenkai (Japanese zen + kai)
+
+Each invented name should note which technique was used.
 
 **Evocative/Metaphorical** (emotional resonance, storytelling potential)
-- Foreign words with relevant meaning (Strava = Swedish "to strive")
+- Foreign words with relevant meaning - must be obscure enough to be registrable
 - Metaphors from nature, mythology, science
 - Sensory/emotional associations
 - Examples: Strava, Amazon, Nike
@@ -67,9 +111,19 @@ From the 30+ candidates, filter down to the best 8-10 by checking:
 - Phonosymbolism alignment (round sounds = soft/friendly, sharp sounds = energy/precision)
 - No excessive similarity to existing major brands
 
+### Step 3b: Quick Domain Gate
+
+Before full analysis, run a rapid viability check on each of the 8-10 filtered candidates:
+
+- For each name, WebSearch for `"name.com"` and `"name" app`
+- If .com is owned by an established company (Fortune 500, funded startup, active SaaS), **silently discard** the name
+- Generate a replacement name using the same morphological techniques and re-filter it
+- Only names that pass this quick gate proceed to the full Step 4-6 analysis
+- Goal: eliminate obviously blocked names before spending search calls on deep analysis
+
 ### Step 4: Domain and Social Check
 
-For the top 8-10 names, verify:
+For the top 8-10 names that passed the Quick Domain Gate, verify:
 - `.com` domain availability (use `scripts/domain_checker.py` if API key configured, otherwise use WebSearch)
 - Alternative TLDs: `.app`, `.io`, `.co`, `.dev`, or country-specific
 - Social media handle availability on major platforms (search via web)
@@ -86,32 +140,32 @@ For each remaining candidate:
 - Flag exact matches or confusingly similar marks in the same Nice class
 - Rate risk: LOW (no matches) / MEDIUM (similar in different class) / HIGH (conflict in same class)
 
-### Step 6: Market Saturation Analysis
+### Step 6: Market Saturation Analysis (Fail-Fast)
 
-For each candidate, perform a thorough market saturation check using WebSearch:
+For each candidate, perform a fail-fast market saturation check using WebSearch. Run checks in order - if a name fails an early gate, skip remaining checks and discard:
 
-**6a. Domain activity check**
+**6a. Domain activity check (GATE - run first)**
 - If .com is registered, visit it (WebFetch or WebSearch `site:name.com`) to determine if it's an active business, parked domain, or dead page
 - Check alternative TLDs too (.app, .io, .co) for active competitors
 - Rate: ACTIVE BUSINESS (red flag) / PARKED (moderate risk) / AVAILABLE (clear)
+- **If ACTIVE BUSINESS in same sector: discard immediately, generate replacement, skip remaining checks**
 
-**6b. App store saturation**
+**6b. App store saturation (only if 6a passed)**
 - Search "name" on Google Play Store and Apple App Store (via WebSearch: `"name" site:play.google.com`, `"name" site:apps.apple.com`)
 - Count apps with identical or very similar names in the same category
 - Rate: SATURATED (3+ same-category matches) / MODERATE (1-2 matches) / CLEAR (no matches)
 
-**6c. SERP saturation (Google Test)**
+**6c. SERP saturation - Google Test (only if 6a passed)**
 - Google the exact name in quotes: `"exactname"`
 - Assess first page results: are they dominated by an existing brand/product?
-- Check if the name is a common dictionary word (harder to own in search)
 - Rate: DOMINATED (existing brand owns page 1) / COMPETITIVE (mixed results) / OPEN (few/no relevant results)
 
-**6d. Social media presence**
+**6d. Social media presence (only if 6a passed)**
 - Check if accounts with that name are active on Instagram, Twitter/X, TikTok, LinkedIn
 - Distinguish between active brand accounts vs unused/personal handles
 - Rate: TAKEN BY BRAND (red flag) / INACTIVE/PERSONAL (recoverable) / AVAILABLE (clear)
 
-**6e. Industry-specific saturation**
+**6e. Industry-specific saturation (only if 6a passed)**
 - Search `"name" + industry keywords` to find competitors using similar names
 - Check Product Hunt, Crunchbase, AngelList for startups with that name (via WebSearch)
 - Look for same-name businesses in adjacent sectors that could cause confusion
@@ -192,6 +246,10 @@ Deliver the top 3 names with:
 - Consonants `k`, `t`, `p` - sharp, strong, energetic
 - Consonants `s`, `f`, `v` - flowing, smooth, elegant
 - Consonants `r`, `g` - rugged, powerful, dynamic
+
+### Morphological Generation Techniques
+
+See `references/naming-frameworks.md` for the full morphological toolkit including suffix inventories, consonant shift rules, V-C-V-C-V structures, and cross-linguistic blending patterns.
 
 ## Domain Checker Script
 

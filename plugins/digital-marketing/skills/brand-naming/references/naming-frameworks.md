@@ -75,6 +75,111 @@ Research (Kohler 1929, Ramachandran 2001 - Bouba/Kiki effect) shows sounds carry
 
 **Stripe** - Neutral, short, boring-on-purpose. Simplicity signals reliability for developers. Lesson: sometimes an unexciting name lets the product speak.
 
+## Morphological Generation Techniques
+
+Advanced techniques for creating registrable, distinctive brand names that go beyond simple portmanteau.
+
+### Technique A: Clipping & Suffixing
+
+Extract a root morpheme from a relevant word and attach a non-standard suffix.
+
+**Suffix Inventory:**
+| Suffix | Feel | Examples |
+|--------|------|----------|
+| -io | tech, modern | Nutrio, Cardio, Clasp.io |
+| -ia | place, community | Luminia, Experia, Trivia |
+| -ly | friendly, approachable | Grammarly, Bitly, Orderly |
+| -fy | action, transformation | Spotify, Shopify, Testify |
+| -os | global, pluralistic | Chronos, Helios, Kairos |
+| -ix | precision, tech | Graphix, Nutrix, Automatix |
+| -ara | warmth, organic | Solara, Zephara, Lunara |
+| -ova | innovation, fresh | Innova, Genova, Vitanova |
+| -ium | premium, scientific | Titanium, Radium, Palladium |
+| -eo | modern, video-era | Vimeo, Cameo, Stereo |
+| -ika | distinctive, global | Botanika, Dynamika, Logika |
+
+**Process:**
+1. Identify 5-10 keywords relevant to the brand
+2. Extract root morphemes (first 3-5 letters)
+3. Combine each root with 3-4 suffixes from the inventory
+4. Filter for pronounceability and distinctiveness
+
+### Technique B: Vowel Dropping / Consonant Shifting
+
+Alter the spelling of a known word to make it unique and registrable.
+
+**Rules:**
+- Drop interior vowels (Tumbler -> Tumblr, Flicker -> Flickr)
+- Swap consonants for phonetic neighbors (ph->f, c->k, s->z)
+- Double a consonant for emphasis (Trello from trail)
+- Add/remove a trailing vowel (Figment -> Figma)
+- Swap vowel sounds (a->o, e->i) to create near-words
+
+**Phonetic Neighbor Map:**
+| Original | Alternatives |
+|----------|-------------|
+| c/k | k, q, ck |
+| s/z | z, x, ss |
+| f/ph | f, ph, v |
+| t/d | t, d, th |
+| b/p | b, p |
+| g/j | g, j, gh |
+
+**Process:**
+1. Start with a meaningful word (even a banned one)
+2. Apply 1-2 alterations (not more - must remain pronounceable)
+3. Verify the result doesn't accidentally spell something in another language
+4. Check the altered form is not already taken
+
+### Technique C: V-C-V-C-V Phonotactic Structures
+
+Generate words using alternating Vowel-Consonant patterns. These are universally pronounceable across languages.
+
+**Target Structures:**
+| Pattern | Syllables | Examples |
+|---------|-----------|---------|
+| V-CV | 2 | Umi, Eko, Alo |
+| CV-CV | 2 | Nova, Melo, Suki |
+| V-CV-CV | 3 | Oralo, Avion, Eluma |
+| CV-CV-CV | 3 | Talora, Merino, Kasumi |
+| V-CV-CV-CV | 4 | Ivori, Akirano |
+
+**Process:**
+1. Select consonants from the phonosymbolic palette matching brand emotions
+2. Select vowels for the desired warmth/precision balance
+3. Arrange in V-C-V-C-V or CV-CV-CV patterns
+4. Filter: must "feel like a word" without being one
+5. Cross-check against major languages for unintended meanings
+
+**Vowel-Emotion Guide:**
+- Front vowels (i, e) - precision, lightness, technology
+- Back vowels (a, o, u) - warmth, depth, trust
+
+### Technique D: Cross-linguistic Blending
+
+Fuse morphemes from different languages where both parts carry relevant meaning.
+
+**Productive Language Pairs:**
+| Pair | Why it works | Example |
+|------|-------------|---------|
+| Latin + Japanese | Authority + minimalism | Auralux (aura + lux), Zenkai (zen + kai) |
+| Greek + Nordic | Science + strength | Chronvald (chronos + vald) |
+| Sanskrit + Italian | Wisdom + elegance | Pranagio (prana + viaggio) |
+| Arabic + French | Richness + refinement | Qamarelle (qamar + belle) |
+| Finnish + Spanish | Uniqueness + energy | Suviluz (suvi + luz) |
+
+**Process:**
+1. List relevant concepts in 3-4 source languages
+2. Extract morphemes (2-4 letters each)
+3. Test combinations for flow and pronounceability
+4. Verify neither morpheme has negative connotations in common languages
+5. Prefer combinations where the blend creates a new phonetic identity (not obviously two words stapled together)
+
+**Quality Check:**
+- The blend should sound like a single word, not a compound
+- Native speakers of the source languages should not find it awkward
+- The etymology should be discoverable (good brand story) but not obvious (not a dictionary lookup)
+
 ## Trademark Resources
 
 - **EUIPO TMview**: https://www.tmdn.org/tmview/
