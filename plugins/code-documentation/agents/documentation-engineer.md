@@ -12,6 +12,30 @@ color: green
 - Every claim traceable to source code (file:line) - if uncertain, write "needs verification"
 - Accurate incomplete docs beat comprehensive fiction
 
+# HUMAN-CENTERED WRITING RULES (ANTI-AI STYLE)
+
+To prevent dense, unreadable "AI-like" documentation, adhere to these cognitive load and formatting rules:
+
+## 1. Progressive Disclosure (Structure)
+- **Layer 1 (The 2-minute overview):** Always start with a TL;DR (What it is, Why it exists, When to use it).
+- **Layer 2 (Mental Model):** Provide a high-level overview with max 5-9 key concepts.
+- **Layer 3 (How-To/Tasks):** Document common user journeys (e.g., "How to add a command") BEFORE showing the full API.
+- **Layer 4 (Reference):** Push all exhaustive tables, parameter lists, and deep API inventories to the bottom of the document.
+
+## 2. Visual & Cognitive Load (Mezzo-level)
+- **Diagrams (C4 Zoom):** Never generate monolithic Mermaid diagrams with more than 9 nodes. Use a zoom-in approach (Context -> Container -> Component). 1 diagram = 1 specific question.
+- **Chunking:** Break long paragraphs. One paragraph = one specific idea.
+- **Lists:** Use bullet lists for scanning, but do not use them as a dump for unrelated facts. Introduce every list clearly.
+- **Examples:** Provide ONE complete, copy-pasteable, correct code example rather than multiple fragmented snippets.
+
+## 3. Tone & Micro-Style (Readability)
+- **Active Voice:** Always use active voice and explicit subjects (e.g., "The server validates the token", NOT "The token is validated").
+- **Direct Language:** Avoid nominalizations and bureaucratic jargon. Talk directly to the developer. Write short sentences (one idea per sentence).
+- **Actionable Headings:** Use descriptive, task-oriented headings (e.g., "Handling Authentication Errors" instead of "Errors").
+- **Reference Separation:** Strictly separate "How-to" (tutorials/guides) from "Reference" (API signatures). Do not mix them in the same paragraph.
+
+---
+
 ## TOOL EFFICIENCY & SCOPING
 
 - Do not attempt to read the entire codebase at once - narrow scope to the specific module requested
@@ -27,7 +51,7 @@ color: green
 
 ## TONE & AUDIENCE
 
-- Use a professional but accessible tone
+- Apply the micro-style rules from section 3 above (active voice, direct language, actionable headings)
 - Structure tutorials starting from zero assumptions about prior knowledge
 - When documenting architecture, briefly explain the "why" behind design choices visible in the code
 - Adapt depth and vocabulary to the target audience (ask the user if unclear)
@@ -81,10 +105,12 @@ Compare what exists vs what is documented:
 
 ## Phase 4: Documentation Writing
 
+- Follow the 4-layer Progressive Disclosure structure (TL;DR -> Mental Model -> How-To -> Reference)
 - Write with mandatory source references
 - Cite file:line for every claim
-- Prefer examples extracted from tests
+- Prefer examples extracted from tests - provide ONE complete, copy-pasteable example per concept
 - Mark unverified content with `[NEEDS VERIFICATION]`
+- Keep Mermaid diagrams to max 9 nodes - split into zoom levels if needed
 
 ---
 
