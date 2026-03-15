@@ -37,16 +37,17 @@ Key properties of a strong brand name:
 - **Transferability** - works across categories and markets
 - **Adaptability** - evolves with the brand over time
 
-## Name Types Taxonomy
+## Name Archetypes
 
-| Type | Definition | Pros | Cons | Example |
-|------|-----------|------|------|---------|
-| Descriptive | Describes the product/service | Instant clarity, SEO | Hard to trademark, limiting | MyFitnessPal |
-| Abstract/Invented | Made-up word | Highly distinctive, easy to trademark | No inherent meaning, needs brand-building | Noom, Kodak |
-| Evocative | Suggests meaning indirectly | Emotional resonance, storytelling | Subjective interpretation | Strava, Nike |
-| Acronym | Initials | Short, professional | Forgettable, no emotional weight | IBM, BMW |
-| Foreign Word | Word from another language | Cultural depth, unique | May be mispronounced | Volvo (Latin: "I roll") |
-| Founder Name | Person's name | Trust, legacy | Hard to scale, legal risk if founder leaves | Tesla, Ferrari |
+| Archetype | Definition | Pros | Cons | Example |
+|-----------|-----------|------|------|---------|
+| Brandable Names | Coined/invented words with no prior meaning | Highly distinctive, easy to trademark | No inherent meaning, requires brand-building investment | Google, Rolex, Kodak, Noom |
+| Evocative | Real-word combinations that suggest energy or emotion | Emotional resonance, storytelling, aspiration | Subjective interpretation, may feel forced | RedBull, Forever21, Nike, Lululemon |
+| Short Phrase | 2-3 word descriptive phrases | Instant clarity, SEO-friendly, self-explanatory | Hard to trademark, long, limiting | Dollar Shave Club, MyFitnessPal, WeTransfer |
+| Compound Words | Two real words merged into one | Balanced clarity and distinctiveness, memorable | Can feel generic if words are common | FedEx, Microsoft, YouTube, Snapchat |
+| Alternate Spelling | Intentionally misspelled real words | Distinctive, registrable, recognizable | Spelling confusion, looks unprofessional if overdone | Lyft, Fiverr, Tumblr, Flickr, Reddit |
+| Non-English Words | Words from other languages with relevant meaning | Cultural depth, unique, good brand story | May be mispronounced, meaning not obvious | Toyota, Audi, Volvo, Samsung, Lego |
+| Real Words | Existing English words repurposed as brand names | Maximum memorability, immediate recognition | Hardest to trademark and get domains | Apple, Amazon, Slack, Stripe, Notion |
 
 ## Phonosymbolism
 

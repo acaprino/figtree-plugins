@@ -3,11 +3,12 @@ name: brand-naming
 description: >
   Brand naming strategist -- generates, filters, scores, and validates brand names
   through a structured workflow. Use when creating brand names, product names, app names,
-  startup names, or any naming project. Covers brainstorming (descriptive, abstract,
-  evocative styles), linguistic/cultural filtering, weighted scoring, domain availability
-  checks, market saturation analysis (existing apps, websites, businesses with same name),
-  trademark pre-screening, and SEO analysis. Trigger on: "brand name", "naming",
-  "name my app", "name my product", "product name", "startup name", "come up with a name",
+  startup names, or any naming project. Covers 7 naming archetypes (brandable names,
+  evocative, short phrase, compound words, alternate spelling, non-English words, real words),
+  linguistic/cultural filtering, weighted scoring, domain availability checks, market
+  saturation analysis (existing apps, websites, businesses with same name), trademark
+  pre-screening, and SEO analysis. Trigger on: "brand name", "naming", "name my app",
+  "name my product", "product name", "startup name", "come up with a name",
   "nome del brand", "naming strategico".
 ---
 
@@ -51,7 +52,7 @@ Hard constraints for all name generation - apply during generation, not post-hoc
 
 ### Step 2: Massive Generation (Brainstorming)
 
-Generate at least 30 name candidates across three styles. Before generating, identify the target emotions from the brief and map them to phonosymbolic sounds (see Phonosymbolism Quick Reference). Use these sounds as the starting palette for generation.
+Generate at least 30 name candidates across seven archetypes. Before generating, identify the target emotions from the brief and map them to phonosymbolic sounds (see Phonosymbolism Quick Reference). Use these sounds as the starting palette for generation.
 
 **Phonosymbolic Priming** - Start generation from sound, not meaning:
 1. List 2-3 target emotions (e.g., Simplicity, AI, Fluidity)
@@ -60,40 +61,56 @@ Generate at least 30 name candidates across three styles. Before generating, ide
 4. Then layer meaning on top of the phonetic skeleton
 5. Discard sounds that contradict the brand personality unless explicitly requested
 
-**Descriptive** (clear product connection, SEO-friendly, harder to trademark)
+Generate candidates from each of the seven archetypes below. Not every archetype will suit every brief -- prioritize the ones that match the brand's goals, but always explore at least 4-5 archetypes.
+
+**1. Brandable Names** (coined/invented words - distinctive, easy to trademark, requires brand-building)
+- Use morphological techniques to create entirely new words:
+  - *Clipping & Suffixing* - Extract root morpheme, apply non-standard suffixes (-io, -ia, -ly, -fy, -os, -ix, -ara, -ova, -ium, -eo, -ika). E.g., Spot- + -ify = Spotify, Lumin- + -a = Lumina
+  - *V-C-V-C-V Phonotactic Structures* - Alternating vowel-consonant patterns, universally pronounceable, 2-3 syllables. E.g., Oralo, Avion, Eluma, Asana
+  - *Cross-linguistic Blending* - Fuse morphemes from different languages where both carry meaning. E.g., Auralux (Latin aura + lux), Zenkai (Japanese zen + kai)
+- Each invented name should note which technique was used
+- Examples: Google, Rolex, Kodak, Noom, Oura
+
+**2. Evocative** (suggests energy, aspiration, or emotion through real-word combinations)
+- Combine real words or fragments that evoke the brand's energy or promise
+- Focus on emotional resonance and storytelling potential
+- Can use metaphors from nature, mythology, or aspiration
+- Examples: RedBull, Forever21, Strava, Nike, Lululemon
+
+**3. Short Phrase** (2-3 word descriptive phrases - instant clarity, SEO-friendly)
 - Combine keywords: product function + benefit + audience hint
-- Must be compound or blended - never a single word
-- Examples: MyFitnessPal, Booking.com, WeTransfer
+- Must communicate the value proposition immediately
+- Harder to trademark but excellent for discovery
+- Examples: Dollar Shave Club, MyFitnessPal, WeTransfer, Booking.com
 
-**Abstract/Invented** (distinctive, easy to trademark, requires brand-building) - Use morphological techniques:
+**4. Compound Words** (two real words merged into one - balanced clarity and distinctiveness)
+- Merge two meaningful words into a single brand name
+- Both words should contribute to the brand meaning
+- Can capitalize internal letters (camelCase) or run together
+- Examples: FedEx, Microsoft, YouTube, Facebook, Snapchat, WordPress
 
-*Technique A: Clipping & Suffixing*
-- Extract root morpheme from a relevant word, apply non-standard suffixes (-io, -ia, -ly, -fy, -os, -ix, -ara, -ova, -ium, -eo, -ika)
-- Examples: Nutr- + -io = Nutrio, Lumin- + -a = Lumina, Spot- + -ify = Spotify
+**5. Alternate Spelling** (intentionally misspelled real words - distinctive, registrable)
+- Apply vowel dropping, consonant shifting, or phonetic substitution:
+  - Drop interior vowels (Tumbler -> Tumblr, Flicker -> Flickr)
+  - Swap consonants for phonetic neighbors (ph->f, c->k, s->z)
+  - Swap vowels (a->o, e->i, y for i)
+  - Double a consonant or truncate endings
+- Must remain pronounceable and recognizable
+- Examples: Lyft, Fiverr, Tumblr, Flickr, Figma, Reddit
 
-*Technique B: Vowel Dropping / Consonant Shifting*
-- Deliberately alter spelling of a known word to make it registrable
-- Drop vowels, swap consonants, add/remove letters
-- Examples: Figma (from Figment), Tumblr (from Tumbler), Flickr (from Flicker)
+**6. Non-English Words** (foreign words with relevant meaning - cultural depth, unique)
+- Select words from non-English languages that carry brand-relevant meaning
+- Prefer obscure enough words to be registrable
+- Must be pronounceable in target markets
+- Etymology should be a discoverable brand story
+- Examples: Toyota, Audi, Volvo (Latin: "I roll"), Samsung (Korean: "three stars"), Lego (Danish: "play well")
 
-*Technique C: V-C-V-C-V Phonotactic Structures*
-- Force generation of words with alternating Vowel-Consonant patterns
-- These are universally pronounceable, app-store friendly, and sound clean
-- Target 2-3 syllable length
-- Examples: Oralo, Avion, Eluma, Ivori, Asana
-
-*Technique D: Cross-linguistic Blending*
-- Fuse morphemes from different languages (Latin + Japanese, Greek + Nordic, Sanskrit + Italian, etc.)
-- Both morphemes must carry relevant meaning
-- Examples: Auralux (Latin aura + lux), Zenkai (Japanese zen + kai)
-
-Each invented name should note which technique was used.
-
-**Evocative/Metaphorical** (emotional resonance, storytelling potential)
-- Foreign words with relevant meaning - must be obscure enough to be registrable
-- Metaphors from nature, mythology, science
-- Sensory/emotional associations
-- Examples: Strava, Amazon, Nike
+**7. Real Words** (existing English words repurposed - immediate recognition, metaphorical power)
+- Common words given new context through the brand
+- Must have strong metaphorical or aspirational connection
+- Hardest to trademark and register domains, but most memorable
+- Only viable if the word is not already dominant in the target sector
+- Examples: Apple, Amazon, Slack, Stripe, Square, Notion, Linear
 
 Apply CO.ME.OR.GO criteria during generation:
 - **CO**rto (short) - prefer 1-3 syllables
@@ -229,14 +246,18 @@ Deliver the top 3 names with:
 
 ### Name Style Decision Guide
 
-| Goal | Best Style | Example |
-|------|-----------|---------|
-| Instant clarity | Descriptive | MyFitnessPal |
-| Strong trademark | Abstract | Noom, Oura |
-| Emotional connection | Evocative | Strava, Nike |
-| SEO advantage | Descriptive | Booking.com |
-| Global expansion | Abstract | Kodak, Rolex |
-| Premium positioning | Evocative | Tesla, Aura |
+| Goal | Best Archetype | Example |
+|------|---------------|---------|
+| Strong trademark | Brandable Names | Kodak, Rolex, Noom |
+| Emotional energy | Evocative | RedBull, Forever21, Nike |
+| Instant clarity | Short Phrase | Dollar Shave Club, MyFitnessPal |
+| SEO advantage | Short Phrase | Booking.com, WeTransfer |
+| Balanced clarity + distinctiveness | Compound Words | FedEx, YouTube, WordPress |
+| Distinctive + registrable | Alternate Spelling | Lyft, Fiverr, Tumblr |
+| Cultural depth | Non-English Words | Toyota, Audi, Volvo |
+| Global expansion | Brandable Names | Google, Rolex, Kodak |
+| Maximum memorability | Real Words | Apple, Slack, Notion |
+| Premium positioning | Non-English Words / Evocative | Audi, Tesla, Lululemon |
 
 ### Phonosymbolism Quick Reference
 
