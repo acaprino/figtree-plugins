@@ -129,15 +129,18 @@ If total changed lines exceed 500, batch the files into groups of 3-5 files per 
 
 ## Step 3: Run Parallel Review Agents
 
+**Agent tool parameters (use ONLY these):** `description` (required), `prompt` (required), `subagent_type`, `run_in_background`, `model`, `isolation`, `resume`. Do NOT pass any other parameters -- the Agent tool rejects unknown fields.
+
 Run all four agents **in parallel** in a single response:
 
 ### Agent A: Architecture & Code Quality
 
 ```
-Task:
-  subagent_type: "senior-review:architect-review"
-  description: "Architecture review for senior-review command"
-  prompt: |
+Agent tool call:
+  - description: "Architecture review for senior-review command"
+  - subagent_type: "senior-review:architect-review"
+  - run_in_background: true
+  - prompt: |
     Review the following code changes for architectural soundness and code quality.
     You have both the diff AND the full file contents for context.
 
@@ -172,10 +175,11 @@ Task:
 ### Agent B: Security Assessment
 
 ```
-Task:
-  subagent_type: "senior-review:security-auditor"
-  description: "Security review for senior-review command"
-  prompt: |
+Agent tool call:
+  - description: "Security review for senior-review command"
+  - subagent_type: "senior-review:security-auditor"
+  - run_in_background: true
+  - prompt: |
     Review the following code changes for security vulnerabilities.
     You have both the diff AND the full file contents for context.
 
@@ -204,10 +208,11 @@ Task:
 ### Agent C: Pattern Consistency
 
 ```
-Task:
-  subagent_type: "general-purpose"
-  description: "Pattern consistency analysis"
-  prompt: |
+Agent tool call:
+  - description: "Pattern consistency analysis"
+  - subagent_type: "general-purpose"
+  - run_in_background: true
+  - prompt: |
     You are a pattern consistency analyst. Analyze code changes for pattern deviations and anti-patterns.
     You have both the diff AND the full file contents for context.
 
@@ -243,10 +248,11 @@ Task:
 ### Agent D: Dead Code Detection
 
 ```
-Task:
-  subagent_type: "general-purpose"
-  description: "Dead code detection for senior-review command"
-  prompt: |
+Agent tool call:
+  - description: "Dead code detection for senior-review command"
+  - subagent_type: "general-purpose"
+  - run_in_background: true
+  - prompt: |
     Analyze the following code changes for dead code introduced or exposed by the diff.
     You have both the diff AND the full file contents for context.
 
@@ -290,10 +296,10 @@ After all four agents complete, collect and organize their findings into a singl
 Run the pattern-quality-scorer agent with ALL findings from Step 4 to produce a calibrated quality score:
 
 ```
-Task:
-  subagent_type: "senior-review:pattern-quality-scorer"
-  description: "Quality scoring with all agent findings"
-  prompt: |
+Agent tool call:
+  - description: "Quality scoring with all agent findings"
+  - subagent_type: "senior-review:pattern-quality-scorer"
+  - prompt: |
     Produce a calibrated quality score for the reviewed code changes.
     You have the consolidated findings from all review agents -- use them to score accurately.
 

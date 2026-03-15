@@ -114,15 +114,18 @@ Skip this phase entirely if `--deep-dive` flag is not set.
 
 When `--deep-dive` is active, run deep-dive analysis on the target path to gather structural and semantic context that strengthens all subsequent review phases.
 
+**Agent tool parameters (use ONLY these):** `description` (required), `prompt` (required), `subagent_type`, `run_in_background`, `model`, `isolation`, `resume`. Do NOT pass any other parameters -- the Agent tool rejects unknown fields.
+
 Spawn 3 agents in parallel using the Agent tool:
 
 ### Agent A: Structure + Interfaces
 
 ```
-Task:
-  subagent_type: "general-purpose"
-  description: "Deep dive structure and interfaces for review context"
-  prompt: |
+Agent tool call:
+  - description: "Deep dive structure and interfaces for review context"
+  - subagent_type: "general-purpose"
+  - run_in_background: true
+  - prompt: |
     Analyze the target code and produce two output files.
 
     ## Target
@@ -151,10 +154,11 @@ Task:
 ### Agent B: Flows + Semantics
 
 ```
-Task:
-  subagent_type: "general-purpose"
-  description: "Deep dive flows and semantics for review context"
-  prompt: |
+Agent tool call:
+  - description: "Deep dive flows and semantics for review context"
+  - subagent_type: "general-purpose"
+  - run_in_background: true
+  - prompt: |
     Analyze the target code and produce two output files.
 
     ## Target
@@ -182,10 +186,11 @@ Task:
 ### Agent C: Risks
 
 ```
-Task:
-  subagent_type: "general-purpose"
-  description: "Deep dive risk detection for review context"
-  prompt: |
+Agent tool call:
+  - description: "Deep dive risk detection for review context"
+  - subagent_type: "general-purpose"
+  - run_in_background: true
+  - prompt: |
     Analyze the target code for risks and anti-patterns.
 
     ## Target
@@ -235,10 +240,10 @@ specialized perspective.
 ### Step 1A: Architecture & Design Review
 
 ```
-Task:
-  subagent_type: "senior-review:architect-review"
-  description: "Architecture review for $ARGUMENTS"
-  prompt: |
+Agent tool call:
+  - description: "Architecture review for $ARGUMENTS"
+  - subagent_type: "senior-review:architect-review"
+  - prompt: |
     Review the architectural design and structural integrity of the target code.
 
     ## Review Scope
@@ -307,10 +312,11 @@ Run both agents in parallel using multiple Task tool calls in a single response.
 ### Step 2A: Security Vulnerability Assessment
 
 ```
-Task:
-  subagent_type: "senior-review:security-auditor"
-  description: "Security audit for $ARGUMENTS"
-  prompt: |
+Agent tool call:
+  - description: "Security audit for $ARGUMENTS"
+  - subagent_type: "senior-review:security-auditor"
+  - run_in_background: true
+  - prompt: |
     Execute a comprehensive security audit on the target code.
 
     ## Review Scope
@@ -341,10 +347,11 @@ Task:
 ### Step 2B: Performance & Scalability Analysis
 
 ```
-Task:
-  subagent_type: "general-purpose"
-  description: "Performance analysis for $ARGUMENTS"
-  prompt: |
+Agent tool call:
+  - description: "Performance analysis for $ARGUMENTS"
+  - subagent_type: "general-purpose"
+  - run_in_background: true
+  - prompt: |
     You are a performance engineer. Conduct a performance and scalability analysis of the target code.
 
     ## Review Scope
@@ -431,10 +438,11 @@ Run both agents in parallel using multiple Task tool calls in a single response.
 ### Step 3A: Test Coverage & Quality Analysis
 
 ```
-Task:
-  subagent_type: "general-purpose"
-  description: "Test coverage analysis for $ARGUMENTS"
-  prompt: |
+Agent tool call:
+  - description: "Test coverage analysis for $ARGUMENTS"
+  - subagent_type: "general-purpose"
+  - run_in_background: true
+  - prompt: |
     You are a test automation engineer. Evaluate the testing strategy and coverage for the target code.
 
     ## Review Scope
@@ -464,10 +472,11 @@ Task:
 ### Step 3B: Documentation & API Review
 
 ```
-Task:
-  subagent_type: "general-purpose"
-  description: "Documentation review for $ARGUMENTS"
-  prompt: |
+Agent tool call:
+  - description: "Documentation review for $ARGUMENTS"
+  - subagent_type: "general-purpose"
+  - run_in_background: true
+  - prompt: |
     You are a technical documentation architect. Review documentation completeness and accuracy.
 
     ## Review Scope
@@ -522,10 +531,11 @@ Run all three agents in parallel using multiple Task tool calls in a single resp
 ### Step 4A: Framework & Language Best Practices
 
 ```
-Task:
-  subagent_type: "general-purpose"
-  description: "Framework best practices review for $ARGUMENTS"
-  prompt: |
+Agent tool call:
+  - description: "Framework best practices review for $ARGUMENTS"
+  - subagent_type: "general-purpose"
+  - run_in_background: true
+  - prompt: |
     You are an expert in modern framework and language best practices. Verify adherence to current standards.
 
     ## Review Scope
@@ -554,10 +564,11 @@ Task:
 ### Step 4B: CI/CD & DevOps Practices Review
 
 ```
-Task:
-  subagent_type: "general-purpose"
-  description: "CI/CD and DevOps practices review for $ARGUMENTS"
-  prompt: |
+Agent tool call:
+  - description: "CI/CD and DevOps practices review for $ARGUMENTS"
+  - subagent_type: "general-purpose"
+  - run_in_background: true
+  - prompt: |
     You are a DevOps engineer. Review CI/CD pipeline and operational practices.
 
     ## Review Scope
@@ -586,10 +597,11 @@ Task:
 ### Step 4C: Dead Code Analysis
 
 ```
-Task:
-  subagent_type: "general-purpose"
-  description: "Dead code analysis for $ARGUMENTS"
-  prompt: |
+Agent tool call:
+  - description: "Dead code analysis for $ARGUMENTS"
+  - subagent_type: "general-purpose"
+  - run_in_background: true
+  - prompt: |
     You are a dead code detection specialist. Analyze the target code for unused symbols.
 
     ## Review Scope
@@ -649,10 +661,10 @@ Read all `.full-review/*.md` files (01 through 04) for full context before analy
 ### Step 5: Code Quality, Pattern Consistency & Scoring
 
 ```
-Task:
-  subagent_type: "senior-review:pattern-quality-scorer"
-  description: "Code quality, pattern analysis and scoring for $ARGUMENTS"
-  prompt: |
+Agent tool call:
+  - description: "Code quality, pattern analysis and scoring for $ARGUMENTS"
+  - subagent_type: "senior-review:pattern-quality-scorer"
+  - prompt: |
     Perform a comprehensive code quality review, pattern consistency analysis, and quantitative scoring.
     You have access to all prior phase findings — use them as context for calibrated, holistic scoring.
 
