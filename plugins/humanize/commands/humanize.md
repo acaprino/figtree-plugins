@@ -1,6 +1,6 @@
 ---
 description: "Rewrite source code to be more readable and human-friendly -- improves naming, removes AI boilerplate, simplifies structure, adds clarity comments -- without changing behavior"
-argument-hint: "<file or directory> [--dry-run] [--strict]"
+argument-hint: "<file or directory> [--dry-run] [--strict] [--yes]"
 ---
 
 # Humanize Code
@@ -11,8 +11,8 @@ Use the `humanize` agent to rewrite source code for readability without changing
 
 1. **Run tests before and after.** Establish a baseline, then verify no regressions.
 2. **If `--dry-run`, preview only.** Show proposed changes without modifying files.
-3. **Revert on test failure.** If any test fails after a change, undo it immediately.
-4. **Never enter plan mode.** Execute immediately.
+3. **Revert on test failure.** If any test fails after a change, revert with `git restore <file>` immediately.
+4. **Ask for confirmation** at Steps 2 and 3, unless `--yes` flag is provided.
 
 ## Step 1: Identify Target
 
@@ -25,10 +25,7 @@ List the files to be humanized and their language.
 
 ## Step 2: Establish Test Baseline
 
-Run the project's test suite:
-```bash
-pytest -v 2>/dev/null || npm test 2>/dev/null || cargo test 2>/dev/null
-```
+Detect the test runner by inspecting project files (e.g. `package.json` -> `npm test`, `pyproject.toml`/`setup.py` -> `pytest`, `Cargo.toml` -> `cargo test`, `go.mod` -> `go test`, `Makefile` with test target -> `make test`). Run the detected command and capture both stdout and stderr -- do NOT suppress stderr.
 
 Record passing/failing tests. If no tests exist, warn the user:
 
@@ -39,9 +36,12 @@ No tests found. Humanization changes can't be automatically validated.
 2. Cancel -- set up tests first
 ```
 
+If `--yes` flag is provided, proceed automatically (option 1).
+
 ## Step 3: Preview Changes (always for --dry-run, ask otherwise)
 
-If `--dry-run` flag is set, or if the target is a directory with >3 files, show a preview first:
+If `--dry-run` flag is set, or if the target is a directory with >3 files, show a preview first.
+If `--yes` flag is provided, apply all changes after showing the preview without asking.
 
 For each file, analyze and propose:
 - Variable/function renames (vague → domain-meaningful)
@@ -102,7 +102,7 @@ Task:
 
     Do NOT:
     - Change any behavior or logic
-    - Reorder top-level code or extract functions (unless --strict)
+    - Reorder top-level code or extract functions (UNLESS --strict flag is present in $ARGUMENTS, in which case you may do so carefully)
     - Remove error handling, validations, or imports
     - Modify test files (except renaming symbols renamed in source)
     - Add type annotations to unchanged code
@@ -112,13 +112,9 @@ Task:
 
 ## Step 5: Validate & Report
 
-After changes:
+After changes, re-run the same test command detected in Step 2. Capture both stdout and stderr.
 
-```bash
-pytest -v 2>/dev/null || npm test 2>/dev/null || cargo test 2>/dev/null
-```
-
-If any test fails: revert the last file's changes and report which file caused the failure.
+If any test that was passing in the baseline now fails: immediately revert the changes using `git restore <file>` and report which file caused the regression.
 
 Present summary:
 
