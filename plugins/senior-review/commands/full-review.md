@@ -261,6 +261,10 @@ Task:
     Write your findings as a structured markdown document.
 ```
 
+### Large Change Set Handling
+
+Before launching review agents, check the scope size. If the target contains more than 500 lines of code across all files, batch the files into groups of 3-5 files per agent invocation. Run batches sequentially, then consolidate findings before writing the phase output file.
+
 After completing, write to `.full-review/01-architecture.md`:
 
 ```markdown
@@ -274,6 +278,21 @@ After completing, write to `.full-review/01-architecture.md`:
 
 [List any findings that should inform security or performance review]
 ```
+
+### Machine-Readable Summary for Downstream Agents
+
+At the end of `.full-review/01-architecture.md`, include a structured block for efficient agent-to-agent communication:
+
+```xml
+<machine_summary>
+[
+  {"severity": "CRITICAL|HIGH|MEDIUM|LOW", "type": "category", "file": "path", "line": N, "description": "brief finding"},
+  ...
+]
+</machine_summary>
+```
+
+Phase 5 (pattern-quality-scorer) should read from `<machine_summary>` blocks rather than parsing full prose reports. This saves tokens and improves scoring precision.
 
 Update `state.json`: set `current_step` to 2, `current_phase` to 2, add step 1A to `completed_steps`.
 
@@ -369,6 +388,8 @@ After both complete, consolidate into `.full-review/02-security-performance.md`:
 
 [List findings that affect testing or documentation requirements]
 ```
+
+Include `<machine_summary>` blocks at the end of `.full-review/02-security-performance.md` (same format as Phase 1).
 
 Update `state.json`: set `current_step` to "checkpoint-1", add steps 2A and 2B to `completed_steps`.
 
@@ -485,6 +506,8 @@ After both complete, consolidate into `.full-review/03-testing-documentation.md`
 
 [Summary from 3B, organized by severity]
 ```
+
+Include `<machine_summary>` blocks at the end of `.full-review/03-testing-documentation.md`.
 
 Update `state.json`: set `current_step` to 4, `current_phase` to 4, add steps 3A and 3B to `completed_steps`.
 
@@ -613,6 +636,8 @@ After all three complete, consolidate into `.full-review/04-best-practices.md`:
 [Summary from 4C, organized by severity]
 ```
 
+Include `<machine_summary>` blocks at the end of `.full-review/04-best-practices.md`.
+
 Update `state.json`: set `current_step` to 5, `current_phase` to 5, add steps 4A, 4B, and 4C to `completed_steps`.
 
 ---
@@ -635,8 +660,9 @@ Task:
     [Insert contents of .full-review/00-scope.md]
 
     ## Prior Phase Context
-    [Insert summaries from .full-review/01-architecture.md, .full-review/02-security-performance.md,
-     .full-review/03-testing-documentation.md, .full-review/04-best-practices.md]
+    [Extract <machine_summary> blocks from .full-review/01-architecture.md, .full-review/02-security-performance.md,
+     .full-review/03-testing-documentation.md, .full-review/04-best-practices.md -- use structured data for precision.
+     Only fall back to reading full prose if machine_summary blocks are missing.]
 
     ## Instructions
 

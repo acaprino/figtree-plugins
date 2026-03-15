@@ -21,13 +21,20 @@ You MUST follow these rules exactly. Violating any of them is a failure.
 ### Step 1A: Identify the diff
 
 ```bash
-# Detect base branch (default: main)
-git log --oneline $(git merge-base HEAD main)..HEAD
-git diff main...HEAD --stat
-git diff main...HEAD --name-status
+# Detect base branch with fallback
+BASE_BRANCH="${BASE_ARG:-main}"
+if ! git show-ref --verify --quiet "refs/heads/$BASE_BRANCH" && \
+   ! git show-ref --verify --quiet "refs/remotes/origin/$BASE_BRANCH"; then
+  BASE_BRANCH="master"  # Fallback if main doesn't exist
+fi
+git fetch origin "$BASE_BRANCH" 2>/dev/null || true
+MERGE_BASE=$(git merge-base HEAD "origin/$BASE_BRANCH")
+git log --oneline "$MERGE_BASE"..HEAD
+git diff "$MERGE_BASE"...HEAD --stat
+git diff "$MERGE_BASE"...HEAD --name-status
 ```
 
-If `--base` flag provides a different base branch, use that instead of `main`.
+If `--base` flag provides a different base branch, use that as `BASE_ARG`.
 
 If no commits diverge from base, check for uncommitted changes:
 ```bash

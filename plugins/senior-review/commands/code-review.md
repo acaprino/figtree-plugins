@@ -72,10 +72,10 @@ For each changed code file:
 
 1. **Read the full file** -- understand surrounding context
 2. **Get the diff** -- know exactly what changed
-3. **Run git blame on changed lines** -- understand who wrote the original code and when
+3. **Get recent commit history for changed files** -- understand the business context behind the code
 
 ```bash
-git blame -L <start>,<end> <file>
+git log -n 5 --oneline <file>
 ```
 
 4. **Check for past PR comments** on the same files (if reviewing a PR):
@@ -117,6 +117,16 @@ this context with your specialized perspective.
 [Insert relevant excerpts from 05-risks.md]
 ```
 
+## Step 2b: Large Change Set Handling
+
+Before proceeding, check the total size of changed code:
+
+```bash
+git diff --shortstat  # or the equivalent for the detected diff source
+```
+
+If total changed lines exceed 500, batch the files into groups of 3-5 files per agent invocation. Run each batch sequentially, consolidating findings across batches before scoring. This prevents context window overflow and "lost in the middle" attention degradation.
+
 ## Step 3: Run Parallel Review Agents
 
 Run all four agents **in parallel** in a single response:
@@ -140,8 +150,8 @@ Task:
     ## Diff
     [paste the git diff output]
 
-    ## Git Blame Context
-    [paste relevant blame output -- shows history of changed lines]
+    ## Recent Commit History
+    [paste git log output -- shows business context for changed files]
 
     ## Project Conventions (from CLAUDE.md)
     [paste relevant conventions, or "none found"]
@@ -154,7 +164,7 @@ Task:
     4. Consistency -- do changes follow existing codebase patterns?
     5. Over/under-engineering -- is the solution appropriately scoped?
     6. CLAUDE.md compliance -- do changes follow project conventions?
-    7. Flow correctness -- trace modified flows end-to-end, check callers/consumers
+    7. Flow correctness -- trace modified flows within provided files. If the flow calls external modules not present in context, state "Cannot verify downstream impact in [Module] -- out of scope" rather than guessing.
 
     For each finding: severity (Critical/High/Medium/Low), file + line, confidence (0-100), concrete fix.
 ```
@@ -312,7 +322,7 @@ Task:
     ## Instructions
     Using ALL agent findings above, produce a quantitative quality score.
 
-    Default score is 5/10. Justify any score above 7 with specific evidence.
+    Default score is 10/10. Deduct points based on severity and density of findings. Justify any score below 7 with specific deductions.
 
     | Category        | Score | Confidence |
     |-----------------|-------|------------|
@@ -377,22 +387,30 @@ STRICT MODE: Critical issues found. Recommend fixing before merging.
 
 If `--auto-comment` flag is set and reviewing a PR:
 
-Post only findings with confidence >= 70 as inline PR comments:
+Post only **CRITICAL and HIGH severity** findings as inline PR comments. Do NOT auto-comment MEDIUM or LOW findings -- include those only in the summary report. This prevents comment spam and focuses reviewer attention on what matters.
+
+Write each comment body to a temp file first, then use `-F` to avoid shell injection from LLM-generated content:
 
 ```bash
-gh api repos/{owner}/{repo}/pulls/{number}/comments \
-  -f body="**[Severity]** (confidence: X%) -- [finding summary]
+# Write the comment body to a temp file (avoids shell escaping issues)
+cat > .full-review/temp_inline_comment.md << 'COMMENT_EOF'
+**[Severity]** -- [finding summary]
 
-[concrete fix recommendation]" \
+[concrete fix recommendation]
+COMMENT_EOF
+
+# Post as inline PR comment using -F (file input)
+gh api repos/{owner}/{repo}/pulls/{number}/comments \
+  -F body=@.full-review/temp_inline_comment.md \
   -f path="[file]" \
   -f line=[line] \
   -f commit_id="$(gh pr view {number} --json headRefOid --jq '.headRefOid')"
 ```
 
-Post the overall summary as a regular PR comment:
+Post the overall summary as a regular PR comment (also via temp file):
 
 ```bash
-gh pr comment {number} --body "$(cat <<'EOF'
+cat > .full-review/temp_summary_comment.md << 'SUMMARY_EOF'
 ## Automated Code Review
 
 **Overall Score: X/10**
@@ -403,8 +421,9 @@ gh pr comment {number} --body "$(cat <<'EOF'
 
 ---
 *Reviewed by: architect-review, security-auditor, pattern-quality-scorer, dead-code-detector*
-EOF
-)"
+SUMMARY_EOF
+
+gh pr comment {number} -F .full-review/temp_summary_comment.md
 ```
 
 $ARGUMENTS
