@@ -9,10 +9,12 @@ Detect and remove unused code. Auto-detects the project language and dispatches 
 
 ## CRITICAL RULES
 
-1. **Run tests before and after.** Establish a baseline, then verify no regressions.
-2. **If `--dry-run`, report only.** Show findings without modifying files.
-3. **Revert on test failure.** If any test fails after a change, undo it immediately.
-4. **Never remove code that is used via side effects.** Check dynamic imports, decorators, and framework conventions.
+1. **Git pre-flight**: before any analysis, check `git status`. If the working tree has uncommitted changes, warn the user and suggest committing or stashing first -- this ensures safe `git restore` if anything goes wrong.
+2. **Run tests before and after.** Establish a baseline, then verify no regressions.
+3. **If `--dry-run`, report only.** Show findings without modifying files.
+4. **Revert on test failure.** If any test fails after a change, undo it immediately.
+5. **Never remove code that is used via side effects.** Check dynamic imports, decorators, and framework conventions.
+6. **Python functions/classes require approval.** Vulture has high false-positive rates for functions and classes (metaprogramming, framework conventions). Present these separately and get explicit user confirmation before removing. Unused imports (ruff F401) and unused variables (ruff F841) are safe to auto-remove.
 
 ## Step 1: Detect Language
 
@@ -66,9 +68,12 @@ If `--dry-run`, stop here.
 
 ## Step 4: Establish Test Baseline
 
+Inspect available test commands before running blindly:
 ```bash
-# TS/JS
-npm test 2>/dev/null || bun test 2>/dev/null || npx vitest run 2>/dev/null
+# TS/JS: check package.json scripts for the right test command
+# Prefer unit tests over e2e -- avoid triggering Playwright/Cypress accidentally
+cat package.json | grep -A 5 '"scripts"'
+# Then run the appropriate test command (e.g., npm run test:unit, vitest run, jest)
 
 # Python
 pytest -v 2>/dev/null || python -m pytest -v 2>/dev/null

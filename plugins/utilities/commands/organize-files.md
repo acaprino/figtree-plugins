@@ -9,6 +9,8 @@ Use the `file-organizer` skill to organize, cleanup, and restructure:
 
 $ARGUMENTS
 
+**Safety**: the skill always proposes a plan and asks for approval before moving or deleting anything. Destructive operations (duplicate removal, file deletion) require explicit confirmation per batch.
+
 ## Quick Examples
 
 - `/organize-files Downloads` - Organize Downloads folder by file type
