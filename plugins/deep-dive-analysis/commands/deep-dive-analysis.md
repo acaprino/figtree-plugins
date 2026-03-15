@@ -1,6 +1,6 @@
 ---
 description: "Systematic codebase analysis combining structure extraction with semantic understanding -- documents WHAT, WHY, HOW, and CONSEQUENCES of code with phased output"
-argument-hint: "<target path> [--critical] [--comments] [--docs-only] [--phase N]"
+argument-hint: "<target path> [--critical] [--comments] [--docs-only] [--phase N] [--depth=lite|full]"
 ---
 
 # Deep Dive Analysis
@@ -45,7 +45,8 @@ Create `.deep-dive/` directory and `state.json`:
     "critical": false,
     "comments": false,
     "docs_only": false,
-    "phase": null
+    "phase": null,
+    "depth": "full"
   },
   "current_phase": 1,
   "completed_phases": [],
@@ -54,7 +55,7 @@ Create `.deep-dive/` directory and `state.json`:
 }
 ```
 
-Parse flags: `--critical` (prioritize high-risk code), `--comments` (comment quality mode), `--docs-only` (documentation health only, skip to Phase 6), `--phase N` (start at phase N).
+Parse flags: `--critical` (prioritize high-risk code), `--comments` (comment quality mode), `--docs-only` (documentation health only, skip to Phase 6), `--phase N` (start at phase N), `--depth=lite` (lightweight analysis: skip flow tracing diagrams, state machine diagrams, and detailed dependency analysis for non-critical files -- only produce structure + interfaces + risks + final summary).
 
 ### 3. Confirm scope
 
@@ -69,7 +70,7 @@ Analysis phases:
 1. Structure Extraction -- file inventory, dependency graph
 2. Interface Analysis -- public APIs, contracts, exports
 3. Flow Tracing -- data flow, control flow, critical paths
-4. Semantic Understanding -- WHY code exists, design decisions
+4. Semantic Understanding -- WHY code exists, design decisions, ADRs
 5. Pattern & Risk Detection -- anti-patterns, red flags, tech debt
 6. Documentation Health -- existing docs accuracy, gaps
 7. Final Report -- consolidated findings
@@ -77,18 +78,34 @@ Analysis phases:
 1. Proceed with full analysis
 2. Analyze specific phase only (--phase N)
 3. Quick scan (phases 1-2 only)
-4. Cancel
+4. Lite mode (--depth=lite: structure + interfaces + risks + summary, skip detailed flows/diagrams)
+5. Cancel
 ```
 
 ## Parallel Execution Strategy
 
-After scope confirmation, spawn 3 agents in parallel using the Agent tool. Each agent writes its output files directly to `.deep-dive/`. Each agent receives the target path and active flags as context.
+After scope confirmation, spawn agents in parallel using the Agent tool. Each agent writes its output files directly to `.deep-dive/`. Each agent receives the target path and active flags as context.
+
+### Full depth (default)
 
 - **Agent A (Structure):** Executes Phase 1 + Phase 2. Writes `01-structure.md` and `02-interfaces.md`.
 - **Agent B (Behavior):** Executes Phase 3 + Phase 4. Writes `03-flows.md` and `04-semantics.md`.
 - **Agent C (Quality):** Executes Phase 5 + Phase 6. Writes `05-risks.md` and `06-documentation.md`.
 
 Wait for all 3 agents to complete, then execute Phase 7 in the main context - read all 6 output files and generate the final report.
+
+### Lite depth (`--depth=lite`)
+
+Lightweight mode for smaller projects, MVPs, or quick assessments. Spawn 2 agents:
+
+- **Agent A (Structure):** Executes Phase 1 + Phase 2. Writes `01-structure.md` and `02-interfaces.md`.
+- **Agent B (Risks):** Executes Phase 5 only. Writes `05-risks.md`.
+
+Skip Phase 3 (Flow Tracing), Phase 4 (Semantic Understanding), and Phase 6 (Documentation Health). In Phase 5, skip detailed state machine diagrams and Mermaid flowcharts for non-critical files -- focus on anti-patterns, red flags, and tech debt items.
+
+Wait for both agents to complete, then generate a condensed `07-final-report.md` covering structure, interfaces, and risks only. The report omits the "Critical Paths", "Design Insights", "Key Process Diagrams", and "Documentation vs Reality" sections.
+
+### Overrides
 
 If `--phase N` or `--docs-only` flags are set, skip parallel execution and run only the requested phase(s) sequentially.
 
@@ -243,6 +260,7 @@ This is the AI-powered phase -- understand the **WHY** behind the code:
 - Historical context (from git blame and commit messages)
 - Assumptions embedded in the code
 - Implicit contracts not documented anywhere
+- Architecture Decision Records (ADRs) -- document rejected alternatives and WHY they were rejected, so future developers don't reintroduce failed approaches
 
 **Output file:** `.deep-dive/04-semantics.md`
 
@@ -254,6 +272,17 @@ This is the AI-powered phase -- understand the **WHY** behind the code:
 
 ## Design Decisions
 [Inferred decisions and their trade-offs]
+
+## Architecture Decision Records
+[For each significant design choice discovered, document as an ADR:]
+- **Decision:** [What was chosen]
+- **Context:** [What problem it solves]
+- **Alternatives rejected:** [What was NOT chosen and WHY]
+- **Consequences:** [Trade-offs accepted]
+
+ADRs bridge the gap between temporal purity (document only the present) and historical
+knowledge (don't repeat past mistakes). The code shows WHAT was chosen; ADRs preserve
+WHY alternatives were rejected.
 
 ## Embedded Assumptions
 [Assumptions the code makes that aren't documented]
@@ -483,6 +512,7 @@ Present a summary of changes made after applying fixes.
 ## Quick Examples
 
 - `/deep-dive-analysis src/` -- Full 7-phase analysis
+- `/deep-dive-analysis src/ --depth=lite` -- Lightweight: structure + interfaces + risks only
 - `/deep-dive-analysis src/auth/ --critical` -- Prioritize security-critical code
 - `/deep-dive-analysis src/ --docs-only` -- Documentation health check only
 - `/deep-dive-analysis src/ --comments` -- Include comment quality audit

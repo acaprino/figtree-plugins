@@ -42,7 +42,7 @@ Work **Bottom-Up**: shared primitives → data structures → messaging → busi
 2. **NEVER** assume any existing documentation, comment, or docstring is accurate
 3. **NEVER** write documentation based on memory, inference, or "what should be"
 4. **ALWAYS** derive truth EXCLUSIVELY from reading and tracing actual code
-5. **ALWAYS** provide source file + line number for every technical claim
+5. **ALWAYS** provide source file + qualified symbol name for every technical claim
 6. **ALWAYS** verify state machines, enums, constants against actual definitions
 7. **TREAT** all pre-existing docs as unverified claims requiring validation
 8. **MARK** any unverifiable statement as `[UNVERIFIED - REQUIRES CODE CHECK]`
@@ -54,10 +54,13 @@ Work **Bottom-Up**: shared primitives → data structures → messaging → busi
 - A single fabricated claim can cascade into catastrophic misunderstanding
 
 **Verification Status Markers (Required on ALL Documentation):**
-- `[VERIFIED: file.py:123]` - Confirmed against source code at specific line
+- `[VERIFIED: file.py::ClassName.method_name]` - Confirmed against source code symbol
 - `[VERIFIED: trace_id=xyz]` - Confirmed against runtime logs
 - `[UNVERIFIED]` - Awaiting verification, DO NOT TRUST
 - `[DEPRECATED]` - Source code has changed, documentation is stale
+
+Use qualified symbol names (`file.py::symbol`, `file.py::Class.method`) instead of line numbers.
+Line numbers shift on any edit; symbol names survive refactoring.
 
 ### CRITICAL PRINCIPLE: NO HISTORICAL DEPTH
 
@@ -368,7 +371,7 @@ After each phase, verify documentation accuracy:
 | **Operations** | `docs/04_operations/` | Medium - operational guides |
 | **Development** | `docs/05_development/` | Medium - developer guides |
 | **UI** | `docs/06_user_interfaces/` | Medium - UI documentation |
-| **ADR** | `docs/02_adr/` | Low - architectural decisions (historical) |
+| **ADR** | `docs/02_adr/` | High - architectural decisions preserve WHY behind rejected alternatives |
 | **Plans** | `docs/plans/` | Low - may contain obsolete plans |
 
 ### 8.3 Maintenance Actions

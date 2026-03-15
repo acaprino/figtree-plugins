@@ -82,7 +82,7 @@ class MarkerValidation:
     line_number: int
     source_file: Optional[str] = None
     source_line: Optional[int] = None
-    status: str = "unknown"  # valid, stale_file, stale_line, invalid_format
+    status: str = "unknown"  # valid, stale_file, stale_line, stale_symbol, invalid_format
     error: Optional[str] = None
     code_at_line: Optional[str] = None
 
@@ -116,8 +116,11 @@ class DocReviewer:
     UNVERIFIED_PATTERN = re.compile(r'\[UNVERIFIED[^\]]*\]')
     DEPRECATED_PATTERN = re.compile(r'\[DEPRECATED[^\]]*\]')
     LINK_PATTERN = re.compile(r'\[([^\]]*)\]\(([^)]+)\)')
-    # Pattern to parse marker content: file.py:123 or file.py:123 @ date
-    MARKER_CONTENT_PATTERN = re.compile(r'([^:@]+):(\d+)(?:\s*@\s*(.+))?')
+    # Pattern to parse marker content:
+    # Symbol-based (preferred): file.py::Class.method or file.py::function @ date
+    # Legacy line-based: file.py:123 or file.py:123 @ date
+    MARKER_SYMBOL_PATTERN = re.compile(r'([^:@]+)::([A-Za-z_][\w.]+)(?:\s*@\s*(.+))?')
+    MARKER_LINE_PATTERN = re.compile(r'([^:@]+):(\d+)(?:\s*@\s*(.+))?')
 
     def __init__(self, base_path: str = "."):
         self.base_path = Path(base_path).resolve()
@@ -390,7 +393,7 @@ class DocReviewer:
         else:
             print(f"\nNO VERIFICATION MARKERS FOUND")
             print("  ALL DOCUMENTATION SHOULD BE CONSIDERED UNVERIFIED")
-            print("  Add [VERIFIED: file.py:line] markers after code verification")
+            print("  Add [VERIFIED: file.py::Class.method] markers after code verification")
 
     def validate_links(self, path: str = "docs/", fix: bool = False, dry_run: bool = False) -> list[dict]:
         """Validate all relative links in documentation."""
@@ -562,8 +565,8 @@ class DocReviewer:
         print("MARKER VALIDATION RESULTS")
         print(f"{'='*60}")
         print(f"Total markers checked: {len(validations)}")
-        print(f"  Valid (file + line exist): {valid_count}")
-        print(f"  Stale (file or line missing): {stale_count}")
+        print(f"  Valid (file + symbol/line exist): {valid_count}")
+        print(f"  Stale (file, symbol, or line missing): {stale_count}")
         print(f"  Invalid format: {invalid_count}")
 
         if stale_count > 0:
@@ -578,46 +581,117 @@ class DocReviewer:
 
     def _validate_single_marker(self, marker: str, marker_content: str,
                                 doc_file: str, doc_line: int) -> MarkerValidation:
-        """Validate a single verification marker."""
+        """Validate a single verification marker (symbol-based or legacy line-based)."""
         validation = MarkerValidation(
             marker=marker,
             file_path=doc_file,
             line_number=doc_line
         )
 
-        # Parse marker content: file.py:123 or file.py:123 @ date
-        content_match = self.MARKER_CONTENT_PATTERN.match(marker_content.strip())
-        if not content_match:
-            validation.status = "invalid_format"
-            validation.error = f"Could not parse marker content: {marker_content}"
-            return validation
+        stripped = marker_content.strip()
 
-        source_file = content_match.group(1).strip()
-        source_line = int(content_match.group(2))
+        # Try symbol-based format first: file.py::Class.method
+        symbol_match = self.MARKER_SYMBOL_PATTERN.match(stripped)
+        if symbol_match:
+            return self._validate_symbol_marker(validation, symbol_match)
 
-        validation.source_file = source_file
-        validation.source_line = source_line
+        # Fall back to legacy line-based: file.py:123
+        line_match = self.MARKER_LINE_PATTERN.match(stripped)
+        if line_match:
+            return self._validate_line_marker(validation, line_match)
 
-        # Try to find the source file in common project layouts
+        validation.status = "invalid_format"
+        validation.error = f"Could not parse marker content: {marker_content}"
+        return validation
+
+    def _find_source_file(self, source_file: str) -> Path | None:
+        """Try to find a source file in common project layouts."""
         possible_paths = [
             self.base_path / source_file,
             self.base_path / "src" / source_file,
             self.base_path / "lib" / source_file,
             self.base_path / "app" / source_file,
         ]
-
-        source_path = None
         for p in possible_paths:
             if p.exists():
-                source_path = p
-                break
+                return p
+        return None
 
+    def _validate_symbol_marker(self, validation: MarkerValidation,
+                                match: re.Match) -> MarkerValidation:
+        """Validate a symbol-based marker (file.py::Class.method)."""
+        source_file = match.group(1).strip()
+        symbol_path = match.group(2).strip()
+
+        validation.source_file = source_file
+
+        source_path = self._find_source_file(source_file)
         if not source_path:
             validation.status = "stale_file"
             validation.error = f"Source file not found: {source_file}"
             return validation
 
-        # Check line exists
+        # Use AST to verify symbol exists
+        if AST_AVAILABLE and source_path.suffix == '.py':
+            try:
+                parse_result = parse_file(source_path)
+
+                # Build set of known symbols
+                known_symbols: set[str] = set()
+                for cls in parse_result.classes:
+                    known_symbols.add(cls.name)
+                    for method in cls.methods:
+                        known_symbols.add(f"{cls.name}.{method.name}")
+                for func in parse_result.functions:
+                    known_symbols.add(func.name)
+                for const in parse_result.constants:
+                    known_symbols.add(const)
+
+                if symbol_path in known_symbols:
+                    validation.status = "valid"
+                    validation.code_at_line = f"Symbol '{symbol_path}' exists in AST"
+                else:
+                    validation.status = "stale_symbol"
+                    validation.error = (
+                        f"Symbol '{symbol_path}' not found in {source_file}. "
+                        f"Known symbols: {', '.join(sorted(known_symbols)[:10])}"
+                    )
+            except Exception as e:
+                validation.status = "stale_file"
+                validation.error = f"AST parsing failed: {e}"
+        else:
+            # Non-Python or AST unavailable: check with regex fallback
+            try:
+                content = source_path.read_text(encoding='utf-8', errors='replace')
+                parts = symbol_path.split(".")
+                leaf = parts[-1]
+                if re.search(rf'\b{re.escape(leaf)}\b', content):
+                    validation.status = "valid"
+                    validation.code_at_line = f"Symbol '{leaf}' found via text search"
+                else:
+                    validation.status = "stale_symbol"
+                    validation.error = f"Symbol '{symbol_path}' not found in {source_file}"
+            except Exception as e:
+                validation.status = "stale_file"
+                validation.error = f"Could not read file: {e}"
+
+        return validation
+
+    def _validate_line_marker(self, validation: MarkerValidation,
+                              match: re.Match) -> MarkerValidation:
+        """Validate a legacy line-based marker (file.py:123)."""
+        source_file = match.group(1).strip()
+        source_line = int(match.group(2))
+
+        validation.source_file = source_file
+        validation.source_line = source_line
+
+        source_path = self._find_source_file(source_file)
+        if not source_path:
+            validation.status = "stale_file"
+            validation.error = f"Source file not found: {source_file}"
+            return validation
+
         try:
             content = source_path.read_text(encoding='utf-8', errors='replace')
             lines = content.splitlines()

@@ -114,7 +114,7 @@ INPUTS                    PROCESSING                 OUTPUTS
 
 | Issue | Severity | Location | Recommendation |
 |-------|----------|----------|----------------|
-| {issue} | HIGH/MEDIUM/LOW | line N | {fix} |
+| {issue} | HIGH/MEDIUM/LOW | {file::symbol} | {fix} |
 
 ### Red Flags Found
 
@@ -274,7 +274,7 @@ If modifying this code, also check:
 | Aspect | Status | Evidence |
 |--------|--------|----------|
 | Structure | VALIDATED | AST parsing |
-| Behavior | {VERIFIED/UNVERIFIED} | {source:line or "needs review"} |
+| Behavior | {VERIFIED/UNVERIFIED} | {file.py::Class.method or "needs review"} |
 | Integration | {VERIFIED/UNVERIFIED} | {trace_id or "needs runtime check"} |
 
 ---

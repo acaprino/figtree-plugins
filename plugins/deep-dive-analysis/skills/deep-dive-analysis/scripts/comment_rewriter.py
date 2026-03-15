@@ -192,6 +192,35 @@ _TRIVIAL_INDICATORS = [
 _DEBT_REMOVAL_PATTERN = re.compile(r"\b(?:TODO|FIXME|XXX|HACK|BUG|WORKAROUND|TEMP|TEMPORARY)\b:?\s*", re.IGNORECASE)
 
 
+def _run_formatter(file_path: Path) -> None:
+    """
+    Run a Python formatter on the file if one is available.
+
+    Tries ruff format first (fastest), then black. Silently skips if
+    neither is installed. This prevents comment removal from leaving
+    orphaned whitespace or conflicting with team formatting rules.
+    """
+    import subprocess
+
+    for cmd in [["ruff", "format", str(file_path)], ["black", "-q", str(file_path)]]:
+        try:
+            subprocess.run(
+                cmd,
+                capture_output=True,
+                timeout=30,
+            )
+            logger.debug(f"Formatted {file_path} with {cmd[0]}")
+            return
+        except FileNotFoundError:
+            continue  # Formatter not installed
+        except subprocess.TimeoutExpired:
+            logger.warning(f"Formatter {cmd[0]} timed out on {file_path}")
+            return
+        except Exception as e:
+            logger.debug(f"Formatter {cmd[0]} failed: {e}")
+            continue
+
+
 def _validate_python_file(file_path: Path) -> None:
     """
     Validate that a file is a valid Python file for analysis.
@@ -768,6 +797,9 @@ class CommentRewriter:
                 target.write_text(rewritten, encoding="utf-8")
 
             changes.append(f"Wrote changes to: {target}")
+
+            # Run formatter if available to normalize whitespace after comment changes
+            _run_formatter(target)
 
         return rewritten, changes
 

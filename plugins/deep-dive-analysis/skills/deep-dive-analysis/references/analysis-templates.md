@@ -4,22 +4,26 @@
 
 ```
 Layer 1: TOOL-VALIDATED
-  - Automated checks: file exists, line in range, AST symbol match
-  - Marker: [VALIDATED: file.py:123 @ 2025-12-20]
+  - Automated checks: file exists, AST symbol exists, signature matches
+  - Marker: [VALIDATED: file.py::ClassName.method_name @ 2025-12-20]
 
 Layer 2: HUMAN-VERIFIED
   - Manual review: semantic correctness, behavior match
-  - Marker: [VERIFIED: file.py:123 by @reviewer @ 2025-12-20]
+  - Marker: [VERIFIED: file.py::ClassName.method_name by @reviewer @ 2025-12-20]
 
 Layer 3: RUNTIME-CONFIRMED
   - Log/trace evidence of actual behavior
   - Marker: [CONFIRMED: trace_id=abc123 @ 2025-12-20]
 
-Tool validation catches STRUCTURAL issues (file moved, line shifted, symbol renamed).
+Tool validation catches STRUCTURAL issues (file moved, symbol renamed, signature changed).
 Human verification ensures SEMANTIC correctness (code does what doc says).
 Runtime confirmation proves BEHAVIORAL truth (system actually works this way).
 
 ALL THREE LAYERS are required for critical documentation.
+
+NOTE: Markers use qualified symbol names (Module::Class.method, file::function)
+instead of line numbers. Line numbers shift on any edit; symbol names are stable
+and survive refactoring as long as the symbol itself is not renamed.
 ```
 
 ## The Iron Law of Documentation
@@ -69,10 +73,13 @@ REQUIRED:
 
 Every section of documentation MUST have one of these status markers:
 
-- `[VERIFIED: source_file.py:123]` - Confirmed against source code
+- `[VERIFIED: file.py::ClassName.method_name]` - Confirmed against source code symbol
 - `[VERIFIED: trace_id=xyz]` - Confirmed against runtime logs
 - `[UNVERIFIED]` - Requires verification before trusting
 - `[DEPRECATED]` - Code has changed, documentation outdated
+
+Symbol reference format: `file.py::symbol` for top-level, `file.py::Class.method` for members.
+Never use line numbers in markers -- they break on any file edit.
 
 **UNVERIFIED documentation is UNTRUSTED documentation.**
 

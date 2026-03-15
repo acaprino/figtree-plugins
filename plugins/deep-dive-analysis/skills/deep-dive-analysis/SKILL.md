@@ -59,10 +59,11 @@ This skill combines **mechanical structure extraction** with **Claude's semantic
 2. **NEVER** assume any existing documentation, comment, or docstring is accurate
 3. **NEVER** write documentation based on memory, inference, or "what should be"
 4. **ALWAYS** derive truth EXCLUSIVELY from reading and tracing actual code
-5. **ALWAYS** provide source file + line number for every technical claim
+5. **ALWAYS** provide source file + qualified symbol name for every technical claim
 6. **ALWAYS** verify state machines, enums, constants against actual definitions
 7. **TREAT** all pre-existing docs as unverified claims requiring validation
 8. **MARK** any unverifiable statement as `[UNVERIFIED - REQUIRES CODE CHECK]`
+9. **USE** qualified symbol names in markers (`file.py::Class.method`), never line numbers -- line numbers break on any edit
 
 See `references/analysis-templates.md` for the full verification trust model, temporal purity principle, and documentation status markers.
 

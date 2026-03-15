@@ -30,23 +30,42 @@ logger = logging.getLogger(__name__)
 
 
 @contextmanager
-def file_lock(file_handle) -> Iterator[None]:
+def file_lock(file_handle, max_retries: int = 5, base_delay: float = 0.1) -> Iterator[None]:
     """
-    Cross-platform file locking context manager.
+    Cross-platform file locking context manager with retry and exponential backoff.
 
     On Windows uses msvcrt, on Unix uses fcntl.
+    Retries up to max_retries times with exponential backoff before raising.
     """
+    import time
+
+    acquired = False
+    last_error = None
+
+    for attempt in range(max_retries):
+        try:
+            if sys.platform == "win32":
+                import msvcrt
+                msvcrt.locking(file_handle.fileno(), msvcrt.LK_NBLCK, 1)
+            else:
+                import fcntl
+                fcntl.flock(file_handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+            acquired = True
+            break
+        except (IOError, OSError) as e:
+            last_error = e
+            if attempt < max_retries - 1:
+                delay = base_delay * (2 ** attempt)
+                logger.debug(f"Lock attempt {attempt + 1}/{max_retries} failed, retrying in {delay:.2f}s")
+                time.sleep(delay)
+
+    if not acquired:
+        raise OSError(
+            f"Could not acquire file lock after {max_retries} attempts: {last_error}"
+        )
+
     try:
-        if sys.platform == "win32":
-            import msvcrt
-            msvcrt.locking(file_handle.fileno(), msvcrt.LK_NBLCK, 1)
-        else:
-            import fcntl
-            fcntl.flock(file_handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
         yield
-    except (IOError, OSError) as e:
-        logger.warning(f"Could not acquire file lock: {e}")
-        yield  # Proceed without lock if unavailable
     finally:
         try:
             if sys.platform == "win32":

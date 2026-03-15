@@ -95,79 +95,55 @@ class ParseResult:
     exported_symbols: list[str] = field(default_factory=list)
 
 
-# Patterns for detecting external calls (more specific to reduce false positives)
-# These patterns look for actual usage context, not just keyword presence
-EXTERNAL_CALL_PATTERNS: dict[str, list[str]] = {
-    "database": [
-        r"\.find_one\(",
-        r"\.find_many\(",
-        r"\.find\(",
-        r"\.insert_one\(",
-        r"\.insert_many\(",
-        r"\.update_one\(",
-        r"\.update_many\(",
-        r"\.delete_one\(",
-        r"\.delete_many\(",
-        r"\.aggregate\(",
-        r"\.execute\(",
-        r"cursor\.",
-        r"collection\.",
-        r"motor\.",
-        r"beanie\.",
-        r"pymongo\.",
-        r"mongodb",
-    ],
-    "network": [
-        r"aiohttp\.",
-        r"httpx\.",
-        r"requests\.",
-        r"\.fetch\(",
-        r"session\.get\(",
-        r"session\.post\(",
-        r"session\.put\(",
-        r"session\.delete\(",
-        r"session\.patch\(",
-        r"client\.get\(",
-        r"client\.post\(",
-        r"ClientSession\(",
-        r"AsyncClient\(",
-        r"Response\(",
-    ],
-    "filesystem": [
-        r"\bopen\(",
-        r"\.read\(",
-        r"\.write\(",
-        r"\.read_text\(",
-        r"\.write_text\(",
-        r"\.mkdir\(",
-        r"\.rmdir\(",
-        r"\.unlink\(",
-        r"os\.remove\(",
-        r"shutil\.",
-    ],
-    "messaging": [
-        r"\.publish\(",
-        r"\.send\(",
-        r"\.consume\(",
-        r"\.subscribe\(",
-        r"channel\.",
-        r"queue\.",
-        r"topic\.",
-        r"kafka\.",
-        r"redis\.pub",
-        r"celery\.",
-        r"kombu\.",
-    ],
-    "ipc": [
-        r"subprocess\.",
-        r"multiprocessing\.",
-        r"shared_memory",
-        r"\.socket\(",
-        r"Popen\(",
-        r"pipe\(",
-        r"mmap\.",
-    ],
-}
+# AST-based external call detection patterns.
+# Maps (receiver_name, method_name) pairs to call types.
+# receiver_name can be None to match any receiver.
+_DB_METHODS = frozenset([
+    "find_one", "find_many", "insert_one", "insert_many",
+    "update_one", "update_many", "delete_one", "delete_many",
+    "aggregate", "execute", "executemany", "fetchone", "fetchall", "fetchmany",
+    "commit", "rollback",
+])
+_DB_RECEIVERS = frozenset([
+    "cursor", "collection", "session", "conn", "connection", "db", "database",
+])
+_DB_MODULES = frozenset([
+    "motor", "beanie", "pymongo", "sqlalchemy", "sqlite3", "psycopg2",
+    "asyncpg", "databases", "tortoise", "peewee", "mongoengine",
+])
+
+_NETWORK_MODULES = frozenset([
+    "aiohttp", "httpx", "requests", "urllib", "urllib3", "grpc",
+])
+_NETWORK_METHODS = frozenset([
+    "get", "post", "put", "delete", "patch", "head", "options", "fetch",
+    "request",
+])
+_NETWORK_CONSTRUCTORS = frozenset([
+    "ClientSession", "AsyncClient", "Session", "Client",
+])
+
+_FS_METHODS = frozenset([
+    "read_text", "write_text", "read_bytes", "write_bytes",
+    "mkdir", "rmdir", "unlink", "rename", "replace",
+])
+_FS_FUNCTIONS = frozenset(["open"])
+_FS_MODULES = frozenset(["shutil", "os", "os.path"])
+
+_MSG_METHODS = frozenset([
+    "publish", "consume", "subscribe", "basic_publish", "basic_consume",
+    "send_message", "receive",
+])
+_MSG_MODULES = frozenset([
+    "kafka", "redis", "celery", "kombu", "pika", "aio_pika", "nats",
+])
+
+_IPC_MODULES = frozenset([
+    "subprocess", "multiprocessing", "mmap",
+])
+_IPC_CONSTRUCTORS = frozenset([
+    "Popen", "Process", "Pool",
+])
 
 
 def get_annotation_str(node: ast.expr | None) -> str | None:
@@ -380,33 +356,111 @@ def parse_imports(tree: ast.Module) -> list[ImportInfo]:
     return imports
 
 
+class _ExternalCallVisitor(ast.NodeVisitor):
+    """AST visitor that detects external system calls by inspecting Call nodes."""
+
+    def __init__(self, lines: list[str]):
+        self.calls: list[ExternalCallInfo] = []
+        self.lines = lines
+
+    def _context(self, lineno: int) -> str:
+        if 0 < lineno <= len(self.lines):
+            return self.lines[lineno - 1].strip()[:100]
+        return ""
+
+    def _get_call_parts(self, node: ast.Call) -> tuple[str | None, str | None]:
+        """Extract (receiver, method) from a Call node."""
+        func = node.func
+        if isinstance(func, ast.Attribute):
+            method = func.attr
+            if isinstance(func.value, ast.Name):
+                return func.value.id, method
+            if isinstance(func.value, ast.Attribute):
+                return ast.unparse(func.value), method
+            return None, method
+        if isinstance(func, ast.Name):
+            return None, func.id
+        return None, None
+
+    def visit_Call(self, node: ast.Call) -> None:
+        receiver, method = self._get_call_parts(node)
+        if method is None:
+            self.generic_visit(node)
+            return
+
+        call_type = self._classify(receiver, method)
+        if call_type:
+            pattern = f"{receiver}.{method}" if receiver else method
+            self.calls.append(ExternalCallInfo(
+                call_type=call_type,
+                pattern=pattern,
+                line_number=node.lineno,
+                context=self._context(node.lineno),
+            ))
+
+        self.generic_visit(node)
+
+    def _classify(self, receiver: str | None, method: str) -> str | None:
+        # Database
+        if method in _DB_METHODS:
+            if receiver and (receiver in _DB_RECEIVERS or receiver.split(".")[0] in _DB_MODULES):
+                return "database"
+            if receiver is None:
+                return None  # bare execute() etc. - too ambiguous
+            return "database" if receiver in _DB_RECEIVERS else None
+        if receiver and receiver.split(".")[0] in _DB_MODULES:
+            return "database"
+
+        # Network
+        if receiver and receiver.split(".")[0] in _NETWORK_MODULES:
+            return "network"
+        if method in _NETWORK_CONSTRUCTORS:
+            return "network"
+        if method in _NETWORK_METHODS and receiver and receiver.split(".")[0] in _NETWORK_MODULES:
+            return "network"
+
+        # Filesystem
+        if method in _FS_FUNCTIONS:
+            return "filesystem"
+        if method in _FS_METHODS:
+            return "filesystem"
+        if receiver and receiver.split(".")[0] in _FS_MODULES:
+            return "filesystem"
+
+        # Messaging
+        if method in _MSG_METHODS:
+            if receiver and receiver.split(".")[0] in _MSG_MODULES:
+                return "messaging"
+            return "messaging" if receiver and any(kw in receiver.lower() for kw in ("channel", "queue", "topic", "producer", "consumer")) else None
+        if receiver and receiver.split(".")[0] in _MSG_MODULES:
+            return "messaging"
+
+        # IPC
+        if receiver and receiver.split(".")[0] in _IPC_MODULES:
+            return "ipc"
+        if method in _IPC_CONSTRUCTORS:
+            return "ipc"
+
+        return None
+
+
 def find_external_calls(content: str) -> list[ExternalCallInfo]:
     """
-    Find potential external system calls in the code.
+    Find potential external system calls using AST analysis.
 
-    Uses regex patterns to reduce false positives by looking for
-    actual usage context (method calls, imports) rather than just keywords.
+    Walks the AST to inspect actual Call nodes, checking receiver names and
+    method names against known patterns. This eliminates false positives from
+    regex matching against comments, strings, or unrelated method names.
     """
-    import re
+    try:
+        tree = ast.parse(content)
+    except SyntaxError:
+        return []
 
-    calls = []
     lines = content.split("\n")
-
-    for line_num, line in enumerate(lines, start=1):
-        for call_type, patterns in EXTERNAL_CALL_PATTERNS.items():
-            for pattern in patterns:
-                if re.search(pattern, line, re.IGNORECASE):
-                    calls.append(
-                        ExternalCallInfo(
-                            call_type=call_type,
-                            pattern=pattern,
-                            line_number=line_num,
-                            context=line.strip()[:100],  # First 100 chars
-                        )
-                    )
-                    break  # Only one match per line per type
-
-    return calls
+    visitor = _ExternalCallVisitor(lines)
+    visitor.visit(tree)
+    return visitor.calls
 
 
 def find_constants(tree: ast.Module) -> list[str]:
