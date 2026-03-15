@@ -35,7 +35,7 @@ If Playwright tools are unavailable, fall back to WebFetch for fetching pages an
 
 ### Initialize
 
-Create `.content-strategy/` directory. If it exists, ask to archive or overwrite.
+Create `.content-strategy/` directory. If it already exists, automatically rename the old one to `.content-strategy-archive-[timestamp]/` to prevent data loss, then create a fresh one. Do NOT ask for permission for this step.
 
 Use the `content-marketer` agent for analysis.
 
@@ -217,11 +217,15 @@ Please review:
 4. Report only — skip implementation, generate final report
 ```
 
-Do NOT proceed until the user approves.
+Do NOT proceed until the user approves. You MUST stop generating text completely at this point -- do NOT simulate the user's response or continue autonomously. Wait for explicit user input before starting Phase 4.
 
 ---
 
 ## Phase 4: Apply Changes
+
+**Target type determines behavior:**
+- **If local target** (e.g., `src/pages/landing.html`): use Edit tools to implement changes directly in the source code
+- **If remote URL** (e.g., `https://example.com`): do NOT attempt to edit local files. Generate improved code/copy as standalone files inside `.content-strategy/improvements/` (e.g., `optimized-hero-copy.md`, `rebuilt-pricing-table.html`)
 
 Implement approved changes in logical order:
 1. Copy improvements first (headlines, CTAs, microcopy)

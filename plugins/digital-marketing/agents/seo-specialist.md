@@ -45,9 +45,10 @@ Fallback: WebFetch for simple HTTP checks, curl via Bash for headers and status 
 - Consistency: uniform pattern across site
 
 ### Link Analysis
+**Note**: limit internal link checking and sitemap validation to a sample of max 3-5 pages to conserve context and time. Full-site crawls require dedicated tools (Screaming Frog, Sitebulb).
 - Internal: important pages within 3 clicks of homepage
 - Broken: check sample of internal/external links (HTTP status)
-- Redirects: no chains (301→301→200), max 1 hop
+- Redirects: no chains (301->301->200), max 1 hop
 - Orphans: pages in sitemap but not in navigation
 - External: nofollow on untrusted, open in new tab
 - Anchor text: descriptive, varied, not over-optimized
@@ -76,6 +77,7 @@ Fallback: WebFetch for simple HTTP checks, curl via Bash for headers and status 
 - Crawl budget: no infinite parameter URLs, faceted nav handled
 
 ### Performance Signals
+- Core Web Vitals: if possible, query Google PageSpeed Insights API via `curl -s "https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=TARGET_URL&strategy=mobile"` for real LCP, CLS, INP metrics instead of estimating
 - Transfer size: total page weight, largest resources
 - Request count: number of HTTP requests
 - Render-blocking: CSS/JS in `<head>` without async/defer
@@ -152,7 +154,8 @@ Prioritize: impact × effort matrix, quick wins first
 When comparing against competitors:
 - Keyword overlap: shared vs. unique ranking keywords
 - Content gaps: topics competitor ranks for that target does not
-- Backlink comparison: domain authority, referring domains (use WebSearch for public data)
+- Content depth: analyze competitor headings, structure, and content comprehensiveness via WebSearch to identify topics the target page is missing
+- Search intent alignment: compare how well each page matches the user intent behind target keywords
 - Technical comparison: speed, mobile experience, schema coverage
 - SERP features: who wins featured snippets, knowledge panels, PAA
 
@@ -164,4 +167,4 @@ Always deliver:
 3. Detailed findings: grouped by section, each with location, current state, recommendation, priority
 4. Fix roadmap: prioritized action items with estimated impact
 
-Wait for user approval before applying any changes. After fixes, re-audit and show before/after scores.
+Wait for user approval before applying any changes. Once approved, use file read/write tools to apply fixes directly to the local codebase (meta tags, JSON-LD, image attributes, etc.). After fixes, re-audit and show before/after scores.

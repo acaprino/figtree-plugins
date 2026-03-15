@@ -43,8 +43,8 @@ Use the `seo-specialist` agent for all analysis.
 Gather baseline information before auditing.
 
 1. **Fetch target** — navigate to URL with Playwright, or read local files
-2. **Robots.txt** — fetch `/robots.txt`, check rules, crawl-delay
-3. **Sitemap** — fetch `/sitemap.xml`, count URLs, check lastmod dates
+2. **Robots.txt** — fetch `/robots.txt`, check rules, crawl-delay, and extract the explicitly declared Sitemap URL(s)
+3. **Sitemap** — fetch the sitemap found in robots.txt (fallback to `/sitemap.xml` if not declared), count URLs, check lastmod dates
 4. **Tech detection** — identify CMS/framework from headers, meta generators, DOM patterns
 5. **Site structure** — map primary navigation, identify page types
 
@@ -62,7 +62,7 @@ Run every check below. Use Playwright `browser_snapshot` for DOM, `browser_evalu
 
 **Headings** — Exactly 1 H1, proper hierarchy, keywords in H1
 
-**Links** — Internal link depth, broken links (sample top 20), redirect chains, orphan pages
+**Links** — Internal link depth, check HTTP status for a small sample (max 5-10) of internal/external links to save time, redirect chains, orphan pages
 
 **Images** — Alt text, descriptive filenames, lazy loading, WebP/AVIF, dimensions
 
@@ -159,13 +159,15 @@ Please review:
 4. Report only — skip fixes, generate final report
 ```
 
-Do NOT proceed to Phase 4 until the user approves. If `--strict-mode` and Errors exist, recommend fixing all errors.
+Do NOT proceed to Phase 4 until the user approves. You MUST stop generating text completely at this point -- do NOT simulate the user's response or continue autonomously. Wait for explicit user input before starting Phase 4. If `--strict-mode` and Errors exist, recommend fixing all errors.
 
 ---
 
 ## Phase 4: Fix & Iterate
 
-Apply approved fixes only.
+Apply approved fixes based on the target type:
+- **If `--local` target**: use file editing tools to modify the local source code directly (HTML, React, Next.js, etc.)
+- **If live remote URL**: do NOT attempt to modify files. Generate actionable copy-paste code snippets, patch files, or commands the user can run to apply fixes on their server/repo.
 
 1. **Batch fixes**: group related changes, apply in logical order
 2. **Re-audit changed elements**: verify fixes resolved the issues

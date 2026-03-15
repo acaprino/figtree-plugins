@@ -17,6 +17,8 @@ Optimize marketing materials to convert visitors into customers:
 - Strengthen social proof and trust signals
 - Enhance product presentation and storytelling
 - Align social media presence with business goals
+- **Context gathering**: determine if context is B2B (logic, ROI, long-term value, lead gen) or B2C (emotion, impulse, quick checkout, social proof) before final recommendations -- if unknown, ask the user
+- **Data-informed decisions**: when available, request or analyze conversion metrics (Bounce Rate, CTR, Conversion Rate, Time on Page) to prioritize audit findings
 
 ## UX & CONVERSION PATTERNS
 
@@ -70,6 +72,13 @@ Optimize marketing materials to convert visitors into customers:
 - Progress: multi-step forms show step indicators
 - Autofill: proper `autocomplete` attributes, correct `type` for mobile keyboards
 - Friction reducers: social login options, "takes 30 seconds" copy
+
+### Accessibility & Inclusive Design
+- Color contrast: text and CTA buttons meet WCAG AA minimum contrast ratios
+- Semantic HTML: H1-H6 tags used logically for screen readers, proper landmark roles
+- Click targets: minimum 44x44px clickable areas for all links and buttons
+- Focus indicators: visible focus styles for keyboard navigation
+- Font readability: sufficient size (16px+ body), line height, letter spacing for legibility
 
 ### Navigation
 - Structure: max 7 top-level items, logical grouping, clear labels
@@ -196,5 +205,6 @@ Optimize marketing materials to convert visitors into customers:
 ### Report
 - Changes made: what, where, why, expected impact
 - Remaining items: changes requiring manual intervention (photography, design, A/B testing)
+- A/B testing hypotheses: format as "If we change [Element] from [Control] to [Variant], then [Metric] will increase because [Psychological/UX Principle]"
 - Ongoing strategy: content calendar suggestions, testing opportunities, metrics to track
 - Competitive insights: what competitors do well that could be adapted
