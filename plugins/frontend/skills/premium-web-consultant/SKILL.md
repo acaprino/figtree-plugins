@@ -1,6 +1,6 @@
 ---
 name: premium-web-consultant
-description: Premium web design consultant that conducts structured client discovery, produces professional deliverables (website brief, sitemap, design direction, content strategy), and orchestrates ui-ux-designer, seo-specialist, and content-marketer agents automatically. Use when planning a new website or redesign before any code is written.
+description: Premium web design consultant that conducts structured client discovery, produces professional deliverables (website brief, sitemap, design direction, content strategy), and orchestrates ui-ux-designer, ui-layout-designer, css-master, seo-specialist, and content-marketer agents automatically. Use when planning a new website or redesign before any code is written.
 ---
 
 # Premium Web Consultant
@@ -13,7 +13,7 @@ Strategic website planning skill. Bridges the gap between "I need a website" and
 
 ## Psychology Foundation
 
-Three principles woven into every phase and deliverable. Every recommendation must tie back to at least one.
+Four principles woven into every phase and deliverable. Every recommendation must tie back to at least one.
 
 ### 1. Halo Effect - First Impressions Shape Everything
 
@@ -37,7 +37,19 @@ Brains conserve energy. High cognitive load feels stressful and unprofessional. 
 - White space is not empty space - it's a psychological cue of confidence and exclusivity
 - Reference: Hermes/Bottega Veneta (extreme white space = exclusivity), Stripe/Figma (complex products made simple)
 
-### 3. Micro-interactions + Peak-End Rule - Design the Memorable Moments
+### 3. Inclusive Design + Accessibility - Design for Every User
+
+Premium means flawless execution for everyone. Accessible design is not an afterthought - it reduces cognitive load for all users, not just those with disabilities. High contrast, semantic HTML, keyboard navigability, and screen-reader support signal a mature, top-tier brand.
+
+**Application:**
+- WCAG AA minimum contrast ratios on all text/background combinations
+- Semantic heading hierarchy (h1-h6) and landmark regions for screen readers
+- All interactive elements must be keyboard-accessible with visible focus states
+- Document focus order and tab sequence in the design direction phase
+- Alt text strategy for images - decorative vs informative
+- Reference: Gov.uk (world-class accessibility as design quality), Apple (accessibility as premium feature)
+
+### 4. Micro-interactions + Peak-End Rule - Design the Memorable Moments
 
 People remember experiences by their most intense points (peaks) and how they ended, not as an average of every moment. Micro-interactions create small peaks of positive emotion - a satisfying hover state, a smooth scroll transition, a gentle form confirmation. Premium websites feel alive because of these thoughtful details. They signal that the creator cared.
 
@@ -64,6 +76,8 @@ Objective:      [primary goal - leads, sales, awareness, portfolio, SaaS signups
 Audience:       [who, demographics, tech comfort, device preference]
 Competitors:    [3-5 competitor URLs]
 Tone:           [3 adjectives describing desired brand feeling]
+Brand assets:   [existing brand guidelines, logo, specific colors/fonts, or "none - start fresh"]
+UVP:            [unique value proposition - biggest competitive advantage]
 Existing site:  [URL if redesign, "none" if new]
 Budget range:   [ballpark for scope calibration]
 Timeline:       [launch target]
@@ -84,9 +98,10 @@ Sections:
 - Target audience profile (demographics, goals, pain points, device behavior)
 - Competitor analysis (table: site, strengths, weaknesses, design quality, key takeaway)
 - Value proposition (what makes this business different, stated in one sentence)
-- Tone of voice (do/don't table with concrete examples)
+- Brand personality (3 adjectives from discovery with explanation of each)
 - Technical requirements (CMS, e-commerce, integrations, performance targets)
 - **Halo Moment Definition** - for the homepage and each key landing page: "In the first 50ms, the visitor should feel [X] because [Y]"
+- **Scope calibration** - if budget is low (<5k), favor standard layouts and native UI components; if budget is premium (>20k), push advanced CSS interactions, WebGL, scroll-driven animations, and View Transitions
 
 ### HANDOFF: SEO Competitive Analysis
 
@@ -123,9 +138,9 @@ Sections:
 - Progressive disclosure - complex information revealed in stages
 - Every page has one primary purpose and one primary CTA
 
-### HANDOFF: IA Validation + Funnel Design (parallel)
+### HANDOFF SEQUENCE: IA Validation -> Layout Design
 
-**Agent 1: ui-ux-designer**
+**Step 1: ui-ux-designer**
 
 ```
 HANDOFF
@@ -137,10 +152,13 @@ Ask:      Validate this information architecture against the target
           points. Optimize conversion funnels - identify drop-off
           risks and suggest improvements. Flag any IA decisions
           that increase cognitive load unnecessarily.
+          Apply the LIFT Model: flag elements that increase user
+          ANXIETY or DISTRACTION. Enhance CLARITY and RELEVANCE
+          for the primary CTA on each page.
 -------------------------------
 ```
 
-**Agent 2: ui-layout-designer**
+**Step 2: ui-layout-designer** (receives optimized IA from Step 1)
 
 ```
 HANDOFF
@@ -156,7 +174,7 @@ Ask:      Define page layout composition for each major page type.
 -------------------------------
 ```
 
-These two agents can run in parallel - UX validates flows while layout designs page structure. Incorporate both outputs before proceeding.
+Run these agents sequentially - UX validates and optimizes flows first, then layout designs page structure using the optimized IA. Incorporate both outputs before proceeding.
 
 ---
 
@@ -172,11 +190,14 @@ Sections:
 - Component style direction (buttons, cards, forms, navigation - described, not coded)
 - Inspiration references (3-5 URLs with specific callouts)
 
-**Halo Effect + Cognitive Fluency rules:**
+**Halo Effect + Cognitive Fluency + Accessibility rules:**
 - Color palette must create the emotional response defined in the Halo Moment
+- All color combinations must meet WCAG AA contrast ratios (4.5:1 body, 3:1 large text)
 - Typography choices must prioritize readability (cognitive fluency) while expressing brand tone
 - Spacing system must create breathing room - white space signals confidence
 - Component style must feel cohesive - inconsistency breaks the halo
+- Document focus states and keyboard interaction patterns for all interactive components
+- If existing brand assets were provided in discovery, respect them - do not reinvent the palette
 
 ### HANDOFF: CSS Architecture
 
@@ -217,7 +238,7 @@ Sections:
 - Every page ends with a strong CTA or clear next step - never a dead end
 - Confirmation and thank-you pages are positive peaks - design them to delight
 - Identify the 3 most emotionally impactful moments in the user journey and write copy specifically for those peaks
-- Error states are recovery opportunities, not dead ends
+- Error states are recovery opportunities, not dead ends - define frictional microcopy for 404s, form errors, empty states, and timeouts
 
 ### HANDOFF: Messaging + CTA Strategy
 
@@ -285,7 +306,7 @@ Write the final package to a file (e.g., `website-strategy.md` or a directory st
 
 - Professional, consultative tone throughout - these are client-facing documents
 - Markdown formatting with clear headers, tables, and lists
-- Every recommendation must tie back to at least one psychology principle (Halo Effect, Cognitive Load/Fluency, Peak-End Rule) - state which and why
+- Every recommendation must tie back to at least one psychology principle (Halo Effect, Cognitive Load/Fluency, Inclusive Design/Accessibility, Peak-End Rule) - state which and why
 - No code output - this is strategy, not implementation
 - Specific and actionable - "use generous white space" is vague; "minimum 48px section padding, 24px element spacing" is actionable
 - Competitor references must include specific observations, not generic praise
@@ -323,5 +344,5 @@ This prevents each specialist from solving the wrong problem.
 
 Notes:
 - SEO specialist invoked twice: Phase 1 for competitive analysis, Phase 4 for keyword mapping (needs sitemap from Phase 2)
-- Phase 2 agents (ui-ux-designer + ui-layout-designer) can run in parallel
+- Phase 2 agents run sequentially: ui-ux-designer validates IA first, then ui-layout-designer uses the optimized output
 - After Phase 5, hand off to `ui-studio` for implementation

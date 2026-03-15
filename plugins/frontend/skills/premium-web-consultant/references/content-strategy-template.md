@@ -68,6 +68,8 @@
 
 ## Tone Guidelines
 
+*Derived from the Brand Personality adjectives defined in the Website Brief (Phase 1).*
+
 ### Voice Attributes
 
 | Attribute | Description | Example |
@@ -83,3 +85,17 @@
 | [specific writing example that matches brand] | [specific example that breaks brand voice] |
 | [specific writing example that matches brand] | [specific example that breaks brand voice] |
 | [specific writing example that matches brand] | [specific example that breaks brand voice] |
+
+---
+
+## Frictional Microcopy (Peak-End Recovery)
+
+Premium websites shine when things go wrong. These moments are recovery opportunities, not dead ends.
+
+| Scenario | Objective | Proposed Copy |
+|----------|-----------|---------------|
+| 404 Error Page | Disarm frustration, guide back | [Headline + reassuring CTA back to homepage or search] |
+| Form Validation Error | Helpful correction, no blame | [Specific, actionable error text - never "invalid input"] |
+| Empty State (cart/search/filters) | Encourage action | [Friendly nudge + suggestion to explore] |
+| Timeout / Server Error | Maintain trust | [Honest status + retry action + alternative contact] |
+| Successful Submission | Celebrate the peak moment | [Confirmation that reinforces the value of what they just did] |

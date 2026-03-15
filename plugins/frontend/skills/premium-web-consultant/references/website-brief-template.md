@@ -49,15 +49,17 @@
 
 ---
 
-## Tone of Voice
-
-| Do | Don't |
-|----|-------|
-| [specific example of desired tone] | [specific example of what to avoid] |
-| [specific example of desired tone] | [specific example of what to avoid] |
-| [specific example of desired tone] | [specific example of what to avoid] |
+## Brand Personality
 
 **Brand adjectives:** [the 3 adjectives from discovery, with a sentence explaining each]
+
+| Adjective | What it means for this brand | How it shows up on the website |
+|-----------|------------------------------|-------------------------------|
+| [e.g. Confident] | [interpretation in context] | [visual/copy implication] |
+| [e.g. Approachable] | [interpretation in context] | [visual/copy implication] |
+| [e.g. Expert] | [interpretation in context] | [visual/copy implication] |
+
+*Detailed tone Do/Don't guidelines are developed in the Content Strategy phase (Phase 4), derived from these adjectives.*
 
 ---
 
