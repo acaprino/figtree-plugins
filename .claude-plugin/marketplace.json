@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Custom development workflow agents and skills for code quality, Tauri/Rust development, frontend optimization, AI tooling, and constraint programming optimization",
-    "version": "2.20.0"
+    "version": "2.21.0"
   },
   "plugins": [
     {
@@ -291,7 +291,7 @@
       "name": "research",
       "source": "./plugins/research",
       "description": "Complex multi-source research specialist -- use when initial searches fail, when research needs systematic coverage across codebase, docs, and web, or when finding specific information requires query optimization and iterative refinement",
-      "version": "1.4.0",
+      "version": "1.5.0",
       "author": {
         "name": "Alfio"
       },

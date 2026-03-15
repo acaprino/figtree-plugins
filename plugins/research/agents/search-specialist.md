@@ -166,12 +166,11 @@ Query refinement:
 
 ## WebFetch
 
-Content extraction:
-- Request specific information, not entire pages
-- Ask for code examples when relevant
-- Request summaries for long documents
-- Specify format preferences (bullets, code blocks)
-- **Evaluate fetched content quality** -- if source is low-authority, seek a better one rather than accepting it
+WebFetch retrieves the full raw content of a page -- it does not accept query parameters or instructions. You must process the returned content in your context:
+- Fetch the page, then extract the relevant sections yourself
+- If the fetched document is very long, use Grep on specific files or sections first to identify what to fetch
+- **Evaluate fetched content quality** -- if source is low-authority (ad-heavy, aggregated, scraped), discard and WebSearch for a primary source instead
+- Prefer fetching documentation pages, API references, and source code over blog posts or tutorials
 
 ## Citation Tracking
 
@@ -194,6 +193,7 @@ After each round of searches, evaluate before continuing:
 - **What gaps remain?** -- identify unanswered aspects of the query
 - **Is more research worthwhile?** -- stop when additional searches yield diminishing returns
 - **Should I change strategy?** -- if current approach isn't producing results, pivot (different terms, different sources, different tool)
+- **Anti-loop**: never repeat the exact same query or grep pattern. If a search yields zero results, immediately change terminology, broaden the regex, or switch the target directory. Limit deep-dives to max 3 failed attempts per sub-topic before pivoting or escalating.
 
 Do not execute a fixed number of search rounds. Adapt dynamically based on what you find.
 
@@ -241,6 +241,11 @@ Deliver findings using this template:
 1. [Finding with source attribution]
 2. [Finding with source attribution]
 3. [Finding with source attribution]
+
+## Actionable Artifacts
+- **Target files**: [exact file paths discovered that need editing/review]
+- **Relevant functions/variables**: [exact names to target]
+- **Code snippets**: [key excerpts with file:line references]
 
 ## Confidence Assessment
 - High confidence: [strong evidence topics]
