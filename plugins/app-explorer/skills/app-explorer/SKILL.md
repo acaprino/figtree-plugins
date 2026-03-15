@@ -41,6 +41,7 @@ Use Playwright MCP tools directly. The AI controls the browser, reads accessibil
 - **SPA intelligence**: the AI understands which navigation items lead to new screens vs. redundant views
 - **Adaptive exploration**: skip loading states, wait for content, retry failed navigations
 - **Interactive content**: open drawers, expand accordions, fill search fields, trigger modals
+- **Incremental state saving**: save progress continuously to avoid data loss if context limits are reached
 - **Real-time decisions**: prioritize unexplored areas, avoid infinite loops in dynamic lists
 
 ### Required MCP tools
@@ -62,8 +63,9 @@ Use Playwright MCP tools directly. The AI controls the browser, reads accessibil
 
 ```
 1. mkdir -p .app-explorer/screenshots
-2. browser_navigate to the target URL
-3. browser_snapshot to understand the landing page
+2. Initialize or load .app-explorer/sitemap.json (if resuming from a previous session)
+3. browser_navigate to the target URL
+4. browser_snapshot to understand the landing page
 ```
 
 ### Phase 2: Authentication (if needed)
@@ -87,7 +89,7 @@ When NO credentials are provided:
 
 ### Phase 3: Systematic BFS exploration
 
-**CRITICAL RULE: NEVER declare exploration complete until you have clicked EVERY interactive element on EVERY discovered screen.** The most common failure mode is stopping too early after exploring only primary navigation. An app with 4 nav tabs likely has 15-30+ screens when you also explore cards, buttons, modals, settings sub-pages, detail views, input flows, and contextual actions. If you have explored fewer than 10 screens for a non-trivial app, you are almost certainly not done.
+**CRITICAL RULE: NEVER declare exploration complete until you have clicked EVERY interactive element on EVERY discovered screen.** The most common failure mode is stopping too early after exploring only primary navigation.
 
 Maintain mental state of:
 - **Visited screens**: set of (url + content_fingerprint) already explored
@@ -96,25 +98,19 @@ Maintain mental state of:
 - **Screen counter**: incrementing ID (screen_001, screen_002, ...)
 - **Pending elements per screen**: track which interactive elements have NOT been clicked yet
 
+**SAFETY LIMIT**: If you reach 50 visited screens or 150 interactions, STOP and ask the user: *"I have mapped 50 screens. Do you want me to continue exploring, or should I finalize the sitemap now?"* This prevents infinite loops and excessive API costs.
+
 For each screen:
 ```
 1. browser_snapshot to read full accessibility tree
 2. browser_take_screenshot to save visual state to .app-explorer/screenshots/screen_NNN_<name>.png
-3. Catalog ALL interactive elements from the snapshot:
-   - Navigation items (bottom nav, sidebar, tab bars)
-   - Buttons, links, tabs, menu items
-   - Form fields (inputs, textareas, dropdowns, checkboxes, toggles)
-   - Expandables (accordions, collapsibles)
-   - Cards, chips, list items that appear clickable
-   - Modal/drawer/dialog triggers
-   - Icon buttons (edit, delete, settings, info, share, etc.)
-   - FABs (floating action buttons)
-4. Record element inventory in the screen's data
+3. Catalog ALL interactive elements from the snapshot. Record element inventory in the screen's data.
+4. Update .app-explorer/sitemap.json INCREMENTALLY with the new screen data. Do not wait for the end of the exploration.
 5. Click EVERY interactive element that could lead to a new screen or overlay:
    a. browser_click the element
    b. browser_snapshot to see if screen changed
    c. If new screen: record it, take screenshot, add to queue
-   d. If overlay/modal: follow the "Overlay / modal / dialog handling (depth-first)" procedure below -- explore ALL tabs, click ALL action buttons, open ALL sub-dialogs, THEN dismiss
+   d. If overlay/modal: follow the "Overlay / modal / dialog handling" procedure below
    e. browser_navigate back or click back-nav to return to current screen
    f. Mark element as explored
 6. Do NOT move to the next screen until all elements on the current screen have been explored
@@ -124,56 +120,34 @@ For each screen:
 
 These rules are mandatory. Violating them produces incomplete sitemaps.
 
-1. **Click every card/list item**: If a screen shows a list of items (meals, recipes, history entries, settings rows), click at least the first item of each distinct type to discover detail views
-2. **Explore every modal/bottom sheet fully**: When a modal opens, it often contains tabs, sub-sections, or additional buttons. Explore ALL of them before dismissing
-3. **Follow every settings row**: Settings/profile pages often have 5-15 sub-pages (account, notifications, goals, subscriptions, about, etc.). Click every single row
-4. **Test every input method**: If the app offers multiple ways to do something (e.g., add via photo/text/voice/gallery), explore each input method's flow as a separate screen
-5. **Explore date/calendar navigation**: Click forward/back on date selectors to see if different dates reveal different screen states
-6. **Open every FAB/action menu**: Floating action buttons and "+" buttons often reveal multi-option menus. Explore each option
-7. **Check empty vs. populated states**: If navigating to a section shows "no data" but another date/filter shows data, both are distinct screens worth capturing
-8. **Never skip icon buttons**: Small icon buttons (gear, pencil, trash, info circle, share) frequently lead to important sub-screens or modals
-
-### Exploration priorities
-
-Explore in this order to maximize coverage efficiently:
-1. **Primary navigation** - bottom nav tabs, sidebar menu items, top nav links
-2. **Page-level actions** - prominent buttons ("View plan", "Add", "Settings")
-3. **List items / cards** - tappable cards that lead to detail views
-4. **Expandables** - accordions, collapsible sections
-5. **Modal triggers** - buttons that open overlays, dialogs, bottom sheets
-6. **Contextual actions** - icon buttons, kebab menus, swipe actions
-7. **Pagination / date navigation** - week selectors, page controls (sample 1-2)
-8. **Form interactions and action buttons** - open dropdowns to see options, click "Add"/"Create"/"Edit"/"New" buttons to reveal their forms/dialogs (don't submit forms that create or modify real data, but DO open them to explore their UI)
+1. **Click every card/list item**: Click at least the first item of each distinct type to discover detail views
+2. **Explore every modal/bottom sheet fully**: Explore ALL tabs, sub-sections, and buttons before dismissing
+3. **Follow every settings row**: Click every single row in settings/profile pages
+4. **Test every input method**: Explore each input method's flow as a separate screen
+5. **Explore date/calendar navigation**: Click forward/back to see if different dates reveal different states
+6. **Open every FAB/action menu**: Explore each option inside floating action menus
+7. **Check empty vs. populated states**: Both are distinct screens worth capturing
+8. **Never skip icon buttons**: Gear, pencil, trash, info circle, share buttons often lead to important sub-screens
+9. **Use Dummy Data for Forms**: To reveal validation states or enable "Next/Submit" buttons, fill required fields with safe dummy data (e.g., `test_ai_exploration_123`). **DO NOT submit forms that permanently modify real production data.**
+10. **Skip Destructive Actions**: Do not click elements clearly labeled as "Delete", "Remove", "Log out", or "Cancel subscription", but do catalog them in the JSON.
 
 ### Overlay / modal / dialog handling (depth-first)
 
-When clicking an element opens an overlay, treat it as a **mini-screen that requires full exploration before dismissing**. Do NOT just screenshot and close.
+When clicking an element opens an overlay, treat it as a **mini-screen that requires full exploration before dismissing**.
 
 ```
 1. browser_snapshot to read the overlay's full accessibility tree
-2. browser_take_screenshot (viewport only, not full page)
-3. Catalog ALL interactive elements inside the overlay:
-   - Tabs, segmented controls, sub-navigation
-   - Buttons ("Save", "Add", "Edit", "Create", "Delete", etc.)
-   - Form fields (inputs, dropdowns, toggles, checkboxes)
-   - Expandable sections, accordions
-   - Links, list items, cards
-   - Sub-dialog triggers (buttons that open ANOTHER overlay on top)
+2. browser_take_screenshot (viewport only, fullPage: false)
+3. Catalog ALL interactive elements inside the overlay
 4. Explore the overlay depth-first:
-   a. If the overlay has tabs: click each tab, snapshot + screenshot each
-   b. Click every action button that could reveal new UI (e.g., "Add item",
-      "Edit", "Create quiz", "Advanced settings"). If it opens a sub-dialog
-      or new form, explore THAT fully before returning
-   c. Open every dropdown/select to see its options, screenshot, then close it
-   d. Expand every accordion/collapsible section, screenshot expanded state
-   e. If a button triggers a multi-step flow (wizard/stepper), follow all steps
-   f. Do NOT click destructive actions (delete, remove) but DO catalog them
-5. Only after ALL overlay elements are explored:
-   Dismiss with Escape or close button
-6. browser_snapshot to confirm overlay dismissed and you're back on the parent screen
+   a. Click each tab, snapshot + screenshot each
+   b. Open every dropdown/select to see its options, screenshot, then close it
+   c. Expand every accordion/collapsible section
+   d. Follow multi-step flows (wizard/stepper)
+   e. If a button opens a sub-dialog, explore THAT fully before returning
+5. Only after ALL overlay elements are explored, dismiss with Escape or close button
+6. browser_snapshot to confirm you're back on the parent screen
 ```
-
-**Sub-dialog rule**: If clicking a button inside an overlay opens ANOTHER overlay or navigates to a new view, explore that fully before returning. This can nest multiple levels deep -- always complete the deepest level first before unwinding.
 
 ### SPA fingerprinting
 
@@ -182,11 +156,12 @@ Many SPAs change content without changing URL. Distinguish screens by:
 - Page heading text (h1, h2)
 - Active navigation state (which tab/nav item is selected)
 - Presence of overlays/modals
-- Key content identifiers (list titles, section headers)
 
-If URL + headings + active nav match a visited screen, skip it.
+**DYNAMIC CONTENT AWARENESS**: Ignore highly volatile elements when comparing screens. Differences in timestamps, notification counters, dynamic ad banners, or randomly generated IDs do NOT constitute a new screen. Focus on structural changes, URLs, and main headings to avoid infinite loops.
 
-### Phase 4: Completeness check (mandatory before building sitemap)
+If URL + headings + active nav match a visited screen structurally, skip it.
+
+### Phase 4: Completeness check (mandatory before finalizing)
 
 Before declaring exploration complete, you MUST perform this self-audit:
 
@@ -197,29 +172,11 @@ Before declaring exploration complete, you MUST perform this self-audit:
 4. If ANY element was not explored, go back and explore it NOW
 5. Check: did you explore sub-pages behind settings/profile rows?
 6. Check: did you open every modal/bottom sheet trigger?
-7. Check: did you click at least one item in every list/card grid?
-8. Check: did you try every distinct input method or action type?
 ```
 
-**Screenshot verification pass** (do this AFTER the checklist above):
-```
-1. For each screenshot you captured, re-read it using the Read tool
-2. Look at every visible button, link, icon, tab, and interactive element in the image
-3. For each element: confirm you have a record of clicking/exploring it
-4. If you spot ANY element you did not explore (a tab you missed, a button you skipped,
-   an icon you overlooked), go back to that screen and explore it NOW
-5. Pay special attention to:
-   - Small icon buttons in corners or headers (gear, pencil, share, info)
-   - Secondary tabs inside dialogs you may have dismissed too quickly
-   - "More options" / kebab menus you may not have opened
-   - Footer links or secondary navigation you scrolled past
-```
+### Phase 5: Finalize Sitemap & Metadata
 
-Only proceed to Phase 5 when ALL elements on ALL screens have been explored or explicitly skipped (with a documented reason, e.g., "destructive action", "external link", "logout").
-
-### Phase 5: Build sitemap
-
-After exploration is complete, create `.app-explorer/sitemap.json`:
+Ensure `.app-explorer/sitemap.json` is fully updated with final metadata and workflows:
 
 ```json
 {
@@ -282,7 +239,7 @@ After exploration is complete, create `.app-explorer/sitemap.json`:
 
 ### Phase 6: Summary report
 
-After writing sitemap.json, present to the user:
+After finalizing sitemap.json, present to the user:
 - Total screens discovered
 - Navigation structure overview (which main sections exist)
 - Deepest/most hidden screens
@@ -291,6 +248,7 @@ After writing sitemap.json, present to the user:
 ## Element types to catalog
 
 ### Navigation elements
+
 | type | what to look for in snapshot |
 |---|---|
 | `nav_item` | Buttons inside `navigation` landmarks, bottom tab bars |
@@ -300,6 +258,7 @@ After writing sitemap.json, present to the user:
 | `breadcrumb` | Navigation breadcrumbs |
 
 ### Action elements
+
 | type | what to look for |
 |---|---|
 | `button` | `<button>` with visible text or aria-label |
@@ -309,6 +268,7 @@ After writing sitemap.json, present to the user:
 | `card` | Clickable cards, list items with actions |
 
 ### Form elements
+
 | type | what to look for |
 |---|---|
 | `input` | Text inputs, search fields, date pickers |
@@ -321,6 +281,7 @@ After writing sitemap.json, present to the user:
 | `file_upload` | File input buttons |
 
 ### Expandable elements
+
 | type | what to look for |
 |---|---|
 | `accordion` | `<details>`, `[aria-expanded]` sections |
@@ -329,6 +290,7 @@ After writing sitemap.json, present to the user:
 | `modal_trigger` | Buttons that open overlays/dialogs |
 
 ### Informational elements (catalog but don't click)
+
 | type | what to look for |
 |---|---|
 | `progress` | Progress bars, circular progress |
@@ -339,14 +301,11 @@ After writing sitemap.json, present to the user:
 
 - **Read the snapshot first, click second**: the accessibility snapshot tells you everything about the page structure. Use it to plan your clicks.
 - **Track active states**: note which nav item is "active" or "pressed" - this tells you where you are.
-- **Don't click destructive actions**: skip "Delete", "Log out", "Cancel subscription" etc. But DO document them as elements.
-- **Sample repetitive content**: if there are 50 list items of the same type, click 2-3 to see the detail view, then move on. But always click at least 2.
 - **Handle loading**: if snapshot shows a spinner or empty content, use `browser_wait_for` with a selector or just wait 2-3 seconds and re-snapshot.
 - **Stay within the app domain**: don't follow external links.
 - **Take viewport screenshots for overlays**: use `fullPage: false` for modals/drawers so the overlay is properly visible.
 - **Take full-page screenshots for regular pages**: use `fullPage: true` for main screens to capture all content.
-- **When in doubt, click it**: if you're unsure whether an element leads to a new screen, click it. The cost of an extra click is much lower than the cost of missing a screen.
-- **Never stop early**: finding 5-7 screens for a feature-rich app is a sign you haven't explored deeply enough. Keep going until you've exhausted all interactive paths.
+- **When in doubt, click it**: if you're unsure whether an element leads to a new screen, click it.
 
 ## Fallback: Python crawler (optional)
 
