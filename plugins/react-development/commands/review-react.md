@@ -65,7 +65,7 @@ Read a representative cross-section:
 
 ```
 Task:
-  subagent_type: "react-performance-optimizer"
+  subagent_type: "react-development:react-performance-optimizer"
   description: "React performance and bundle optimization audit"
   prompt: |
     Audit the React performance, state management, and bundle optimization of this frontend codebase.

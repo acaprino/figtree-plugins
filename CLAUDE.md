@@ -15,7 +15,7 @@ plugins/
     hooks/                  # hook handlers (JS) + hooks.json (anvil-hooks only)
 ```
 
-29 plugins: humanize, deep-dive-analysis, tauri-development, frontend, react-development, xterm, ai-tooling, python-development, stripe, system-utils, messaging, research, business, code-documentation, project-setup, mobile-development, typescript-development, csp, digital-marketing, senior-review, app-explorer, workflows, obsidian-development, browser-extensions, learning, marketplace-ops, playwright-skill, anvil-hooks, cc-usage, codebase-mapper.
+30 plugins: humanize, deep-dive-analysis, tauri-development, frontend, react-development, xterm, ai-tooling, python-development, stripe, system-utils, messaging, research, business, code-documentation, project-setup, mobile-development, typescript-development, csp, digital-marketing, senior-review, app-explorer, workflows, obsidian-development, browser-extensions, learning, marketplace-ops, playwright-skill, anvil-hooks, cc-usage, codebase-mapper.
 
 ## Plugin anatomy
 
@@ -35,9 +35,9 @@ plugins/
 
 ## Conventions
 
-- Agent names: kebab-case matching the filename (e.g. `search-specialist.md`)
+- Agent names: kebab-case matching the filename (e.g. `quick-searcher.md`)
 - Plugin names: kebab-case directory names
-- Default model: `opus` (Opus 4.6) for all agents
+- Default model: `opus` (Opus 4.6); exceptions noted per-agent (e.g. `quick-searcher` uses `sonnet`)
 - Agent body style: terse keyword lists, imperative tone, structured with markdown headers
 - Skills supplementary subdirs: `references/`, `scripts/`, `templates/`, `assets/`, `lib/` as needed
 - No build step or runtime framework - plugins are markdown with optional helper scripts (Python, JS) in skills' `scripts/` subdirs
@@ -74,6 +74,10 @@ Key fields in `.claude-plugin/marketplace.json`:
 
 None. No tests, no build step, no CI pipeline. All content is static markdown.
 
+## Documentation
+
+`docs/plugins/` contains per-plugin documentation. `docs/plans/` holds implementation plans used by planning skills.
+
 ## Upstream-synced plugins
 
 Some plugins are ported from external repositories and should be kept in sync with their upstream source. When asked to update one of these plugins, fetch the latest content from the upstream URL using `gh api` and apply any changes, then follow the standard marketplace update workflow.
@@ -87,7 +91,7 @@ Some plugins are ported from external repositories and should be kept in sync wi
 | `frontend` (css-master) | `paulirish/dotfiles` - `agents/paulirish-skills/skills/modern-css/SKILL.md` | `plugins/frontend/skills/css-master/SKILL.md`, `plugins/frontend/skills/css-master/references/argyle-cacadia-2025-deck.md` |
 | `deep-dive-analysis` (inspiration) | `gsd-build/get-shit-done` - `agents/gsd-codebase-mapper.md` | `plugins/deep-dive-analysis/commands/deep-dive-analysis.md` (patterns adopted, not direct copy) |
 | `playwright-skill` | `lackeyjb/playwright-skill` - `skills/playwright-skill/` | `plugins/playwright-skill/skills/playwright-skill/SKILL.md`, `plugins/playwright-skill/skills/playwright-skill/API_REFERENCE.md`, `plugins/playwright-skill/skills/playwright-skill/run.js`, `plugins/playwright-skill/skills/playwright-skill/package.json`, `plugins/playwright-skill/skills/playwright-skill/lib/helpers.js` |
-| `frontend` (react-best-practices) | `vercel-labs/agent-skills` - `skills/react-best-practices/` | `plugins/frontend/skills/react-best-practices/SKILL.md`, `plugins/frontend/skills/react-best-practices/references.md`, `plugins/frontend/skills/react-best-practices/rules/*.md` |
+| `react-development` (react-best-practices) | `vercel-labs/agent-skills` - `skills/react-best-practices/` | `plugins/react-development/skills/react-best-practices/SKILL.md`, `plugins/react-development/skills/react-best-practices/references.md`, `plugins/react-development/skills/react-best-practices/rules/*.md` |
 | `digital-marketing` (domain-hunter) | `ReScienceLab/opc-skills` - `skills/domain-hunter/` | `plugins/digital-marketing/skills/domain-hunter/SKILL.md`, `plugins/digital-marketing/skills/domain-hunter/references/registrars.md`, `plugins/digital-marketing/skills/domain-hunter/references/spaceship-api.md` |
 
 ### How to sync a plugin
@@ -118,6 +122,7 @@ gh api repos/lackeyjb/playwright-skill/contents/skills/playwright-skill/lib/help
   --jq '.content' | base64 -d
 
 # Fetch latest react-best-practices from upstream (vercel-labs/agent-skills example)
+# Local target: plugins/react-development/skills/react-best-practices/
 gh api repos/vercel-labs/agent-skills/contents/skills/react-best-practices/SKILL.md \
   --jq '.content' | base64 -d
 gh api repos/vercel-labs/agent-skills/contents/skills/react-best-practices/AGENTS.md \
