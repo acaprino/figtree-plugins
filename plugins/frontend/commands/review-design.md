@@ -367,9 +367,21 @@ Task:
     ## Linter Output (if available)
     [paste ESLint JSON report if captured in Step 1.5, or "No linter output available"]
 
+    ## Vercel React Best Practices Checklist (62 rules -- flag violations)
+
+    **1. Eliminating Waterfalls (CRITICAL):** async-defer-await (move await into branches), async-parallel (Promise.all for independent ops), async-dependencies (better-all for partial deps), async-api-routes (start promises early, await late), async-suspense-boundaries (stream with Suspense)
+    **2. Bundle Size (CRITICAL):** bundle-barrel-imports (import directly, avoid barrels), bundle-dynamic-imports (next/dynamic for heavy components), bundle-defer-third-party (load analytics after hydration), bundle-conditional (load modules only when activated), bundle-preload (preload on hover/focus)
+    **3. Server-Side (HIGH):** server-auth-actions, server-cache-react (React.cache per-request), server-cache-lru (cross-request LRU), server-dedup-props, server-hoist-static-io, server-serialization (minimize client data), server-parallel-fetching, server-after-nonblocking
+    **4. Client-Side Data (MEDIUM-HIGH):** client-swr-dedup, client-event-listeners (deduplicate global), client-passive-event-listeners (passive for scroll), client-localstorage-schema (version and minimize)
+    **5. Re-render Optimization (MEDIUM):** rerender-defer-reads, rerender-memo (extract expensive work), rerender-memo-with-default-value, rerender-dependencies (primitive deps), rerender-derived-state (subscribe to derived booleans), rerender-derived-state-no-effect, rerender-functional-setstate, rerender-lazy-state-init, rerender-simple-expression-in-memo, rerender-move-effect-to-event, rerender-transitions (startTransition), rerender-use-ref-transient-values, rerender-no-inline-components
+    **6. Rendering (MEDIUM):** rendering-animate-svg-wrapper, rendering-content-visibility, rendering-hoist-jsx, rendering-svg-precision, rendering-hydration-no-flicker, rendering-hydration-suppress-warning, rendering-activity, rendering-conditional-render (ternary not &&), rendering-usetransition-loading, rendering-resource-hints, rendering-script-defer-async
+    **7. JS Performance (LOW-MEDIUM):** js-batch-dom-css, js-index-maps (Map for lookups), js-cache-property-access, js-cache-function-results, js-cache-storage, js-combine-iterations, js-length-check-first, js-early-exit, js-hoist-regexp, js-min-max-loop, js-set-map-lookups, js-tosorted-immutable, js-flatmap-filter
+    **8. Advanced (LOW):** advanced-event-handler-refs, advanced-init-once, advanced-use-latest
+
     ## Instructions
-    Reference: read the `react-best-practices` skill rules for additional performance checks to apply.
-    Evaluate:
+    Use the checklist above as your primary audit framework. Flag any violations you find in the reviewed code, citing the specific rule ID (e.g. "Violates bundle-barrel-imports").
+
+    Evaluate (in addition to the rules above):
     1. **React Compiler readiness**: Is `babel-plugin-react-compiler` configured? Identify patterns the compiler can auto-optimize vs patterns requiring manual intervention (external store reads, non-React state mutations, dynamic property access)
     2. **External store selector audit (CRITICAL)**:
        - Selectors returning objects/arrays without `useShallow` -- causes re-renders on every store update
