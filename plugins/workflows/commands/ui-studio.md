@@ -40,7 +40,7 @@ This pipeline is for **building new UI from scratch or major redesigns**. Before
    - Layout/grid/responsive issues -> spawn `frontend:ui-layout-designer` to analyze and fix
    - Visual polish/animations -> spawn `frontend:ui-polisher`
    - UX flow/interaction issues -> spawn `frontend:ui-ux-designer`
-   - React performance issues -> spawn `frontend:react-performance-optimizer`
+   - React performance issues -> spawn `react-development:react-performance-optimizer`
 3. If no single agent fits, handle the fix directly with code analysis and edits
 
 Never silently skip the pipeline -- always explain to the user which path you are taking and why.
@@ -51,7 +51,8 @@ This command requires agents and skills from other plugins. Before proceeding, v
 
 **Required plugins:**
 - `ai-tooling` -- brainstorming, writing-plans, executing-plans skills (Phases 1, 6, 7)
-- `frontend` -- ui-ux-designer, ui-layout-designer, ui-polisher, react-performance-optimizer agents, frontend-design and css-master skills (Phases 2-5, 8-9)
+- `frontend` -- ui-ux-designer, ui-layout-designer, ui-polisher agents, frontend-design and css-master skills (Phases 2-5, 8-9)
+- `react-development` -- react-performance-optimizer agent (Phase 8)
 
 **Optional plugins:**
 - `senior-review` -- architect-review, security-auditor, pattern-quality-scorer agents (Phase 10)
@@ -811,7 +812,7 @@ Agent: **react-performance-optimizer**
 
 ```
 Task:
-  subagent_type: "frontend:react-performance-optimizer"
+  subagent_type: "react-development:react-performance-optimizer"
   description: "React performance optimization"
   prompt: |
     Optimize React performance against the budget from the product brief.

@@ -24,7 +24,8 @@ This command requires agents from other plugins. Before proceeding, verify they 
 
 **Required plugins:**
 - `tauri-development` -- rust-engineer, tauri-optimizer agents (Phases 1-2)
-- `frontend` -- react-performance-optimizer, ui-layout-designer, ui-polisher agents (Phases 3-5)
+- `frontend` -- ui-layout-designer, ui-polisher agents (Phases 4-5)
+- `react-development` -- react-performance-optimizer agent (Phase 3)
 
 Check by looking for the agent/skill files. If a required plugin is missing:
 

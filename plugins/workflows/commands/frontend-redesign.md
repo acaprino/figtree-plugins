@@ -26,7 +26,8 @@ You MUST follow these rules exactly. Violating any of them is a failure.
 This command requires agents from the `frontend` plugin. Before proceeding, verify it is installed by checking that these agents are available:
 
 **Required plugins:**
-- `frontend` -- ui-ux-designer, ui-layout-designer, react-performance-optimizer, ui-polisher, css-master agents; frontend-design skill
+- `frontend` -- ui-ux-designer, ui-layout-designer, ui-polisher, css-master agents; frontend-design skill
+- `react-development` -- react-performance-optimizer agent
 
 Check by looking for the agent/skill files. If the `frontend` plugin is missing, STOP and tell the user:
 

@@ -73,57 +73,36 @@ Hard constraints for all name generation - apply during generation, not post-hoc
 - Single dictionary words are allowed ONLY if truly obscure, archaic, or decontextualized - not top-5000 frequency words in any major language. Words like Apple, Slack, Tinder work because they're common words ripped from their original context into an unrelated domain. Words like "Health" or "Cloud" in their native sector do not.
 - The only exception for foreign words: truly obscure words from non-major languages (e.g., Basque, Swahili, Finnish) that have zero tech/brand presence - and even these must be verified
 
-### Step 2: Massive Generation (Lateral Thinking)
+### Step 2: Strategic Semantic Generation (Quality over Quantity)
 
-Generate at least 30 name candidates using four lateral thinking techniques. The goal is creative explosion - push for unexpected, surprising names that don't sound like every other startup.
+CRITICAL INSTRUCTION: **ABSOLUTELY NO ALGORITHMIC LETTER-MASHING.** Do NOT invent fake words by combining random syllables (e.g., if the user wants CVCV, do NOT generate meaningless words like "Nivo", "Rivo", "Tero", "Zivo"). Do NOT use cheap suffixes (-ify, -ly, -io). Do NOT glue two obvious words together.
 
-**Technique 1: Semantic Collision** - Force distant semantic fields together
-- Ban ALL industry-related words entirely during this technique
-- Pick 3 unrelated domains (e.g., for a fintech: marine biology, architecture, astronomy)
-- Find words, concepts, or metaphors from those domains that share the brand's core values
-- Collide them: blend, compound, or juxtapose words from different domains
-- The best names come from unexpected connections (Slack = loose rope -> workplace calm)
+You must act as a high-end Silicon Valley Brand Naming Strategist. Premium brands (like Oura, Notion, Strava, Linear, Palantir) are NOT invented fake words; they are **real, obscure, or decontextualized words** with profound semantic roots.
 
-**Technique 2: Vocabulary Shift** - Hunt for obscure, archaic, or decontextualized real words
-- Raid etymological dictionaries, dead languages, obsolete English, trade jargon from unrelated fields
-- Look for words that sound beautiful but have fallen out of common use
-- Decontextualize common words by placing them in an alien sector
-- Push beyond the first 10,000 words anyone would think of
-- Examples: Palantir (Tolkien's seeing stone), Asana (yoga pose), Quora (Latin plural of quorum)
+Generate exactly 12-15 highly curated names (not 30+ garbage ones), divided into these 4 Strategic Directions. For each name, provide the "Name Story" (why it works strategically).
 
-**Technique 3: Invisible Hinge** - For neologisms and blends
-- Source words must share 2-3 letters at the join point so the blend sounds natural, not stitched
-- The overlap is the "hinge" - it makes the portmanteau feel like a real word
-- Bad: Health + App = Healthapp (no hinge, just glued). Good: Pin + Interest = Pinterest (shared "in")
-- Test: cover each half - does the remaining fragment still hint at its source word?
-- Examples: Instagram (instant + telegram), Groupon (group + coupon), Microsoft (micro + soft)
+**Direction 1: Etymological Hijacking (Philosophy & Ancient Roots)**
+Find extremely obscure but beautiful-sounding words from Ancient Greek, Latin, Sanskrit, or ancient philosophy that perfectly encapsulate the brand's core transformation.
+- *Example:* "Eidos" (Greek for the ideal Form/Essence), "Kalon" (Greek for physical and moral perfect beauty).
+- *Rule:* The word must look modern and tech-friendly, avoiding overly complex spellings.
 
-**Technique 4: Polarization** - Contrarian, provocative names that break sector conventions
-- What would make the industry uncomfortable? Name that.
-- Use contradiction, irony, or subversion of expectations
-- Names that provoke a double-take or violate sector naming norms
-- Examples: Liquid Death (water), The Ordinary (skincare), Gong (sales), Discord (communication), Patagonia (outdoor gear named after a harsh region)
+**Direction 2: Scientific & Mathematical Decontextualization**
+Steal cold, precise, and elegant terms from physics, biology, mathematics, or navigation, and apply them metaphorically to the brand's sector.
+- *Example:* "Basal" (from Basal Metabolic Rate, used as a premium tech name), "Ratio" (proportion), "Zenith".
+- *Rule:* Do not use basic industry terms. Find the "invisible mechanics" behind the industry.
 
-**Generate freely across all four techniques.** Do not self-censor during generation - even rough, weird, or provocative candidates are valuable at this stage.
+**Direction 3: The Metaphorical Shift (Art, Architecture, Nature)**
+Look at how artists sculpt, how architects build, or how nature grows. Use a word from these domains to describe the user's product function.
+- *Example:* "Tessera" (a mosaic piece -> meal planning), "Kroma" (gradient/scale -> progress).
+- *Rule:* The metaphor must be elegant and not immediately obvious. It must require a 1-second "aha!" moment.
 
-**Archetype Classification** - After generating 30+ names, classify each into one of 7 archetypes to check diversity:
+**Direction 4: The Phonetic Real-Word (Sonorous but Meaningful)**
+If the user requests a specific phonetic structure (like short 4-5 letter CVCV words), **DO NOT INVENT THEM**. Search your vocabulary for REAL words in Italian, English, or other languages that naturally fit that structure and have a poetic or strong meaning.
+- *Example:* If user wants CVCV: "Vela" (Italian for sail), "Soma" (Greek for body), "Nova" (Latin for new).
 
-1. **Brandable Names** - Coined/invented words (Google, Rolex, Kodak, Noom, Oura)
-2. **Evocative** - Suggests energy, aspiration, or emotion (RedBull, Strava, Nike, Lululemon)
-3. **Short Phrase** - 2-3 word descriptive phrases (Dollar Shave Club, MyFitnessPal, WeTransfer)
-4. **Compound Words** - Two real words merged (FedEx, YouTube, Snapchat, WordPress)
-5. **Alternate Spelling** - Intentionally misspelled (Lyft, Fiverr, Tumblr, Flickr, Reddit)
-6. **Non-English Words** - Foreign words with relevant meaning (Toyota, Audi, Volvo, Samsung, Lego)
-7. **Real Words** - Existing words repurposed (Apple, Amazon, Slack, Stripe, Notion, Linear)
-
-If any archetype has 0 entries, generate a few more using that archetype as a lens. The archetypes are a diversity check, not generation buckets.
-
-Apply CO.ME.OR.GO as evaluation criteria (not generation constraints):
-- **CO**rto (short) - prefer 1-3 syllables
-- **ME**morabile (memorable) - easy to recall after one hearing
-- **OR**iginale (original) - distinct from competitors
-- **G**radevole (pleasant) - agreeable sound and feel
-- **O**recchiabile (catchy) - phonetically engaging
+**Output format for Generation:**
+For each name, output:
+- **[Name]** ([X] chars): [Etymology/Origin]. *Brand Story:* [1-sentence explanation of why it fits the brief perfectly without being generic].
 
 ### Step 3: Linguistic and Cultural Filtering
 

@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Custom development workflow agents and skills for code quality, Tauri/Rust development, frontend optimization, AI tooling, and constraint programming optimization",
-    "version": "2.47.0"
+    "version": "2.48.0"
   },
   "plugins": [
     {
@@ -91,34 +91,27 @@
     {
       "name": "frontend",
       "source": "./plugins/frontend",
-      "description": "React performance optimization, UI polishing, UX design, comprehensive CSS (BEM, CSS Modules, SASS, accessibility, cross-browser), xterm.js terminal emulators, and premium web consulting",
-      "version": "2.28.0",
+      "description": "UI polishing, UX design, comprehensive CSS (BEM, CSS Modules, SASS, accessibility, cross-browser), layout design, and premium web consulting",
+      "version": "3.0.0",
       "author": {
         "name": "Alfio"
       },
       "license": "MIT",
       "keywords": [
-        "react",
-        "performance",
         "ui",
         "ux",
         "frontend",
-        "optimization",
         "css",
         "css-master",
         "layout-design",
         "product-brief",
         "web-consultant",
         "strategy",
-        "discovery",
-        "xterm",
-        "terminal",
-        "xtermjs"
+        "discovery"
       ],
       "category": "frontend",
       "strict": false,
       "agents": [
-        "./agents/react-performance-optimizer.md",
         "./agents/ui-polisher.md",
         "./agents/ui-ux-designer.md",
         "./agents/ui-layout-designer.md",
@@ -127,12 +120,66 @@
       "skills": [
         "./skills/css-master",
         "./skills/premium-web-consultant",
-        "./skills/frontend-design",
-        "./skills/xtermjs-skill",
+        "./skills/frontend-design"
+      ],
+      "commands": [
+        "./commands/review-design.md"
+      ]
+    },
+    {
+      "name": "react-development",
+      "source": "./plugins/react-development",
+      "description": "React performance optimization, React 19 API adoption, state management audit, bundle analysis, re-render detection, and Vercel best practices checklist",
+      "version": "1.0.0",
+      "author": {
+        "name": "Alfio"
+      },
+      "license": "MIT",
+      "keywords": [
+        "react",
+        "performance",
+        "optimization",
+        "state-management",
+        "bundle",
+        "re-renders",
+        "react-compiler",
+        "react-19"
+      ],
+      "category": "frontend",
+      "strict": false,
+      "agents": [
+        "./agents/react-performance-optimizer.md"
+      ],
+      "skills": [
         "./skills/react-best-practices"
       ],
       "commands": [
-        "./commands/review-design.md",
+        "./commands/review-react.md"
+      ]
+    },
+    {
+      "name": "xterm",
+      "source": "./plugins/xterm",
+      "description": "xterm.js terminal emulator development -- building, configuring, and integrating xterm.js in web and Electron apps with addon support and PTY wiring",
+      "version": "1.0.0",
+      "author": {
+        "name": "Alfio"
+      },
+      "license": "MIT",
+      "keywords": [
+        "xterm",
+        "terminal",
+        "xtermjs",
+        "web-terminal",
+        "pty",
+        "addons"
+      ],
+      "category": "frontend",
+      "strict": false,
+      "skills": [
+        "./skills/xtermjs-skill"
+      ],
+      "commands": [
         "./commands/xterm-debug.md",
         "./commands/xterm-implement.md"
       ]
@@ -581,7 +628,7 @@
       "name": "workflows",
       "source": "./plugins/workflows",
       "description": "Cross-plugin orchestration pipelines -- feature development, frontend redesign, UI studio, full code review, mobile intelligence, mobile Tauri, and Tauri desktop review",
-      "version": "2.3.0",
+      "version": "2.4.0",
       "author": {
         "name": "Alfio"
       },
@@ -600,6 +647,7 @@
       "strict": false,
       "dependencies": [
         "frontend",
+        "react-development",
         "senior-review",
         "humanize",
         "ai-tooling",

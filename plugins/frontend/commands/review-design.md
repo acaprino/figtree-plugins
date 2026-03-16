@@ -1,5 +1,5 @@
 ---
-description: "Unified frontend design review -- auto-detects scope: diff mode for changed frontend files, or full audit for entire frontend. UX patterns, component hierarchy, spacing, typography, accessibility, CSS architecture, and React performance -- outputs an actionable markdown report"
+description: "Frontend design review -- auto-detects scope: diff mode for changed frontend files, or full audit for entire frontend. UX patterns, component hierarchy, spacing, typography, accessibility, CSS architecture, and visual polish -- outputs an actionable markdown report"
 argument-hint: "[src-path] [--full] [--framework react|vue|svelte] [--strict-mode]"
 ---
 
@@ -10,7 +10,7 @@ You are a senior frontend design auditor. Review frontend code for design qualit
 ## CRITICAL RULES
 
 1. **Auto-detect scope.** Check git diff for frontend file changes first. If found, review only changed files (diff mode, 4 agents). If no diff or `--full` flag, audit the entire frontend (full mode, 5 agents).
-2. **Design + CSS + Performance.** Ignore backend files, API routes, build config. Focus on components, stylesheets, layout files, state management.
+2. **Design + CSS + Visual Polish.** Ignore backend files, API routes, build config. Focus on components, stylesheets, layout files. For React-specific performance review, use `/react-development:review-react`.
 3. **Run all agents in parallel.** Fire all in a single response.
 4. **Write markdown report.** Output is `.design-review/report.md` -- an actionable checklist with scores, findings, and fix instructions.
 5. **Never enter plan mode.** Execute immediately.
@@ -30,12 +30,12 @@ git diff --cached --name-only | grep -E '\.(tsx|jsx|vue|svelte|css|scss|sass|les
 **Diff mode** (changed frontend files exist AND `--full` is NOT set):
 - Review only the changed frontend files
 - Get the diff: `git diff HEAD -- <frontend files>`
-- Run 4 agents: UX & Components, Layout & Spatial Design, Visual Polish & Motion, React Performance
+- Run 3 agents: UX & Components, Layout & Spatial Design, Visual Polish & Motion
 - This is the default when uncommitted frontend changes exist
 
 **Full mode** (no frontend changes in diff, OR `--full` flag set):
 - Scan entire frontend: `src/`, `app/`, `components/`, `pages/`, `styles/` -- or path from `$ARGUMENTS`
-- Run 5 agents: UX & Components, Layout & Spatial Design, CSS Architecture, Visual Polish & Motion, React Performance
+- Run 4 agents: UX & Components, Layout & Spatial Design, CSS Architecture, Visual Polish & Motion
 
 ### Discover frontend files (full mode only)
 
@@ -55,16 +55,12 @@ Before sampling files, run any available linting tools and capture their output.
 # CSS linting (if stylelint is configured)
 npx stylelint "**/*.css" --formatter json 2>/dev/null || true
 
-# React/JS linting (if eslint is configured)
-npx eslint --format json "src/**/*.{tsx,jsx}" 2>/dev/null || true
-
 # Accessibility audit (if axe-core CLI is available)
 npx @axe-core/cli --format json 2>/dev/null || true
 ```
 
 If any of these commands produce output, pass the relevant results to the corresponding agent:
 - Stylelint output to Agent C1 (CSS Architecture)
-- ESLint output to Agent D (React Performance)
 - Axe output to Agent A (UX Patterns)
 
 This reduces hallucinations and lets agents focus on explaining WHY issues exist and HOW to fix them, rather than counting brackets.
@@ -76,7 +72,6 @@ Read a representative cross-section:
 - 3-5 core components
 - Primary stylesheet(s) or `globals.css` / `tailwind.config`
 - Design token files (`tokens.ts`, `theme.ts`, `variables.css`)
-- State management files (stores, contexts, atoms)
 
 This gives you the design language, patterns, and architecture to evaluate against.
 
@@ -85,7 +80,6 @@ This gives you the design language, patterns, and architecture to evaluate again
 - **Agent B (Layout):** Layout files, stylesheets, design tokens, brief
 - **Agent C1 (CSS):** Stylesheets, config files, design tokens
 - **Agent C2 (Visual Polish):** Stylesheets, animated components
-- **Agent D (React):** Components, state management files, config
 
 This avoids context duplication and keeps each agent focused.
 
@@ -93,7 +87,7 @@ This avoids context duplication and keeps each agent focused.
 
 ## Step 3: Run Parallel Review Agents
 
-Fire all agents **in parallel** in a single response (4 in diff mode, 5 in full mode):
+Fire all agents **in parallel** in a single response (3 in diff mode, 4 in full mode):
 
 ### Agent A: UX Patterns & Component Architecture
 
@@ -344,83 +338,6 @@ Task:
     ```
 ```
 
-### Agent D: React Performance (React/Next.js projects only)
-
-Skip this agent if the project does not use React/Next.js.
-
-```
-Task:
-  subagent_type: "react-performance-optimizer"
-  description: "React performance and bundle optimization audit"
-  prompt: |
-    Audit the React performance, state management, and bundle optimization of this frontend codebase.
-
-    ## Scope
-    [list of key files sampled]
-
-    ## File Contents
-    [paste sampled components, state management files, and config -- NOT stylesheets]
-
-    ## Product Brief (if available)
-    [paste brief content -- especially performance budget and stack info -- or "No product brief found"]
-
-    ## Linter Output (if available)
-    [paste ESLint JSON report if captured in Step 1.5, or "No linter output available"]
-
-    ## Vercel React Best Practices Checklist (62 rules -- flag violations)
-
-    **1. Eliminating Waterfalls (CRITICAL):** async-defer-await (move await into branches), async-parallel (Promise.all for independent ops), async-dependencies (better-all for partial deps), async-api-routes (start promises early, await late), async-suspense-boundaries (stream with Suspense)
-    **2. Bundle Size (CRITICAL):** bundle-barrel-imports (import directly, avoid barrels), bundle-dynamic-imports (next/dynamic for heavy components), bundle-defer-third-party (load analytics after hydration), bundle-conditional (load modules only when activated), bundle-preload (preload on hover/focus)
-    **3. Server-Side (HIGH):** server-auth-actions, server-cache-react (React.cache per-request), server-cache-lru (cross-request LRU), server-dedup-props, server-hoist-static-io, server-serialization (minimize client data), server-parallel-fetching, server-after-nonblocking
-    **4. Client-Side Data (MEDIUM-HIGH):** client-swr-dedup, client-event-listeners (deduplicate global), client-passive-event-listeners (passive for scroll), client-localstorage-schema (version and minimize)
-    **5. Re-render Optimization (MEDIUM):** rerender-defer-reads, rerender-memo (extract expensive work), rerender-memo-with-default-value, rerender-dependencies (primitive deps), rerender-derived-state (subscribe to derived booleans), rerender-derived-state-no-effect, rerender-functional-setstate, rerender-lazy-state-init, rerender-simple-expression-in-memo, rerender-move-effect-to-event, rerender-transitions (startTransition), rerender-use-ref-transient-values, rerender-no-inline-components
-    **6. Rendering (MEDIUM):** rendering-animate-svg-wrapper, rendering-content-visibility, rendering-hoist-jsx, rendering-svg-precision, rendering-hydration-no-flicker, rendering-hydration-suppress-warning, rendering-activity, rendering-conditional-render (ternary not &&), rendering-usetransition-loading, rendering-resource-hints, rendering-script-defer-async
-    **7. JS Performance (LOW-MEDIUM):** js-batch-dom-css, js-index-maps (Map for lookups), js-cache-property-access, js-cache-function-results, js-cache-storage, js-combine-iterations, js-length-check-first, js-early-exit, js-hoist-regexp, js-min-max-loop, js-set-map-lookups, js-tosorted-immutable, js-flatmap-filter
-    **8. Advanced (LOW):** advanced-event-handler-refs, advanced-init-once, advanced-use-latest
-
-    ## Instructions
-    Use the checklist above as your primary audit framework. Flag any violations you find in the reviewed code, citing the specific rule ID (e.g. "Violates bundle-barrel-imports").
-
-    Evaluate (in addition to the rules above):
-    1. **React Compiler readiness**: Is `babel-plugin-react-compiler` configured? Identify patterns the compiler can auto-optimize vs patterns requiring manual intervention (external store reads, non-React state mutations, dynamic property access)
-    2. **External store selector audit (CRITICAL)**:
-       - Selectors returning objects/arrays without `useShallow` -- causes re-renders on every store update
-       - Selectors with `.filter()` / `.map()` / `.reduce()` creating new references every render
-       - `useStore()` with no selector -- subscribes to entire store
-       - Component receiving store-derived object as prop without memoization
-    3. **React 19 API adoption**: Are newer APIs used where beneficial?
-       - `use()` for conditional data fetching and context
-       - `useOptimistic()` for optimistic UI updates
-       - `useFormStatus()` for form submission state
-       - `useActionState()` for server action results
-       - `useDeferredValue()` for separating critical vs deferrable updates
-    4. **State management**: Zustand/Jotai/Redux selector patterns, prop drilling, state duplication, useEffect chains
-    5. **Bundle optimization**: Heavy imports, missing code splitting, lazy loading opportunities, tree-shaking blockers
-    6. **Virtualization check**: Large lists/tables not using TanStack Virtual or similar, index as key in virtualized lists
-    7. **Context-aware caching**: TanStack Query config appropriate for app type? CRUD apps need short stale times, real-time apps need WebSocket invalidation, static content can use long cache
-    8. **useEffect cleanup audit**:
-       - Missing `AbortController` on fetch calls
-       - `Channel.onmessage` not nulled on unmount
-       - WebSocket connections not closed
-       - Missing `clearInterval` / `clearTimeout`
-       - Missing `removeEventListener`
-    9. **Performance budget** (if brief provided): Does the current state meet the stated Core Web Vitals or performance targets?
-
-    For each finding: severity (Critical/High/Medium/Low), file, issue, specific fix with code example.
-    Note what's done well.
-
-    Return structured JSON at the end:
-    ```json
-    {
-      "findings": [
-        { "severity": "Critical", "category": "Re-renders", "file": "...", "issue": "...", "fix": "..." }
-      ],
-      "positives": ["..."],
-      "score": { "re_render_control": 6, "state_management": 7, "bundle": 8, "overall": 7 }
-    }
-    ```
-```
-
 ## Step 4: Generate Markdown Report
 
 After all agents complete, create `.design-review/` directory and write `report.md`.
@@ -448,7 +365,6 @@ Full frontend audit - [N] components - [M] stylesheets
 | Visual Polish & Motion | X/10 |
 | Accessibility | X/10 |
 | Typography | X/10 |
-| React Performance | X/10 |
 | **Overall** | **X/10** |
 
 Critical: X | High: X | Medium: X | Low: X
@@ -493,14 +409,6 @@ Critical: X | High: X | Medium: X | Low: X
 - **Fix**: [fix instruction]
 - [ ] Fixed
 
-### React Performance
-
-#### `Store.ts` -- [issue title]
-- **Severity**: Critical
-- **Issue**: [description]
-- **Fix**: [fix instruction with code]
-- [ ] Fixed
-
 ---
 
 ## Medium & Low Issues
@@ -515,9 +423,6 @@ Critical: X | High: X | Medium: X | Low: X
 [Same format]
 
 ### Visual Polish & Motion
-[Same format]
-
-### React Performance
 [Same format]
 
 ---
@@ -546,7 +451,7 @@ Design & performance review complete.
 Report: .design-review/report.md
 
 Overall Score: X/10
-UX: X/10 | Layout: X/10 | CSS: X/10 | Polish: X/10 | Performance: X/10 | Accessibility: X/10
+UX: X/10 | Layout: X/10 | CSS: X/10 | Polish: X/10 | Accessibility: X/10
 
 Critical: X | High: X | Medium: X | Low: X
 
@@ -558,5 +463,5 @@ Top 3 issues:
 
 If `--strict-mode` is set and Critical findings exist:
 ```
-STRICT MODE: X critical design/performance issues found. Recommend addressing before shipping.
+STRICT MODE: X critical design issues found. Recommend addressing before shipping.
 ```
