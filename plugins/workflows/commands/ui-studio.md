@@ -151,9 +151,25 @@ Scan the current project to understand:
 
 ## Phase 1: Brainstorm Product Concept
 
-**Skip if:** `--skip-brainstorm` flag is set. If skipped, ask the user to provide a product brief, then save to `.ui-studio/01-brief.md` and proceed to Phase 2.
+**Skip if:** `--skip-brainstorm` flag is set. If skipped, ask the user to provide a product brief, then save to `.ui-studio/01-brief.md` and proceed to Phase 1B.
 
-Follow the brainstorming skill process -- this phase is **interactive**:
+### Step 0: Evaluate clarity of requirements
+
+Before brainstorming, assess whether the user's input already provides clear enough requirements to build from. Consider:
+
+- Is the target UI/feature clearly described?
+- Is the aesthetic direction stated or inferrable from context (existing codebase, project style)?
+- Is the scope defined (what to build, where it fits)?
+
+**If requirements are clear:** Skip the interactive brainstorming. Go directly to Step 1C -- explore the codebase for context, then synthesize the product brief from the user's input + project context. Fill in reasonable defaults for anything not specified (infer from codebase style, framework, existing patterns).
+
+**If requirements are vague or ambiguous:** Run the full interactive brainstorming below (Steps 1A-1C).
+
+The threshold: if you can write a confident product brief from what the user gave you + codebase context, skip brainstorming. If you'd be guessing on core decisions (what to build, who it's for, what aesthetic), brainstorm.
+
+---
+
+### (Interactive brainstorming -- only when requirements are unclear)
 
 ### Step 1A: Explore context
 
@@ -161,7 +177,7 @@ Review the existing codebase (if any) and understand where this UI fits.
 
 ### Step 1B: Ask clarifying questions (one at a time)
 
-Elicit the product brief from the user:
+Only ask about what's genuinely unclear. Skip questions where the answer is obvious from context.
 
 - What problem does this UI solve? Who is the primary user?
 - What is the desired aesthetic tone? (refined editorial / brutalist raw / playful / corporate clean / etc.)
