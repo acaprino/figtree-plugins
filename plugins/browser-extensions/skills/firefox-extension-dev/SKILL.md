@@ -1,28 +1,131 @@
 ---
 name: firefox-extension-dev
-description: Expert Firefox extension (WebExtension) developer. Use PROACTIVELY when creating, debugging, or publishing any Firefox extension or browser add-on. Covers Manifest V2/V3, browser.* APIs, cross-browser compatibility, AMO publishing, and web-ext CLI.
+description: >
+  Expert Firefox extension (WebExtension) developer. Use PROACTIVELY when creating, debugging, or
+  publishing any Firefox extension or browser add-on. Covers Manifest V2/V3, browser.* APIs,
+  cross-browser compatibility, AMO publishing, and web-ext CLI. Scaffolds projects, generates
+  boilerplate, searches MDN docs live via WebSearch/WebFetch.
 ---
 
 # Firefox Extension Development Expert
 
-Build, debug, publish, and maintain Firefox WebExtensions. Covers Manifest V2 and V3, all 51 browser.* APIs, cross-browser compatibility, AMO publishing, and Firefox-specific features.
+Build, debug, publish, and maintain Firefox WebExtensions. Covers Manifest V2 and V3, all 51 browser.* APIs, cross-browser compatibility, AMO publishing, and Firefox-specific features. Actively writes code, scaffolds projects, and fetches live documentation from MDN.
 
 ## When to Use
 
 Trigger on: Firefox extension, WebExtension, browser add-on, manifest.json for extensions, content scripts, background scripts, browser.tabs, browser.storage, AMO publishing, web-ext CLI, Manifest V3 migration, cross-browser extension, sidebar extension, native messaging extension.
 
-## Documentation Source
+## Documentation Lookup Strategy
 
-All knowledge sourced from MDN WebExtensions documentation.
+Knowledge sourced from MDN WebExtensions docs + live search for details not covered in reference files.
 
-**Keep updated from:** `https://github.com/mdn/content/tree/main/files/en-us/mozilla/add-ons/webextensions`
+### Lookup priority
 
-**Key GitHub repos:**
+1. **Check reference files first** - `references/browser-api-reference.md`, `references/manifest-schema.md`, `references/amo-publishing.md`, `references/mdn-api-urls.md`
+2. **WebFetch MDN page** - if the reference files lack detail on a specific method, event, or parameter, fetch the MDN page directly. URL pattern: `https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/<APIName>/<method>`. See `references/mdn-api-urls.md` for the full URL index.
+3. **WebSearch as fallback** - when the exact URL is unknown or for newer/experimental APIs, search with: `site:developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions <query>`
+4. **Extension Workshop** - for publishing, review policies, migration guides: `site:extensionworkshop.com <query>`
+
+### When to search
+
+- User asks about a specific API method/event not detailed in reference files
+- User asks about browser compatibility for a specific feature
+- User asks about experimental or recently added APIs
+- User references an error message or unexpected behavior
+- User needs examples beyond what reference files provide
+
+### Key resources
+
 - MDN docs source: [mdn/content](https://github.com/mdn/content/tree/main/files/en-us/mozilla/add-ons/webextensions)
 - Official examples: [mdn/webextensions-examples](https://github.com/mdn/webextensions-examples)
 - Browser API polyfill: [mozilla/webextension-polyfill](https://github.com/mozilla/webextension-polyfill)
 - web-ext CLI: [mozilla/web-ext](https://github.com/mozilla/web-ext)
 - Extension Workshop: [extensionworkshop.com](https://extensionworkshop.com)
+
+---
+
+## Operational Modes
+
+### Scaffolding a New Extension
+
+When the user wants to create a new extension:
+
+1. Ask: MV2 or MV3? (default MV3)
+2. Ask: what does the extension do? (content script, popup, sidebar, DevTools, background-only)
+3. Generate project structure based on answers:
+
+**Minimal MV3 scaffold:**
+```
+my-extension/
+  manifest.json          # MV3, gecko ID, permissions
+  background.js          # event page with onInstalled listener
+  icons/
+    icon-48.png          # placeholder note
+    icon-96.png
+```
+
+**With popup:**
+```
++ popup/
+    popup.html
+    popup.js
+    popup.css
+```
+
+**With content script:**
+```
++ content-scripts/
+    content.js
+    styles.css
+```
+
+**With sidebar (Firefox-only):**
+```
++ sidebar/
+    sidebar.html
+    sidebar.js
+```
+
+**With options page:**
+```
++ options/
+    options.html
+    options.js
+```
+
+**With i18n:**
+```
++ _locales/
+    en/messages.json
+```
+
+4. Generate manifest.json with correct keys for chosen components
+5. Generate starter code with common patterns (message passing, storage, event listeners)
+6. Include a `.web-extension-id` file reminder for AMO
+
+### Writing Extension Code
+
+When implementing features:
+
+- Always use `browser.*` namespace (not `chrome.*`) - Firefox-first
+- Always use Promises/async-await (not callbacks)
+- Register all event listeners at top level in background scripts (MV3 requirement)
+- Use `storage.local`/`storage.session` for state (not globals, not localStorage)
+- Use `browser.alarms` for periodic tasks (not setTimeout/setInterval in MV3)
+- Sanitize any user/page input before DOM insertion
+- Use `activeTab` permission when possible instead of broad host permissions
+- Include error handling for all API calls (`try/catch` or `.catch()`)
+
+### Debugging Assistance
+
+When the user reports a bug or unexpected behavior:
+
+1. Check manifest.json for permission/key issues
+2. Check content script match patterns
+3. Check MV3 event page rules (top-level listener registration, state persistence)
+4. Suggest `web-ext lint` for common issues
+5. Point to relevant debugging tools (`about:debugging`, Browser Console, Extension Debugger)
+6. If the issue involves a specific API, fetch the MDN page for current behavior/compatibility
 
 ---
 
