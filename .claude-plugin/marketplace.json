@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Custom development workflow agents and skills for code quality, Tauri/Rust development, frontend optimization, AI tooling, and constraint programming optimization",
-    "version": "2.58.0"
+    "version": "2.59.0"
   },
   "plugins": [
     {
@@ -930,6 +930,40 @@
       ],
       "commands": [
         "./commands/wt.md"
+      ]
+    },
+    {
+      "name": "rag-development",
+      "source": "./plugins/rag-development",
+      "description": "RAG system design, implementation, and optimization -- chunking strategies, embedding models, vector databases (Qdrant), hybrid search, re-ranking, advanced patterns (Graph RAG, CRAG, Self-RAG, Agentic RAG), evaluation with RAGAS/DeepEval, and production deployment",
+      "version": "1.0.0",
+      "author": {
+        "name": "Alfio"
+      },
+      "license": "MIT",
+      "keywords": [
+        "rag",
+        "retrieval",
+        "embeddings",
+        "vector-database",
+        "qdrant",
+        "chunking",
+        "semantic-search",
+        "hybrid-search",
+        "re-ranking",
+        "llm"
+      ],
+      "category": "ai-development",
+      "strict": false,
+      "agents": [
+        "./agents/rag-architect.md",
+        "./agents/qdrant-expert.md"
+      ],
+      "skills": [
+        "./skills/rag-development"
+      ],
+      "commands": [
+        "./commands/rag-audit.md"
       ]
     }
   ]
