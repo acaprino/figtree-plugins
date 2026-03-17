@@ -1,5 +1,5 @@
 ---
-description: "Create accurate technical documentation by analyzing the codebase first — API docs, architecture guides, component docs, or full project documentation"
+description: "Create accurate technical documentation by analyzing the codebase first -- API docs, architecture guides, component docs, or full project documentation"
 argument-hint: "<target path or description> [--api-only] [--architecture] [--format markdown|html] [--output <path>]"
 ---
 
@@ -42,8 +42,8 @@ Language: [detected]
 Framework: [detected]
 
 Files to document:
-- [file1] — [type: API endpoint / class / module / utility]
-- [file2] — [type]
+- [file1] -- [type: API endpoint / class / module / utility]
+- [file2] -- [type]
 - ...
 
 Documentation type:
@@ -55,7 +55,7 @@ Documentation type:
 Output: [format] at [output path]
 
 1. Proceed with this plan
-2. Adjust scope — I'll tell you what to change
+2. Adjust scope -- I'll tell you what to change
 3. Cancel
 ```
 
@@ -76,10 +76,10 @@ Task:
     [Insert path and description]
 
     ## Source Code
-    [Insert contents of key files — the agent needs to see the actual code]
+    [Insert contents of key files -- the agent needs to see the actual code]
 
     ## Documentation Type
-    [API reference / Architecture / Component / Full — from user's choice]
+    [API reference / Architecture / Component / Full -- from user's choice]
 
     ## Instructions
     Analyze the code bottom-up and generate documentation that includes:
@@ -126,9 +126,9 @@ Documentation generated:
 - Architecture diagrams: [count]
 - Total length: ~[X] lines
 
-1. Write to [output path] — save the documentation
-2. Show full preview — display before saving
-3. Revise — adjust content or scope
+1. Write to [output path] -- save the documentation
+2. Show full preview -- display before saving
+3. Revise -- adjust content or scope
 ```
 
 Write the documentation to the specified output path (default: `docs/` directory).
@@ -137,8 +137,8 @@ If the output directory doesn't exist, create it.
 
 ## Quick Examples
 
-- `/docs-create src/api` — Document all API endpoints in src/api
-- `/docs-create UserService` — Document the UserService class
-- `/docs-create --architecture` — Generate architecture documentation for the project
-- `/docs-create src/utils --api-only` — Document only public exports from utils
-- `/docs-create src/ --output docs/technical.md` — Full docs to a specific file
+- `/docs-create src/api` -- Document all API endpoints in src/api
+- `/docs-create UserService` -- Document the UserService class
+- `/docs-create --architecture` -- Generate architecture documentation for the project
+- `/docs-create src/utils --api-only` -- Document only public exports from utils
+- `/docs-create src/ --output docs/technical.md` -- Full docs to a specific file

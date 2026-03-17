@@ -70,3 +70,11 @@ Six parallel writer agents, each reading context-brief.md:
 
 ### Phase 3 - Review
 Single `guide-reviewer` agent reads all 10 documents, adds cross-references, fixes consistency, and produces INDEX.md.
+
+## Standalone Documentation
+
+Beyond the pipeline, the plugin provides standalone documentation agents:
+- `documentation-engineer` - Bottom-up technical documentation from code analysis (API docs, architecture, tutorials, refactoring)
+- `doc-humanizer` - Rewrites existing documentation to follow the writing guidelines
+
+Both agents use the same writing guidelines and diagram patterns as the pipeline writers.

@@ -91,4 +91,62 @@ Generate a human-readable codebase guide.
 
 ---
 
-**Related:** [deep-dive-analysis](deep-dive-analysis.md) (structural analysis) | [code-documentation](code-documentation.md) (API-level docs)
+## Standalone Documentation Agents
+
+### `documentation-engineer`
+
+Expert documentation engineer that creates accurate technical documentation by analyzing existing code first. Uses bottom-up analysis with the shared writing guidelines.
+
+| | |
+|---|---|
+| **Model** | `opus` |
+| **Tools** | Read, Write, Edit, Glob, Grep, WebFetch, WebSearch |
+| **Use for** | API docs, architecture docs, tutorials, documentation management |
+
+---
+
+### `doc-humanizer`
+
+Rewrites existing documentation to follow the human-centered writing guidelines. Transforms dense, AI-style docs into clear, scannable content.
+
+| | |
+|---|---|
+| **Model** | `opus` |
+| **Tools** | Read, Write, Edit, Glob, Grep |
+| **Use for** | Improving readability of existing docs without changing content |
+
+---
+
+## Additional Commands
+
+### `/docs-create`
+
+Analyze code bottom-up and generate accurate documentation -- API reference, architecture guides, or full project docs.
+
+```
+/docs-create src/api/ --api-only
+```
+
+---
+
+### `/docs-maintain`
+
+Audit and refactor existing documentation to ensure accuracy and completeness.
+
+```
+/docs-maintain docs/
+```
+
+---
+
+### `/humanize-docs`
+
+Rewrite existing documentation to be human-readable -- removes AI-style density, applies progressive disclosure.
+
+```
+/humanize-docs docs/
+```
+
+---
+
+**Related:** [deep-dive-analysis](deep-dive-analysis.md) (structural analysis)

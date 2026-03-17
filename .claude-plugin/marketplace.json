@@ -853,8 +853,8 @@
     {
       "name": "codebase-mapper",
       "source": "./plugins/codebase-mapper",
-      "description": "Human-readable codebase guide generator -- explores unfamiliar projects and produces 10 narrative documents with Mermaid diagrams covering overview, features, tech stack, architecture, workflows, data model, onboarding, open questions, project anatomy, and configuration/usage guide",
-      "version": "1.2.0",
+      "description": "Human-readable codebase guide generator -- explores unfamiliar projects and produces 10 narrative documents with Mermaid diagrams, plus standalone documentation creation, maintenance, and humanization with bottom-up code analysis",
+      "version": "2.0.0",
       "author": {
         "name": "Alfio"
       },
@@ -869,7 +869,12 @@
         "documentation",
         "diagrams",
         "architecture",
-        "mermaid"
+        "mermaid",
+        "technical-writing",
+        "code-analysis",
+        "api-docs",
+        "tutorials",
+        "documentation-management"
       ],
       "category": "documentation",
       "strict": false,
@@ -881,13 +886,18 @@
         "./agents/onboarding-writer.md",
         "./agents/ops-writer.md",
         "./agents/config-writer.md",
-        "./agents/guide-reviewer.md"
+        "./agents/guide-reviewer.md",
+        "./agents/documentation-engineer.md",
+        "./agents/doc-humanizer.md"
       ],
       "skills": [
         "./skills/codebase-mapper"
       ],
       "commands": [
-        "./commands/map-codebase.md"
+        "./commands/map-codebase.md",
+        "./commands/docs-create.md",
+        "./commands/docs-maintain.md",
+        "./commands/humanize-docs.md"
       ]
     },
     {

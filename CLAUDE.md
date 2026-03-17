@@ -15,7 +15,7 @@ plugins/
     hooks/                  # hook handlers (JS) + hooks.json (anvil-hooks only)
 ```
 
-30 plugins: humanize, deep-dive-analysis, tauri-development, frontend, react-development, xterm, ai-tooling, python-development, stripe, system-utils, messaging, research, business, code-documentation, project-setup, mobile-development, typescript-development, csp, digital-marketing, senior-review, app-explorer, workflows, obsidian-development, browser-extensions, learning, marketplace-ops, playwright-skill, anvil-hooks, cc-usage, codebase-mapper.
+29 plugins: humanize, deep-dive-analysis, tauri-development, frontend, react-development, xterm, ai-tooling, python-development, stripe, system-utils, messaging, research, business, project-setup, mobile-development, typescript-development, csp, digital-marketing, senior-review, app-explorer, workflows, obsidian-development, browser-extensions, learning, marketplace-ops, playwright-skill, anvil-hooks, cc-usage, codebase-mapper.
 
 ## Plugin anatomy
 

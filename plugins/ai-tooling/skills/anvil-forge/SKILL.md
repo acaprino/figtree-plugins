@@ -73,7 +73,7 @@ Before responding to ANY user message, run this check:
    --> Check: tauri-development skills, workflows:tauri-pipeline
 
 9. Is this about documentation?
-   --> Check: code-documentation:docs-create
+   --> Check: codebase-mapper:docs-create
 
 10. Is this about prompts or AI tooling?
     --> Check: ai-tooling:prompt-optimize

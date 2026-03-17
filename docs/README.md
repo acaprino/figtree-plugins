@@ -14,8 +14,7 @@ Custom Claude Code plugin marketplace with agents, skills, and commands for deve
 | [browser-extensions](plugins/browser-extensions.md) | development | Firefox WebExtension development -- Manifest V2/V3, browser.* APIs, AMO publishing | 1 skill |
 | [business](plugins/business.md) | business | Legal advisory, privacy policies, GDPR/HIPAA compliance, contract review | 1 agent, 1 skill |
 | [cc-usage](plugins/cc-usage.md) | utilities | Claude Code token usage, costs, billing blocks, and activity analysis | 1 skill, 1 command |
-| [code-documentation](plugins/code-documentation.md) | documentation | Technical documentation -- codebase analysis, API reference, doc refactoring | 1 agent, 2 commands |
-| [codebase-mapper](plugins/codebase-mapper.md) | documentation | Human-readable codebase guide generator with 10 narrative documents | 8 agents, 1 skill, 1 command |
+| [codebase-mapper](plugins/codebase-mapper.md) | documentation | Human-readable codebase guide generator with standalone doc creation, maintenance, and humanization | 10 agents, 1 skill, 4 commands |
 | [csp](plugins/csp.md) | optimization | Constraint programming with Google OR-Tools CP-SAT solver | 1 agent |
 | [deep-dive-analysis](plugins/deep-dive-analysis.md) | review | Systematic codebase analysis -- architecture, data flows, anti-patterns | 1 skill, 1 command |
 | [digital-marketing](plugins/digital-marketing.md) | marketing | SEO audits, content strategy, brand naming, domain hunting | 2 agents, 2 skills, 3 commands |

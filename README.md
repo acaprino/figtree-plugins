@@ -68,7 +68,6 @@ claude plugin install ./anvil-toolset/plugins/python-development
 | **utilities** | Clean up messy folders, find duplicates, and remove dead code | - | 1 | 2 | [docs](docs/plugins/utilities.md) |
 | **business** | Navigate tech law, compliance, contracts, and risk management | - | 1 | - | [docs](docs/plugins/business.md) |
 | **project-setup** | Create and maintain accurate CLAUDE.md files with ground truth verification | 1 | - | 2 | [docs](docs/plugins/project-setup.md) |
-| **code-documentation** | Generate accurate docs by analyzing your code first, not guessing | 1 | - | 2 | [docs](docs/plugins/code-documentation.md) |
 | **csp** | Solve scheduling, routing, and assignment problems with OR-Tools CP-SAT | 1 | - | - | [docs](docs/plugins/csp.md) |
 | **digital-marketing** | Run SEO audits, content strategy, and conversion optimization | 2 | - | 2 | [docs](docs/plugins/digital-marketing.md) |
 | **messaging** | Design and optimize RabbitMQ messaging with expert AMQP patterns | 1 | - | - | [docs](docs/plugins/messaging.md) |

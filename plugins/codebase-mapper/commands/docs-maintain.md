@@ -58,7 +58,7 @@ Agent: I've inventoried your documentation. Found:
        [Detailed audit report provided]
 ```
 
-**Full refactoring workflow** (audit → plan → execute):
+**Full refactoring workflow** (audit -> plan -> execute):
 ```
 You:   /docs-maintain
 
@@ -72,7 +72,7 @@ Agent: I've inventoried your documentation. Found:
 You:   Yes
 
 Agent: Here's the refactoring plan:
-       1. Merge UserAPI.md and user-api-reference.md → api/users.md
+       1. Merge UserAPI.md and user-api-reference.md -> api/users.md
        2. Update 5 outdated sections to match current code
        3. Link orphaned pages from main README or archive them
        4. Fix broken link in README.md
@@ -81,10 +81,10 @@ Agent: Here's the refactoring plan:
 You:   Yes
 
 Agent: Executing refactoring...
-       ✓ Merged duplicate files
-       ✓ Updated outdated sections
-       ✓ Fixed orphaned pages
-       ✓ Fixed broken links
+       Done: Merged duplicate files
+       Done: Updated outdated sections
+       Done: Fixed orphaned pages
+       Done: Fixed broken links
 
        Verification: All original content preserved, structure improved
 ```
@@ -165,3 +165,4 @@ The audit phase checks for:
 
 - `/docs-create` - Create NEW documentation from code analysis (use when docs don't exist)
 - `/docs-maintain` - Audit and improve EXISTING documentation (use when docs exist but need maintenance)
+- `/humanize-docs` - Rewrite existing docs to be more human-readable
