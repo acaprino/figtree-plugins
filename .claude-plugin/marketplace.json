@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Custom development workflow agents and skills for code quality, Tauri/Rust development, frontend optimization, AI tooling, and constraint programming optimization",
-    "version": "2.72.0"
+    "version": "2.74.0"
   },
   "plugins": [
     {
@@ -739,7 +739,7 @@
       "name": "marketplace-ops",
       "source": "./plugins/marketplace-ops",
       "description": "Marketplace consolidation and plugin management -- auditing, validation, AI quality review, upstream sync, plugin scaffolding, and health monitoring for the anvil-toolset ecosystem",
-      "version": "1.8.0",
+      "version": "1.9.0",
       "author": {
         "name": "Alfio"
       },
@@ -766,7 +766,6 @@
       ],
       "commands": [
         "./commands/marketplace-health.md",
-        "./commands/marketplace-sync-upstream.md",
         "./commands/marketplace-scaffold-plugin.md",
         "./commands/marketplace-review.md"
       ]
@@ -1001,7 +1000,7 @@
       "name": "docs",
       "source": "./plugins/docs",
       "description": "README and project documentation authoring -- craft magnetic, top-tier README.md files with progressive disclosure, hero sections, badges, quick start, feature tables, Mermaid diagrams, and community sections",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "Alfio"
       },
@@ -1013,12 +1012,17 @@
         "badges",
         "shields",
         "quick-start",
-        "progressive-disclosure"
+        "progressive-disclosure",
+        "audit",
+        "maintenance"
       ],
       "category": "documentation",
       "strict": false,
       "skills": [
         "./skills/readme-craft"
+      ],
+      "commands": [
+        "./commands/maintain-readme.md"
       ]
     }
   ]

@@ -46,4 +46,24 @@ Produces polished README.md files following open-source best practices: progress
 
 ---
 
+## Commands
+
+### `/maintain-readme`
+
+Audit, restructure, and improve an existing README.md -- verifies accuracy against the codebase, fixes stale links and stats, improves structure, and optionally rewrites sections.
+
+| | |
+|---|---|
+| **Use for** | Stale stats/badges, outdated feature lists, structural improvements, full restructure |
+
+**Audit levels:**
+
+| Level | What it does |
+|-------|-------------|
+| **A) Fix facts only** | Correct counts, versions, paths, badges, links |
+| **B) Fix facts + improve structure** | Reorder sections, add missing sections, apply progressive disclosure |
+| **C) Full restructure** | Rewrite following readme-craft best practices, rebuild information architecture |
+
+---
+
 **Related:** [codebase-mapper](codebase-mapper.md) (technical documentation) | [project-setup](project-setup.md) (CLAUDE.md files)

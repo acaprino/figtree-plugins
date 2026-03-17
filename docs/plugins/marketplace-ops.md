@@ -1,6 +1,6 @@
 # Marketplace Ops Plugin
 
-> Manage and maintain the anvil-toolset plugin ecosystem -- audit marketplace integrity, scaffold new plugins, create skills and agents, sync upstream sources, and review content quality.
+> Manage and maintain the anvil-toolset plugin ecosystem -- audit marketplace integrity, scaffold new plugins, create skills and agents, and review content quality.
 
 ## Agents
 
@@ -76,10 +76,6 @@ Scaffold a new plugin with proper directory structure, starter files, and market
 ```
 /marketplace-scaffold-plugin my-plugin --with-agent --with-skill --category development
 ```
-
-### `/marketplace-sync-upstream`
-
-Sync upstream-sourced plugins with their remote repositories. Fetches latest content, compares with local files, preserves local additions, and bumps versions.
 
 ### `/marketplace-review`
 
