@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Custom development workflow agents and skills for code quality, Tauri/Rust development, frontend optimization, AI tooling, and constraint programming optimization",
-    "version": "2.54.0"
+    "version": "2.57.0"
   },
   "plugins": [
     {
@@ -350,7 +350,7 @@
       "name": "research",
       "source": "./plugins/research",
       "description": "Search and research toolkit -- quick-searcher (sonnet) for fast fact-finding and single-concept lookups, deep-researcher (opus) for complex multi-source investigation requiring systematic coverage, cross-referencing, and iterative refinement",
-      "version": "2.0.0",
+      "version": "2.2.0",
       "author": {
         "name": "Alfio"
       },
@@ -916,6 +916,38 @@
       ],
       "commands": [
         "./commands/map-codebase.md"
+      ]
+    },
+    {
+      "name": "git-worktrees",
+      "source": "./plugins/git-worktrees",
+      "description": "Git worktree management for parallel development -- create, list, pause, resume, remove, and merge worktrees with proactive WIP detection, conflict early warning, and session context recovery",
+      "version": "1.0.0",
+      "author": {
+        "name": "Alfio"
+      },
+      "license": "MIT",
+      "keywords": [
+        "git",
+        "worktree",
+        "parallel",
+        "branching",
+        "workflow",
+        "session"
+      ],
+      "category": "development-tools",
+      "strict": false,
+      "optionalDependencies": [
+        "senior-review"
+      ],
+      "agents": [
+        "./agents/worktree-agent.md"
+      ],
+      "skills": [
+        "./skills/worktree-manager"
+      ],
+      "commands": [
+        "./commands/wt.md"
       ]
     }
   ]
