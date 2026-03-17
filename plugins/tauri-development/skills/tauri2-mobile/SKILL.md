@@ -1,85 +1,67 @@
 ---
 name: tauri2-mobile
-description: Expert guidance for developing, testing, and deploying mobile applications with Tauri 2. Use when working with Tauri 2 mobile development for Android/iOS, including project setup, Rust backend patterns, frontend integration, plugin usage (biometric, geolocation, notifications, IAP), emulator/ADB testing, code signing, and Play Store/App Store deployment.
+description: >
+  Mobile-specific Tauri 2 development for Android and iOS. Use when working with
+  mobile environment setup (Android SDK, Xcode), emulator/ADB testing, mobile plugins
+  (biometric, haptics, barcode, NFC), in-app purchases, mobile OAuth deep links,
+  code signing for Play Store/App Store, and mobile CI/CD pipelines.
+  For universal Tauri patterns (commands, IPC, core plugins), see tauri-core.
 ---
 
 # Tauri 2 Mobile Development
 
-Build cross-platform mobile apps with Tauri 2 using web technologies (HTML/CSS/JS) for UI and Rust for native backend.
+Mobile-specific patterns for Tauri 2 Android and iOS applications.
+
+> For universal Tauri patterns (Rust commands, IPC, core plugins, project setup), see the `tauri-core` skill.
 
 ## Quick Reference
 
 | Task | Command |
 |------|---------|
-| Init mobile | `npm run tauri android init` / `npm run tauri ios init` |
+| Init Android | `npm run tauri android init` |
+| Init iOS | `npm run tauri ios init` |
 | Dev Android | `npm run tauri android dev` |
 | Dev iOS | `npm run tauri ios dev` |
 | Build APK | `npm run tauri android build --apk` |
 | Build AAB | `npm run tauri android build --aab` |
 | Build iOS | `npm run tauri ios build` |
-| Add plugin | `npm run tauri add <plugin-name>` |
 
 ## Workflow Decision Tree
 
-### New Project Setup
-1. Read [references/setup.md](references/setup.md) for environment configuration
-2. Run `npm create tauri-app@latest` with mobile targets
-3. Configure `tauri.conf.json` with app identifier
+### Mobile Environment Setup
+1. Read [references/setup-mobile.md](references/setup-mobile.md) for Android SDK / iOS Xcode setup
+2. Run `npm run tauri android init` / `npm run tauri ios init`
+3. Configure mobile-specific permissions
 
-### Adding Features
-- **Native functionality**: Read [references/plugins.md](references/plugins.md)
-- **Rust commands/state**: Read [references/rust-patterns.md](references/rust-patterns.md)
-- **Frontend integration**: Read [references/frontend-patterns.md](references/frontend-patterns.md)
-- **Authentication/OAuth**: Read [references/authentication.md](references/authentication.md)
+### Adding Mobile Features
+- **Mobile plugins (biometric, haptics, NFC)**: Read [references/plugins-mobile.md](references/plugins-mobile.md)
 - **In-app purchases**: Read [references/iap.md](references/iap.md)
+- **Mobile OAuth (deep links, Apple Sign-In)**: Read [references/authentication-mobile.md](references/authentication-mobile.md)
 
 ### Testing
 - **Emulator/ADB debug**: Read [references/testing.md](references/testing.md)
 - Use `adb logcat | grep -iE "(tauri|RustStdout)"` for logs
 
 ### Building & Deployment
-- **Code signing & stores**: Read [references/build-deploy.md](references/build-deploy.md)
-- **CI/CD pipelines**: Read [references/ci-cd.md](references/ci-cd.md)
+- **APK/IPA builds, store submission**: Read [references/build-deploy-mobile.md](references/build-deploy-mobile.md)
+- **Mobile CI/CD pipelines**: Read [references/ci-cd-mobile.md](references/ci-cd-mobile.md)
 
-## Project Structure
+## Mobile Configuration
 
-```
-my-app/
-├── src/                          # Frontend
-├── src-tauri/
-│   ├── Cargo.toml
-│   ├── tauri.conf.json           # Main config
-│   ├── src/
-│   │   ├── main.rs               # Desktop entry (don't modify)
-│   │   └── lib.rs                # Main code + mobile entry
-│   ├── capabilities/
-│   │   └── default.json          # Permissions
-│   └── gen/
-│       ├── android/              # Android Studio project
-│       └── apple/                # Xcode project
-```
-
-## Essential Configuration
-
-### tauri.conf.json
+### tauri.conf.json (mobile-specific)
 ```json
 {
-  "$schema": "https://schema.tauri.app/config/2",
-  "productName": "MyApp",
-  "identifier": "com.company.myapp",
   "bundle": {
     "iOS": { "minimumSystemVersion": "14.0" },
     "android": { "minSdkVersion": 24 }
+  },
+  "plugins": {
+    "deep-link": {
+      "mobile": [
+        { "scheme": ["myapp"], "appLink": false }
+      ]
+    }
   }
-}
-```
-
-### capabilities/default.json
-```json
-{
-  "identifier": "default",
-  "windows": ["main"],
-  "permissions": ["core:default"]
 }
 ```
 
@@ -90,6 +72,10 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_deep_link::init())
+        #[cfg(mobile)]
+        .plugin(tauri_plugin_biometric::init())
+        #[cfg(mobile)]
+        .plugin(tauri_plugin_haptics::init())
         .invoke_handler(tauri::generate_handler![greet])
         .run(tauri::generate_context!())
         .expect("error");
@@ -105,7 +91,6 @@ fn greet(name: &str) -> String {
 
 | Problem | Solution |
 |---------|----------|
-| White screen | Check JS console, verify `devUrl`, check capabilities |
 | iOS won't connect | Use `--force-ip-prompt`, select IPv6 |
 | INSTALL_FAILED_ALREADY_EXISTS | `adb uninstall com.your.app` |
 | Emulator not detected | Verify `adb devices`, restart ADB |
@@ -115,8 +100,8 @@ fn greet(name: &str) -> String {
 | Deep link not received | Check scheme in tauri.conf.json, init plugin |
 | Safe area CSS fails on Android | `env()` not supported in WebView; use JS fallback |
 | Windows APK build symlink error | Enable Developer Mode or copy .so files manually |
-| Stale content after rebuild | .so compiled in dev mode embeds old assets; rebuild with `tauri android build --debug` or apply Kotlin workaround (see build-deploy.md) |
-| OpenSSL cross-compile fails on Windows | Install Strawberry Perl for vendored OpenSSL; see build-deploy.md |
+| Stale content after rebuild | .so in dev mode embeds old assets; see build-deploy-mobile.md |
+| OpenSSL cross-compile fails | Install Strawberry Perl; see build-deploy-mobile.md |
 
 See [references/testing.md](references/testing.md) for detailed troubleshooting.
 

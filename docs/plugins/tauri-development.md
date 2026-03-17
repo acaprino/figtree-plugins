@@ -11,7 +11,7 @@ Expert in Tauri v2 + React optimization for trading and high-frequency data scen
 | | |
 |---|---|
 | **Model** | `opus` |
-| **Use for** | IPC optimization, state management, memory leaks, WebView tuning |
+| **Use for** | IPC optimization, state management, memory leaks, WebView tuning, Raw Payloads with rkyv, Canvas/OffscreenCanvas HFT rendering, backpressure |
 
 **Invocation:**
 ```
@@ -35,7 +35,7 @@ Expert Rust developer specializing in systems programming and memory safety.
 | | |
 |---|---|
 | **Model** | `opus` |
-| **Use for** | Ownership patterns, async tokio, FFI, performance optimization |
+| **Use for** | Ownership patterns, async tokio, FFI, performance optimization, tracing/observability, rkyv serialization, loom concurrency testing |
 
 **Invocation:**
 ```
@@ -52,14 +52,51 @@ Use the rust-engineer agent to implement [feature]
 
 ## Skills
 
-### `tauri2-mobile`
+### `tauri-core`
 
-Expert guidance for Tauri 2 mobile app development (Android/iOS).
+Universal Tauri 2 development patterns for both desktop and mobile.
 
 | | |
 |---|---|
-| **Invoke** | `/tauri2-mobile` |
-| **Use for** | Mobile setup, plugins, testing, store deployment |
+| **Use for** | Rust commands, IPC (invoke/channels/events), core plugins (fs, store, sql, http), OAuth/PKCE, CI/CD pipelines |
+
+**References:**
+| File | Content |
+|------|---------|
+| setup.md | Rust, Node, Tauri CLI prerequisites, project init |
+| rust-patterns.md | Commands, state, channels, events, error handling |
+| frontend-patterns.md | invoke, channels, events, TypeScript typing, React hooks |
+| plugins-core.md | Universal plugins: fs, store, sql, http, log, dialog, opener |
+| authentication.md | OAuth/PKCE via system browser, CSRF/nonce protection |
+| ci-cd.md | Provider-agnostic CI/CD: caching, matrix builds, signing |
+
+---
+
+### `tauri-desktop`
+
+Desktop-specific Tauri 2 development patterns.
+
+| | |
+|---|---|
+| **Use for** | Window management, system tray, shell plugin, desktop bundling, WebView platform differences |
+
+**References:**
+| File | Content |
+|------|---------|
+| window-management.md | Multi-window, frameless, system tray, native menus |
+| shell-plugin.md | Child processes, sidecar binaries, scoped commands |
+| build-deploy.md | .msi, .dmg, .AppImage bundling, code signing, auto-updater |
+| platform-webviews.md | WebView2, WKWebView, WebKitGTK differences |
+
+---
+
+### `tauri2-mobile`
+
+Mobile-specific Tauri 2 development for Android and iOS.
+
+| | |
+|---|---|
+| **Use for** | Mobile setup, emulator/ADB, mobile plugins (biometric, haptics, NFC), IAP, store deployment |
 
 **Quick commands:**
 | Task | Command |
@@ -68,6 +105,17 @@ Expert guidance for Tauri 2 mobile app development (Android/iOS).
 | Dev Android | `npm run tauri android dev` |
 | Build APK | `npm run tauri android build --apk` |
 | Build iOS | `npm run tauri ios build` |
+
+**References:**
+| File | Content |
+|------|---------|
+| setup-mobile.md | Android SDK, Xcode, NDK, mobile HMR |
+| plugins-mobile.md | Biometric, haptics, barcode, NFC, safe areas |
+| testing.md | Emulator, ADB, logcat, WebView debugging |
+| iap.md | Google Play / App Store in-app purchases |
+| authentication-mobile.md | Deep link OAuth, Apple Sign-In, Firebase callback |
+| build-deploy-mobile.md | APK/IPA builds, keystore, store submission |
+| ci-cd-mobile.md | Mobile CI/CD: signing, store upload, Fastlane |
 
 ---
 

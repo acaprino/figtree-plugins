@@ -1,4 +1,4 @@
-# Rust Patterns for Tauri Mobile
+# Rust Patterns for Tauri
 
 ## Mobile Entry Point
 
@@ -114,20 +114,20 @@ async fn download_with_progress(
     let total = response.content_length().unwrap_or(0);
     let mut downloaded: u64 = 0;
     let mut data = Vec::new();
-    
+
     let mut stream = response.bytes_stream();
     while let Some(chunk) = stream.next().await {
         let chunk = chunk.map_err(|e| e.to_string())?;
         downloaded += chunk.len() as u64;
         data.extend_from_slice(&chunk);
-        
+
         on_progress.send(Progress {
             downloaded,
             total,
             percentage: (downloaded as f64 / total as f64 * 100.0) as u8,
         }).ok();
     }
-    
+
     Ok(data)
 }
 ```

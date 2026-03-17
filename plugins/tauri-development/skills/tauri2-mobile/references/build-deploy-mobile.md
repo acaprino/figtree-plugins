@@ -1,4 +1,6 @@
-# Build and Deploy
+# Mobile Build and Deploy
+
+> For release optimization profiles (Cargo.toml), see `tauri-core/references/ci-cd.md`.
 
 ## Build Commands
 
@@ -72,7 +74,7 @@ src-tauri/gen/android/keystore.properties
 
 **Local development:**
 1. Open `src-tauri/gen/apple/[App].xcodeproj` in Xcode
-2. Select target → Signing & Capabilities
+2. Select target - Signing & Capabilities
 3. Enable "Automatically manage signing"
 4. Select your team
 
@@ -129,7 +131,7 @@ xcrun altool --upload-app --type ios \
   --apiIssuer $APPLE_API_ISSUER
 ```
 
-Or use Xcode → Product → Archive → Distribute App
+Or use Xcode - Product - Archive - Distribute App
 
 ## Release Optimization
 
@@ -227,7 +229,7 @@ A problem occurred configuring project ':app'.
 **Solutions**:
 
 1. **Enable Developer Mode** (recommended):
-   - Settings → For developers → Developer Mode → On
+   - Settings - For developers - Developer Mode - On
    - Restart the build
 
 2. **Manual copy workaround** (if Developer Mode not available):

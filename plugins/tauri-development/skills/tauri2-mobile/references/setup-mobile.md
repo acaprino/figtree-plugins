@@ -1,13 +1,8 @@
-# Environment Setup
+# Mobile Environment Setup
 
-## Prerequisites
+> For base prerequisites (Rust, Node, Tauri CLI), see `tauri-core/references/setup.md`.
 
-### All Platforms
-- Rust (latest stable): `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
-- Node.js LTS
-- Tauri CLI: `npm install -D @tauri-apps/cli`
-
-### Android Development
+## Android Development
 
 **Install Android Studio** with SDK Manager components:
 - Android SDK Platform (API 34+)
@@ -43,7 +38,7 @@ If your Rust dependencies include `reqwest` with the `native-tls` feature, cross
 rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
 ```
 
-### iOS Development (macOS only)
+## iOS Development (macOS only)
 
 - Xcode from Mac App Store (full install, not just CLI tools)
 - Command Line Tools: `xcode-select --install`
@@ -53,21 +48,6 @@ rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-andro
 **Rust targets:**
 ```bash
 rustup target add aarch64-apple-ios x86_64-apple-ios aarch64-apple-ios-sim
-```
-
-## Project Initialization
-
-```bash
-# New project with mobile
-npm create tauri-app@latest
-# Select mobile targets during setup
-
-# Add mobile to existing project
-npm run tauri android init
-npm run tauri ios init
-
-# Verify setup
-cargo tauri info
 ```
 
 ## Vite Configuration for Mobile
@@ -94,6 +74,8 @@ export default defineConfig({
   },
 });
 ```
+
+The `TAURI_DEV_HOST` variable is set automatically when running `cargo tauri android dev` or `cargo tauri ios dev`. It enables HMR over the local network so the mobile device can reach the dev server.
 
 ## Platform-Specific Configuration
 

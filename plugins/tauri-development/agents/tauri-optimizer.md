@@ -89,6 +89,35 @@ fn get_chart_data() -> Response {
 }
 ```
 
+**Zero-Copy Serialization with rkyv:**
+```rust
+use rkyv::{Archive, Deserialize, Serialize};
+use tauri::ipc::Response;
+
+#[derive(Archive, Deserialize, Serialize)]
+struct OrderBookSnapshot {
+    bids: Vec<(f64, f64)>,  // (price, quantity)
+    asks: Vec<(f64, f64)>,
+    timestamp: u64,
+}
+
+#[tauri::command]
+async fn get_orderbook_binary() -> Response {
+    let snapshot = generate_orderbook_snapshot();
+    let bytes = rkyv::to_bytes::<_, 4096>(&snapshot)
+        .expect("serialization failed");
+    Response::new(bytes.to_vec()) // ArrayBuffer in JS
+}
+```
+
+**Frontend: TypedArray consumption (bypass JSON):**
+```typescript
+const buffer = await invoke<ArrayBuffer>('get_orderbook_binary');
+const view = new Float64Array(buffer);
+// Direct memory access -- zero parsing overhead
+// Layout: [bid_price, bid_qty, ..., ask_price, ask_qty, ..., timestamp]
+```
+
 ### React State Management for Trading
 
 **Zustand with Atomic Selectors:**
@@ -173,6 +202,117 @@ getItemKey: (index) => index
 // GOOD: Stable identifier - maintains component identity
 getItemKey: (index) => items[index].id
 getItemKey: (index) => items[index].price // For orderbook
+```
+
+### Extreme High-Frequency Rendering
+
+**Anti-pattern: React DOM updates at > 60 FPS**
+Virtual DOM diffing cannot sustain sub-16ms ticks for thousands of orderbook rows. No amount of memoization or virtualization fixes this -- the DOM is the bottleneck.
+
+**Correct: Canvas + OffscreenCanvas + Web Workers**
+Use React for the UI shell (controls, navigation, settings). Delegate data-intensive rendering (charts, dense orderbooks, heatmaps) to Canvas driven by a Web Worker.
+
+```typescript
+// React component: holds canvas ref, delegates rendering to Worker
+const canvasRef = useRef<HTMLCanvasElement>(null);
+
+useEffect(() => {
+  const canvas = canvasRef.current!;
+  const offscreen = canvas.transferControlToOffscreen();
+  const worker = new Worker(new URL('./renderWorker.ts', import.meta.url));
+
+  // Transfer canvas ownership to worker -- React no longer touches these pixels
+  worker.postMessage({ type: 'init', canvas: offscreen }, [offscreen]);
+
+  // Connect Tauri IPC binary channel directly to worker
+  const channel = new Channel<ArrayBuffer>();
+  channel.onmessage = (data) => {
+    worker.postMessage({ type: 'data', buffer: data }, [data]);
+  };
+  invoke('subscribe_orderbook_binary', { channel });
+
+  return () => worker.terminate();
+}, []);
+```
+
+```typescript
+// renderWorker.ts -- runs off main thread
+let ctx: OffscreenCanvasRenderingContext2D;
+
+self.onmessage = (e) => {
+  if (e.data.type === 'init') {
+    ctx = e.data.canvas.getContext('2d')!;
+  } else if (e.data.type === 'data') {
+    const view = new Float64Array(e.data.buffer);
+    renderOrderbook(ctx, view); // Pure canvas drawing, no DOM
+  }
+};
+```
+
+**When to use Canvas vs DOM:**
+| Scenario | Approach |
+|----------|----------|
+| < 100 rows, < 10 updates/sec | React + virtualization |
+| 100-1000 rows, 10-60 updates/sec | React + Jotai atomic + virtualization |
+| > 1000 rows or > 60 updates/sec | Canvas + Web Worker |
+| Charts with streaming data | Canvas (lightweight-charts or custom) |
+
+### Backpressure & Memory Protection
+
+**Problem:** If the Rust backend produces data faster than the frontend consumes it, the message queue grows unbounded and causes OOM.
+
+**Rust-side throttling (preferred):**
+```rust
+use tokio::time::{interval, Duration};
+
+async fn throttled_stream(channel: Channel<Vec<u8>>) {
+    let mut tick = interval(Duration::from_millis(16)); // ~60 FPS cap
+    let mut latest: Option<Vec<u8>> = None;
+
+    loop {
+        tokio::select! {
+            data = data_rx.recv() => {
+                // Always keep only the latest frame -- drop stale data
+                latest = Some(data?);
+            }
+            _ = tick.tick() => {
+                if let Some(frame) = latest.take() {
+                    let _ = channel.send(frame); // Drop if frontend disconnected
+                }
+            }
+        }
+    }
+}
+```
+
+**Frontend Worker queue limit:**
+```typescript
+// In main thread: drop frames if worker is backlogged
+let pendingFrames = 0;
+const MAX_PENDING = 3;
+
+channel.onmessage = (data) => {
+  if (pendingFrames < MAX_PENDING) {
+    pendingFrames++;
+    worker.postMessage({ type: 'data', buffer: data }, [data]);
+  }
+  // else: drop frame silently
+};
+
+// Worker acknowledges processing
+worker.onmessage = () => { pendingFrames--; };
+```
+
+**Memory monitoring:**
+```typescript
+if (import.meta.env.DEV) {
+  setInterval(() => {
+    const mem = (performance as any).memory;
+    if (mem && mem.usedJSHeapSize > 500 * 1024 * 1024) {
+      console.warn('Heap exceeding 500MB -- check for leaks');
+    }
+  }, 5000);
+}
 ```
 
 ### Rust Concurrency Patterns

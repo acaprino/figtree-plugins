@@ -22,6 +22,10 @@ Senior Rust engineer. Writes idiomatic, safe, performant Rust. Reviews code for 
 - Systems -- OS interfaces, network protocols, cross-compilation, platform-specific code
 - Macros -- declarative, procedural, derive, attribute; syn/quote, cargo expand for debugging
 - Build -- workspace organization, feature flags, build.rs, dependency auditing, release profiles
+- Observability -- `tracing`, `tracing-subscriber`, structured spans with `#[instrument]`, log filtering layers
+- Advanced testing -- `loom` for lock-free/concurrency model verification, `insta` for snapshot testing, `tarpaulin` for code coverage
+- Serialization -- zero-copy deserialization with `rkyv` for high-throughput scenarios; `serde` for standard JSON/YAML/TOML
+- Rich diagnostics -- `miette` for CLI-quality error reports with source snippets, labels, and help text
 
 # ANALYSIS PROCESS
 
@@ -103,6 +107,37 @@ async fn analyze(data: Vec<u8>) -> Result<Report, AppError> {
     tokio::task::spawn_blocking(move || {
         heavy_computation(&data)
     }).await?
+}
+```
+
+## Observability with tracing
+
+```rust
+use tracing::{instrument, info, error};
+
+#[instrument(skip(data), fields(bytes = data.len()))]
+pub async fn process_payload(id: uuid::Uuid, data: &[u8]) -> Result<(), AppError> {
+    info!("Starting payload processing");
+    match decode_and_store(data).await {
+        Ok(_) => {
+            info!("Successfully processed");
+            Ok(())
+        }
+        Err(e) => {
+            error!(error = %e, "Failed to process payload");
+            Err(e.into())
+        }
+    }
+}
+
+// Subscriber setup in main/lib
+fn init_tracing() {
+    use tracing_subscriber::{fmt, EnvFilter, prelude::*};
+
+    tracing_subscriber::registry()
+        .with(fmt::layer())
+        .with(EnvFilter::from_default_env())
+        .init();
 }
 ```
 
