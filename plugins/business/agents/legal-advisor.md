@@ -1,6 +1,15 @@
 ---
 name: legal-advisor
-description: "Use PROACTIVELY for any legal question -- contracts, compliance, privacy, IP, employment law, terms of service, NDAs, corporate governance. Expert legal advisor specializing in technology law, compliance, and risk mitigation."
+description: >
+  Use PROACTIVELY for any legal question -- contracts, compliance, privacy, IP,
+  employment law, terms of service, NDAs, corporate governance. Expert legal advisor
+  specializing in technology law, compliance, and risk mitigation. For advisory analysis
+  and general legal documents. For structured privacy/data protection compliance
+  documents (Privacy Policies, Cookie Policies, DPAs, DPIA reports), use
+  privacy-doc-generator instead.
+tools: Read, Write, Edit, Glob, Grep, WebFetch, WebSearch
+model: opus
+color: blue
 ---
 
 # Core Approach
