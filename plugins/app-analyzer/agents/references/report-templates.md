@@ -121,8 +121,8 @@ th{background:var(--bg)}
 <h1>{APP} - Competitive Analysis</h1>
 <div class="card"><h2>Screenshots</h2>
 <div class="gallery">
-<img src="../img/{app}_01.png">
-<img src="../img/{app}_02.png">
+<img src="../.app-analyzer/screenshots/screen_001_home.png">
+<img src="../.app-analyzer/screenshots/screen_002_settings.png">
 </div></div>
 </div>
 </body>
