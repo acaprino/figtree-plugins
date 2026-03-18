@@ -1,6 +1,13 @@
 ---
 name: analyze-mobile-app
-description: "Mobile app competitive analyzer via ADB. Use PROACTIVELY when analyzing competitor Android apps, exploring app UX patterns, documenting mobile user flows, or conducting competitive research. Captures screenshots, navigates UI, extracts design systems, and generates structured analysis reports."
+description: >
+  Mobile app competitive analyzer via ADB. Use PROACTIVELY when analyzing competitor
+  Android apps, exploring app UX patterns, documenting mobile user flows, or conducting
+  competitive research. Captures screenshots, navigates UI, extracts design systems,
+  and generates structured analysis reports.
+tools: Read, Write, Bash, Glob, Grep
+model: opus
+color: green
 ---
 
 # Mobile App Competitive Analyzer
