@@ -15,7 +15,7 @@ plugins/
     hooks/                  # hook handlers (JS/Python) + hooks.json (anvil-hooks, prompt-improver)
 ```
 
-33 plugins: humanize, deep-dive-analysis, tauri-development, frontend, react-development, xterm, ai-tooling, python-development, stripe, system-utils, messaging, research, business, project-setup, mobile-development, typescript-development, csp, digital-marketing, senior-review, app-explorer, workflows, obsidian-development, browser-extensions, learning, marketplace-ops, playwright-skill, anvil-hooks, prompt-improver, cc-usage, codebase-mapper, git-worktrees, rag-development, docs.
+34 plugins: humanize, deep-dive-analysis, tauri-development, frontend, react-development, xterm, ai-tooling, python-development, stripe, system-utils, messaging, research, business, project-setup, mobile-development, typescript-development, csp, digital-marketing, senior-review, app-explorer, workflows, obsidian-development, browser-extensions, learning, marketplace-ops, playwright-skill, anvil-hooks, prompt-improver, cc-usage, codebase-mapper, git-worktrees, rag-development, docs, testing.
 
 ## Plugin anatomy
 
@@ -94,6 +94,7 @@ Some plugins are ported from external repositories and should be kept in sync wi
 | `react-development` (react-best-practices) | `vercel-labs/agent-skills` - `skills/react-best-practices/` | `plugins/react-development/skills/react-best-practices/SKILL.md`, `plugins/react-development/skills/react-best-practices/references.md`, `plugins/react-development/skills/react-best-practices/rules/*.md` |
 | `digital-marketing` (domain-hunter) | `ReScienceLab/opc-skills` - `skills/domain-hunter/` | `plugins/digital-marketing/skills/domain-hunter/SKILL.md`, `plugins/digital-marketing/skills/domain-hunter/references/registrars.md`, `plugins/digital-marketing/skills/domain-hunter/references/spaceship-api.md` |
 | `prompt-improver` | `severity1/claude-code-prompt-improver` | `plugins/prompt-improver/skills/prompt-improver/SKILL.md`, `plugins/prompt-improver/skills/prompt-improver/references/*.md`, `plugins/prompt-improver/hooks/handlers/improve-prompt.js` |
+| `testing` (tdd) | `mattpocock/skills` - `tdd/` | `plugins/testing/skills/tdd/SKILL.md`, `plugins/testing/skills/tdd/references/tests.md`, `plugins/testing/skills/tdd/references/deep-modules.md`, `plugins/testing/skills/tdd/references/mocking.md`, `plugins/testing/skills/tdd/references/interface-design.md`, `plugins/testing/skills/tdd/references/refactoring.md` |
 
 ### How to sync a plugin
 
@@ -152,6 +153,20 @@ gh api repos/severity1/claude-code-prompt-improver/contents/skills/prompt-improv
   --jq '.content' | base64 -d
 # NOTE: upstream uses Python (scripts/improve-prompt.py), local version is JS (hooks/handlers/improve-prompt.js)
 gh api repos/severity1/claude-code-prompt-improver/contents/scripts/improve-prompt.py \
+  --jq '.content' | base64 -d
+
+# Fetch latest TDD skill files from upstream (mattpocock/skills example)
+gh api repos/mattpocock/skills/contents/tdd/SKILL.md \
+  --jq '.content' | base64 -d
+gh api repos/mattpocock/skills/contents/tdd/tests.md \
+  --jq '.content' | base64 -d
+gh api repos/mattpocock/skills/contents/tdd/deep-modules.md \
+  --jq '.content' | base64 -d
+gh api repos/mattpocock/skills/contents/tdd/mocking.md \
+  --jq '.content' | base64 -d
+gh api repos/mattpocock/skills/contents/tdd/interface-design.md \
+  --jq '.content' | base64 -d
+gh api repos/mattpocock/skills/contents/tdd/refactoring.md \
   --jq '.content' | base64 -d
 ```
 
