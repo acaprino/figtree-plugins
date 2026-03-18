@@ -23,7 +23,7 @@ You MUST follow these rules exactly. Violating any of them is a failure.
 This command requires agents and skills from other plugins. Before proceeding, verify they are installed:
 
 **Required plugins:**
-- `mobile-development` -- analyze-mobile-app skill (Phase 1)
+- `app-analyzer` -- app-analyzer agent (Phase 1)
 - `frontend` -- web-designer agent (Phase 3)
 - `ai-tooling` -- brainstorming, writing-plans skills (Phases 2, 4)
 
@@ -96,7 +96,7 @@ Parse `$ARGUMENTS` for `--device` and `--skip-scaffold` flags.
 
 ## Phase 1: Competitor App Analysis
 
-Use the analyze-mobile-app skill process to analyze the target app via ADB.
+Use the app-analyzer agent to analyze the target app via ADB.
 
 ### Process
 
