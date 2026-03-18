@@ -185,6 +185,12 @@ const animationProps = prefersReducedMotion ? {} : { initial: { opacity: 0 }, an
 
 ## Design Systems & UX
 
+### Deep Module Principles for Component APIs
+- Prefer small prop surfaces that hide significant internal complexity (deep modules) over large prop surfaces with thin implementations (shallow modules)
+- A well-designed component does a lot with few knobs -- callers should not need to understand internals
+- When choosing between fundamentally different component structures, invoke the `design-an-interface` skill to explore alternatives in parallel before committing
+- Signs of a shallow component: many required props, thin wrapper over native elements, callers must coordinate multiple components to achieve basic tasks
+
 ### Common UI/UX Patterns
 - Navigation: tab bars, hamburger menus, breadcrumbs, mega-menus, sticky nav, sidebars, bottom sheets
 - Content: cards, feeds, masonry grids, list/grid toggle, hero sections, modals, drawers, carousels

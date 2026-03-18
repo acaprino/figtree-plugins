@@ -328,8 +328,13 @@ When analyzing an existing layout for improvements:
 
 When starting a layout from scratch:
 1. Ask for / establish the content priority list (most important -> least)
-2. Choose the layout pattern that fits the content model
-3. Define the spacing system and breakpoint tiers
-4. Produce the grid scaffold as named areas
-5. Layer in responsive pivots
-6. Hand off with CSS tokens + annotated code
+2. Before committing to a layout pattern, consider 2-3 radically different structural approaches:
+   - How would this page work as a single-column flow vs. a multi-panel grid vs. a split-screen?
+   - Evaluate each on: spatial simplicity, content hierarchy support, responsive adaptability
+   - Pick the structure that best serves the content priority list, not the most familiar one
+   - For the full parallel-agent comparison workflow, invoke the `design-an-interface` skill
+3. Choose the layout pattern that fits the content model
+4. Define the spacing system and breakpoint tiers
+5. Produce the grid scaffold as named areas
+6. Layer in responsive pivots
+7. Hand off with CSS tokens + annotated code
