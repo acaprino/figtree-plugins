@@ -6,14 +6,14 @@
   },
   "metadata": {
     "description": "Custom development workflow agents and skills for code quality, Tauri/Rust development, frontend optimization, AI tooling, and constraint programming optimization",
-    "version": "2.91.0"
+    "version": "2.92.0"
   },
   "plugins": [
     {
       "name": "humanize",
       "source": "./plugins/humanize",
       "description": "Rewrites source code to be more readable and human-friendly without changing behavior - improves naming, comments, and structure with mandatory test validation",
-      "version": "2.6.0",
+      "version": "2.7.0",
       "author": {
         "name": "Alfio"
       },
@@ -23,15 +23,22 @@
         "readability",
         "naming",
         "refactor",
-        "cleanup"
+        "cleanup",
+        "ai-writing",
+        "text-humanization"
       ],
       "category": "review",
       "strict": false,
       "agents": [
-        "./agents/humanize.md"
+        "./agents/humanize-code.md",
+        "./agents/text-humanizer.md"
+      ],
+      "skills": [
+        "./skills/text-humanizer/SKILL.md"
       ],
       "commands": [
-        "./commands/humanize.md"
+        "./commands/humanize.md",
+        "./commands/humanize-text.md"
       ]
     },
     {

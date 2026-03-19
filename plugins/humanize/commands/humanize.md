@@ -5,7 +5,7 @@ argument-hint: "<file or directory> [--dry-run] [--strict] [--yes]"
 
 # Humanize Code
 
-Use the `humanize` agent to rewrite source code for readability without changing behavior.
+Use the `code-humanizer` agent to rewrite source code for readability without changing behavior.
 
 ## CRITICAL RULES
 
@@ -79,7 +79,7 @@ Use the `humanize` agent:
 
 ```
 Task:
-  subagent_type: "humanize"
+  subagent_type: "humanize-code"
   description: "Humanize [target] for readability"
   prompt: |
     Improve the readability and human-friendliness of this code.

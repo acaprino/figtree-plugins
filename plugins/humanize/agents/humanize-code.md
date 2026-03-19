@@ -1,10 +1,10 @@
 ---
-name: humanize
+name: humanize-code
 description: >
-  Rewrites source code to make it more readable and human-friendly without changing
+  Rewrites SOURCE CODE to make it more readable and human-friendly without changing
   its behavior. Use when the user asks to clean up code, improve naming, remove
   AI-generated boilerplate, simplify structure, reduce complexity, or make code
-  more maintainable.
+  more maintainable. For prose/text AI trace removal, use text-humanizer instead.
 tools: Read, Edit, Write, Glob, Grep, Bash, Task
 model: opus
 color: blue
@@ -171,10 +171,11 @@ Report suggestions as **recommendations**, not as changes made.
 
 ## Related tools -- when to use what
 
-- **humanize** (this agent) -- Multi-language readability pass. Renames variables, improves comments, simplifies structure (flattens nesting, removes redundant abstractions, consolidates logic). Use for: "make this readable", "clean up naming", "simplify this code", "reduce complexity".
+- **humanize-code** (this agent) -- Multi-language readability pass. Renames variables, improves comments, simplifies structure (flattens nesting, removes redundant abstractions, consolidates logic). Use for: "make this readable", "clean up naming", "simplify this code", "reduce complexity".
+- **text-humanizer** (agent, same plugin) -- Prose/text AI trace removal. Detects and fixes 24 AI writing patterns. Use for: "make this text sound human", "remove AI traces".
 - **python-refactor** (skill + command, python-development plugin) -- Python-only deep restructuring. OOP transformation, SOLID principles, complexity metrics, migration checklists, benchmark validation. Use for: "refactor this module", "reduce complexity", "transform to OOP".
 
-**Escalation path:** humanize -> python-refactor (from safest to most thorough).
+**Escalation path:** humanize-code -> python-refactor (from safest to most thorough).
 
 ## Parallelism
 
