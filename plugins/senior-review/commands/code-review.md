@@ -404,7 +404,7 @@ Agent tool call:
 
 ## Step 4: Consolidate Agent Findings
 
-After all five agents complete, collect and organize their findings into a single intermediate summary. Group findings by severity and category. This summary becomes the input for Step 4b.
+After all agents complete, collect and organize their findings into a single intermediate summary. Group findings by severity and category. This summary becomes the input for Step 4b.
 
 ## Step 4b: Quality Scoring
 
@@ -442,6 +442,9 @@ Agent tool call:
 
     ### Failure Flow (Agent E)
     [paste findings from failure-flow-tracer]
+
+    ### UI Race Conditions (Agent F) -- if applicable
+    [paste findings from ui-race-auditor, or "N/A -- no UI files in scope"]
 
     ## Instructions
     Using ALL agent findings above, produce a quantitative quality score.
@@ -492,6 +495,10 @@ After scoring completes, synthesize everything into the final structured review:
 
 ### Failure Flow & Resilience
 | # | Severity | File:Line | Scenario | Confidence | Fix |
+|---|----------|-----------|----------|------------|-----|
+
+### UI Race Conditions (if applicable)
+| # | Severity | File:Line | Timeline | Confidence | Fix |
 |---|----------|-----------|----------|------------|-----|
 
 ### Pattern Consistency

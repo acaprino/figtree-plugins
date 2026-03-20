@@ -225,6 +225,8 @@ When `--deep-dive` flag is active, each review agent prompt in Phases 1-5 gets t
 - For architect-review (Phase 1): structure, interfaces, flows, semantics
 - For security-auditor (Phase 2A): flows (data paths), semantics (assumptions), risks
 - For performance agent (Phase 2B): structure, flows
+- For failure-flow-tracer (Phase 2C): flows (async paths, state transitions), risks (resource lifecycle, persisted state)
+- For ui-race-auditor (Phase 2D): structure (component hierarchy), flows (render/layout/event timing), semantics (state management assumptions)
 - For test/docs agents (Phase 3): interfaces, flows, risks
 - For best practices agents (Phase 4): all deep-dive findings
 - For pattern-quality-scorer (Phase 5): all deep-dive findings]
@@ -424,7 +426,58 @@ Agent tool call:
     Write your findings as a structured markdown document.
 ```
 
-After all three complete, consolidate into `.full-review/02-security-performance.md`:
+### Step 2D: UI Race Condition Analysis (conditional)
+
+**Only run this agent if the target includes UI/frontend code** (`.tsx`, `.jsx`, `.vue`, `.svelte`, `.component.ts`, `.qml`, or files containing scroll/focus/layout manipulation). Skip entirely for backend-only codebases.
+
+```
+Agent tool call:
+  - description: "UI race condition analysis for $ARGUMENTS"
+  - subagent_type: "senior-review:ui-race-auditor"
+  - run_in_background: true
+  - prompt: |
+    Analyze the target UI code for race conditions between async rendering,
+    layout/reflow, and event handlers.
+
+    ## Review Scope
+    [Insert contents of .full-review/00-scope.md]
+
+    ## Phase 1 Context
+    [Insert contents of .full-review/01-architecture.md -- focus on state management and component interaction findings]
+
+    ## Instructions
+    Analyze the target code for UI timing bugs:
+
+    1. **Async-Render-Event Triangle** -- Map data sources that trigger re-renders,
+       layout-dependent operations (scroll, focus, measurement), and event handlers
+       that read layout state. Identify where these three interact.
+
+    2. **Scroll Race Analysis** -- For every scrollIntoView, scrollTop assignment,
+       or scrollToIndex call: is the layout complete when it fires? Can reflow after
+       the call shift scrollTop and trigger false "user scrolled" detection?
+
+    3. **Batch Render Timing** -- For bulk state updates (history restore, list load,
+       large dataset): do effects/callbacks that depend on layout fire before or
+       after all items are rendered and measured?
+
+    4. **Stale Closure Audit** -- Do event handlers, timers, or observers capture
+       DOM references or layout values that can go stale between capture and use?
+
+    5. **Programmatic vs User Event Discrimination** -- Do scroll/focus/resize
+       handlers distinguish between programmatic manipulation and genuine user
+       interaction? Missing guards cause false state transitions.
+
+    6. **Cross-Component Layout Coupling** -- Does component A resize/reflow and
+       affect component B's scroll position, measurements, or visibility without
+       B being notified?
+
+    For each finding: severity, step-by-step timeline (T0->T1->...->RESULT),
+    file + line, confidence (0-100), concrete fix.
+
+    Write your findings as a structured markdown document.
+```
+
+After all agents complete, consolidate into `.full-review/02-security-performance.md`:
 
 ```markdown
 # Phase 2: Security & Performance Review
@@ -440,6 +493,10 @@ After all three complete, consolidate into `.full-review/02-security-performance
 ## Failure Flow & Resilience Findings
 
 [Summary from 2C, organized by severity]
+
+## UI Race Condition Findings (if applicable)
+
+[Summary from 2D, organized by severity, or "N/A -- no UI files in scope"]
 
 ## Critical Issues for Phase 3 Context
 
@@ -897,6 +954,7 @@ Read all `.full-review/*.md` files (01 through 05). Generate the final consolida
 - **Documentation**: [count] findings ([breakdown by severity])
 - **Best Practices**: [count] findings ([breakdown by severity])
 - **CI/CD & DevOps**: [count] findings ([breakdown by severity])
+- **UI Race Conditions**: [count] findings ([breakdown by severity])
 - **Dead Code**: [count] findings ([breakdown by severity])
 
 ## Recommended Action Plan

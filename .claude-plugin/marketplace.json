@@ -588,7 +588,9 @@
         "security",
         "patterns",
         "quality",
-        "dead-code"
+        "dead-code",
+        "ui-race-condition",
+        "failure-flow"
       ],
       "category": "review",
       "strict": false,
