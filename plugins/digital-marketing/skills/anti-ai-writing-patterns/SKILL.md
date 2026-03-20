@@ -229,15 +229,20 @@ Avoiding AI patterns is only half the job. Sterile, voiceless writing is just as
 
 **This pattern has the HIGHEST PRIORITY in the humanization process.** After completing all other rewrites, do a dedicated final pass to find and replace every remaining em dash or double hyphen used as a dash.
 
-**Detection:** Look for em dashes (--), en dashes (-), and double hyphens (--) used as sentence connectors, parenthetical insertions, or dramatic pauses. Also look for clusters: two or more dash-interrupted clauses in a single paragraph is a strong AI signal.
+**Detection:** Look for em dashes, en dashes, double hyphens (--), and any dash-like punctuation used as sentence connectors, parenthetical insertions, or dramatic pauses. Also look for clusters: two or more dash-interrupted clauses in a single paragraph is a strong AI signal.
+
+**IMPORTANT:** Do NOT replace em dashes with double hyphens (--). Double hyphens are just as recognizable as em dashes and serve the same function. The goal is to eliminate the dash-as-connector pattern entirely, not to swap one form for another. Always replace with commas, periods, colons, parentheses, semicolons, or restructure the sentence.
 
 **Replacement strategy (in order of preference):**
-1. **Comma** -- the most natural replacement in 80% of cases
-2. **Period + new sentence** -- when the dash connects two independent thoughts
-3. **Colon** -- when introducing an explanation or list
-4. **Parentheses** -- for true parenthetical asides
-5. **Semicolon** -- for closely related independent clauses
-6. **Remove entirely** -- restructure the sentence to eliminate the need
+1. **Commas** - the most natural replacement in 80% of cases, including parenthetical/incidental clauses (e.g., "the team, which was small, delivered fast")
+2. **Single hyphen with spaces** - for parenthetical asides where commas feel too weak (e.g., "the team - a small one - delivered fast")
+3. **Period + new sentence** - when the dash connects two independent thoughts
+4. **Colon** - when introducing an explanation or list
+5. **Parentheses** - for true parenthetical asides
+6. **Semicolon** - for closely related independent clauses
+7. **Remove entirely** - restructure the sentence to eliminate the need
+
+**Never use:** em dashes, en dashes, or double hyphens (--) as connectors or for parenthetical clauses.
 
 **Before:**
 > The term is primarily promoted by Dutch institutions--not by the people themselves. You don't say "Netherlands, Europe" as an address--yet this mislabeling continues--even in official documents.

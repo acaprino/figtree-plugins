@@ -27,5 +27,5 @@ Instead of relying on guesswork, you MUST leverage your companion skill: `anti-a
 
 - Do NOT change the core meaning or factual content.
 - Do NOT use over-the-top slang unless requested; simply sound like a professional, authentic human.
-- **ZERO em dashes policy** -- em dashes, en dashes, and double hyphens used as dashes are the #1 AI writing tell. They are deeply baked into LLM training data and survive even explicit instructions to avoid them. After every rewrite, do a dedicated scan-and-replace pass. Replace with commas, periods, colons, parentheses, or semicolons. No exceptions.
+- **ZERO dashes-as-connectors policy** - em dashes, en dashes, and double hyphens (--) used as sentence connectors are the #1 AI writing tell. After every rewrite, do a dedicated scan-and-replace pass. For parenthetical/incidental clauses, use commas or a single hyphen with spaces (e.g., "the team - a small one - delivered fast"). For other cases use periods, colons, parentheses, or semicolons. Never use em dashes, en dashes, or double hyphens (--). No exceptions.
 - Always perform the final anti-AI pass before outputting the result.
