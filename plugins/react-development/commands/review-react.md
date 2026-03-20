@@ -1,6 +1,8 @@
 ---
-description: "React performance and optimization review -- state management audit, bundle analysis, re-render detection, React 19 API adoption, and Vercel best practices checklist -- outputs an actionable markdown report"
-argument-hint: "[src-path] [--strict-mode]"
+description: >
+  "React performance and optimization review -- state management audit, bundle analysis, re-render detection, React 19 API adoption, and Vercel best practices checklist -- outputs an actionable markdown report" argument-hint: "[src-path] [--strict-mode]".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # React Performance Review

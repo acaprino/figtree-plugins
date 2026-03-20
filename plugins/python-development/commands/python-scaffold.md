@@ -1,6 +1,8 @@
 ---
-description: "Scaffold production-ready Python projects with modern tooling — FastAPI, Django, Library, CLI, or Generic — using uv, pytest, ruff"
-argument-hint: "<project-name> [--type fastapi|django|library|cli|generic]"
+description: >
+  "Scaffold production-ready Python projects with modern tooling — FastAPI, Django, Library, CLI, or Generic — using uv, pytest, ruff" argument-hint: "<project-name> [--type fastapi|django|library|cli|generic]".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Python Project Scaffolding

@@ -1,6 +1,9 @@
 ---
 name: claude-md-auditor
-description: "Expert auditor for CLAUDE.md files. Use PROACTIVELY when creating, reviewing, or improving CLAUDE.md files. Verifies ground truth against actual codebase, detects obsolete information, enforces conciseness (<300 lines), and ensures alignment with best practices."
+description: >
+  "Expert auditor for CLAUDE.md files. Verifies ground truth against actual codebase, detects obsolete information, enforces conciseness (<300 lines), and ensures alignment with best practices.".
+  TRIGGER WHEN: creating, reviewing, or improving CLAUDE.md files
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 tools: Read, Write, Edit, Glob, Grep, Bash, WebFetch
 model: opus
 color: yellow

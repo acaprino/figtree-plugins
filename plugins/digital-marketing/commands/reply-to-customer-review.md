@@ -1,6 +1,8 @@
 ---
-description: "Reply to a customer review with sentiment analysis, adaptive tone, and operational suggestions"
-argument-hint: "\"<review text>\" [--brand <name>] [--tone formal|friendly|casual] [--lang <code>] [--sector hospitality|ecommerce|auto]"
+description: >
+  "Reply to a customer review with sentiment analysis, adaptive tone, and operational suggestions" argument-hint: "\"<review text>\" [--brand <name>] [--tone formal|friendly|casual] [--lang <code>] [--sector hospitality|ecommerce|auto]".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Reply to Customer Review

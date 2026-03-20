@@ -1,6 +1,9 @@
 ---
 name: prompt-improver
-description: This skill enriches vague prompts with targeted research and clarification before execution. Should be used when a prompt is determined to be vague and requires systematic research, question generation, and execution guidance.
+description: >
+  This skill enriches vague prompts with targeted research and clarification before execution. Should be used when a prompt is determined to be vague and requires systematic research, question generation, and execution guidance.
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Prompt Improver Skill

@@ -1,9 +1,9 @@
 ---
 name: config-writer
 description: >
-  Phase 2 writer for codebase-mapper. Produces 10-configuration-guide.md from the context brief.
-  Documents how to configure and use the project in practice - environment setup, configuration
-  scenarios, common operations, and troubleshooting. Spawned in parallel with other writer agents.
+  Phase 2 writer for codebase-mapper. Produces 10-configuration-guide.md from the context brief. Documents how to configure and use the project in practice - environment setup, configuration scenarios, common operations, and troubleshooting. Spawned in parallel with other writer agents.
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 model: opus
 tools: Read, Write, Glob, Grep
 color: orange

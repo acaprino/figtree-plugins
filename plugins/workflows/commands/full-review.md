@@ -1,6 +1,8 @@
 ---
-description: "Full codebase review pipeline -- deep-dive structural analysis followed by comprehensive multi-agent code review covering architecture, security, performance, testing, documentation, best practices, CI/CD, dead code, and consolidated quality scoring"
-argument-hint: "<target path or description> [--skip-deep-dive] [--security-focus] [--performance-critical] [--strict-mode] [--framework react|spring|django|rails]"
+description: >
+  "Full codebase review pipeline -- deep-dive structural analysis followed by comprehensive multi-agent code review covering architecture, security, performance, testing, documentation, best practices, CI/CD, dead code, and consolidated quality scoring" argument-hint: "<target path or description> [--skip-deep-dive] [--security-focus] [--performance-critical] [--strict-mode] [--framework react|spring|django|rails]".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Full Review Pipeline

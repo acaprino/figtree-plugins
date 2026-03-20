@@ -1,6 +1,8 @@
 ---
-description: "Orchestrate comprehensive multi-dimensional code review using specialized review agents. Optionally enriched with deep-dive structural and semantic analysis for deeper context."
-argument-hint: "<target path or description> [--deep-dive] [--security-focus] [--performance-critical] [--strict-mode] [--framework react|spring|django|rails]"
+description: >
+  "Orchestrate comprehensive multi-dimensional code review using specialized review agents. Optionally enriched with deep-dive structural and semantic analysis for deeper context." argument-hint: "<target path or description> [--deep-dive] [--security-focus] [--performance-critical] [--strict-mode] [--framework react|spring|django|rails]".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Comprehensive Code Review Orchestrator

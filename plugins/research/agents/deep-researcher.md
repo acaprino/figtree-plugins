@@ -1,10 +1,9 @@
 ---
 name: deep-researcher
 description: >
-  Expert deep research agent for complex multi-source investigation. Use PROACTIVELY when
-  initial searches fail and require iterative refinement, when research needs systematic
-  coverage across codebase, docs, and web, or when finding specific information requires
-  query optimization, cross-referencing, and source assessment.
+  Expert deep research agent for complex multi-source investigation.
+  TRIGGER WHEN: initial searches fail and require iterative refinement, when research needs systematic coverage across codebase, docs, and web, or when finding specific information requires query optimization, cross-referencing, and source assessment.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 tools: Read, Grep, Glob, WebFetch, WebSearch
 model: opus
 color: cyan

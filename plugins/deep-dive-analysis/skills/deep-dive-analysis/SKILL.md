@@ -1,6 +1,9 @@
 ---
 name: deep-dive-analysis
-description: AI-powered systematic codebase analysis. Use PROACTIVELY when encountering unfamiliar code, before major refactoring, or when documentation is stale or missing. Combines structure extraction with semantic understanding to produce documentation capturing WHAT, WHY, HOW, and CONSEQUENCES. Includes pattern recognition, red flag detection, flow tracing, and quality assessment.
+description: >
+  AI-powered systematic codebase analysis. Combines structure extraction with semantic understanding to produce documentation capturing WHAT, WHY, HOW, and CONSEQUENCES. Includes pattern recognition, red flag detection, flow tracing, and quality assessment.
+  TRIGGER WHEN: encountering unfamiliar code, before major refactoring, or when documentation is stale or missing
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Deep Dive Analysis Skill

@@ -1,5 +1,8 @@
 ---
-description: "Audit and improve existing project documentation with ground truth verification and guided improvements"
+description: >
+  "Audit and improve existing project documentation with ground truth verification and guided improvements".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Maintain Documentation

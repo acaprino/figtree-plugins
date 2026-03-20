@@ -1,6 +1,9 @@
 ---
 name: cc-usage
-description: Analyze Claude Code token usage, costs, billing blocks, and tool activity from local session data. Use when the user asks about their usage, costs, burn rate, or wants a usage dashboard/report.
+description: >
+  Analyze Claude Code token usage, costs, billing blocks, and tool activity from local session data.
+  TRIGGER WHEN: the user asks about their usage, costs, burn rate, or wants a usage dashboard/report.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Claude Code Usage Analyzer

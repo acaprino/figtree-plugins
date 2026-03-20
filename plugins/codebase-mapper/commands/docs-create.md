@@ -1,6 +1,8 @@
 ---
-description: "Create accurate technical documentation by analyzing the codebase first -- API docs, architecture guides, component docs, or full project documentation"
-argument-hint: "<target path or description> [--api-only] [--architecture] [--format markdown|html] [--output <path>]"
+description: >
+  "Create accurate technical documentation by analyzing the codebase first -- API docs, architecture guides, component docs, or full project documentation" argument-hint: "<target path or description> [--api-only] [--architecture] [--format markdown|html] [--output <path>]".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Create Documentation

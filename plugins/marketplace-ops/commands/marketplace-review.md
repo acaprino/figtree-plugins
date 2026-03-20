@@ -1,6 +1,8 @@
 ---
-description: "AI-powered quality review of plugin descriptions, trigger keywords, agent prompts, skill instructions, and command definitions -- evaluates activation accuracy, content quality, and cross-plugin coherence"
-argument-hint: "[plugin-name] [--all] [--fix]"
+description: >
+  "AI-powered quality review of plugin descriptions, trigger keywords, agent prompts, skill instructions, and command definitions -- evaluates activation accuracy, content quality, and cross-plugin coherence" argument-hint: "[plugin-name] [--all] [--fix]".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Marketplace AI Review

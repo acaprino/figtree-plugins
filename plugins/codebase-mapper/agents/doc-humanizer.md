@@ -1,9 +1,9 @@
 ---
 name: doc-humanizer
 description: >
-  Rewrites existing documentation to follow human-centered writing guidelines. Takes dense,
-  AI-style, or poorly structured docs and transforms them into clear, scannable, narrative
-  documentation. Use when documentation exists but reads like a wall of text or AI output.
+  Rewrites existing documentation to follow human-centered writing guidelines. Takes dense, AI-style, or poorly structured docs and transforms them into clear, scannable, narrative documentation.
+  TRIGGER WHEN: documentation exists but reads like a wall of text or AI output.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 model: opus
 tools: Read, Write, Edit, Glob, Grep
 color: cyan

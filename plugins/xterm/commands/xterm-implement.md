@@ -1,6 +1,8 @@
 ---
-description: "Implement xterm.js features into existing terminal code -- addons, PTY wiring, theming, search, resize, decorations, parser hooks, framework integration. Reads current setup and adds the feature without conflicts"
-argument-hint: "<feature-description> [--path <file>]"
+description: >
+  "Implement xterm.js features into existing terminal code -- addons, PTY wiring, theming, search, resize, decorations, parser hooks, framework integration. Reads current setup and adds the feature without conflicts" argument-hint: "<feature-description> [--path <file>]".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # xterm.js Feature Implementer

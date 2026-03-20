@@ -1,6 +1,9 @@
 ---
 name: obsidian-plugin-development
-description: Use when writing, reviewing, or fixing Obsidian community plugin code. Ensures compliance with ObsidianReviewBot automated checks, eslint-plugin-obsidianmd rules, and official Obsidian plugin guidelines. Use PROACTIVELY when editing any .ts file in an Obsidian plugin project.
+description: >
+  Ensures compliance with ObsidianReviewBot automated checks, eslint-plugin-obsidianmd rules, and official Obsidian plugin guidelines.
+  TRIGGER WHEN: writing, reviewing, or fixing Obsidian community plugin code
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Obsidian Plugin Development

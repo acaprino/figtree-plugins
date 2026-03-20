@@ -1,6 +1,9 @@
 ---
 name: security-auditor
-description: Adversarial security reviewer with attacker mindset. Hunts for injection vectors, auth bypasses, secret leaks, crypto mistakes, missing headers, and dependency vulnerabilities. Assumes code is exploitable and proves it. Use in senior-review pipeline.
+description: >
+  Adversarial security reviewer with attacker mindset. Hunts for injection vectors, auth bypasses, secret leaks, crypto mistakes, missing headers, and dependency vulnerabilities. Assumes code is exploitable and proves it. Use in senior-review pipeline.
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 model: opus
 color: blue
 ---

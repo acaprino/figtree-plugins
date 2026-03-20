@@ -1,10 +1,9 @@
 ---
 name: ops-writer
 description: >
-  Phase 2 writer for codebase-mapper. Produces 09-project-anatomy.md from the context brief.
-  Documents configuration files, environment variables, startup scripts, directory tree with
-  folder meanings, and everything needed for hands-on work. Spawned in parallel with other
-  writer agents.
+  Phase 2 writer for codebase-mapper. Produces 09-project-anatomy.md from the context brief. Documents configuration files, environment variables, startup scripts, directory tree with folder meanings, and everything needed for hands-on work. Spawned in parallel with other writer agents.
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 model: opus
 tools: Read, Write, Glob, Grep
 color: cyan

@@ -1,6 +1,8 @@
 ---
-description: "Unified code review -- auto-detects scope and runs architecture, security, and pattern analysis agents in parallel. Automatically uses deep-dive context if available."
-argument-hint: "[PR number | --branch <name> | --commits N] [--auto-comment] [--strict] [--security-focus]"
+description: >
+  "Unified code review -- auto-detects scope and runs architecture, security, and pattern analysis agents in parallel. Automatically uses deep-dive context if available." argument-hint: "[PR number | --branch <name> | --commits N] [--auto-comment] [--strict] [--security-focus]".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Code Review

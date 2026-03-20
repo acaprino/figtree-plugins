@@ -1,6 +1,8 @@
 ---
-description: "Audit an existing RAG implementation for quality, performance, and best practices"
-argument-hint: "[path-or-description]"
+description: >
+  "Audit an existing RAG implementation for quality, performance, and best practices" argument-hint: "[path-or-description]".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # RAG Audit

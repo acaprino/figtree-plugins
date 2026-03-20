@@ -1,12 +1,9 @@
 ---
 name: daisyui
 description: >
-  Expert guidance for building with daisyUI -- component classes, theming system, color semantics,
-  responsive patterns, drawer/modal architecture, and Tailwind CSS integration.
-  Trigger when working with daisyUI components, adding daisyUI to a project, theming,
-  or building UI with daisyUI class names. Also trigger on mentions of "daisyui",
-  "daisy ui", "daisyUI components", "daisyUI themes", or daisyUI class patterns like
-  "btn-primary", "card", "modal", "drawer".
+  Expert guidance for building with daisyUI -- component classes, theming system, color semantics, responsive patterns, drawer/modal architecture, and Tailwind CSS integration. Trigger when working with daisyUI components, adding daisyUI to a project, theming, or building UI with daisyUI class names. Also trigger on mentions of "daisyui", "daisy ui", "daisyUI components", "daisyUI themes", or daisyUI class patterns like "btn-primary", "card", "modal", "drawer".
+  TRIGGER WHEN: working with daisyUI components, adding daisyUI to a project, theming, or building UI with daisyUI class names
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # daisyUI Expert

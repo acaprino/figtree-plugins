@@ -1,9 +1,9 @@
 ---
 name: rag-development
 description: >
-  Comprehensive RAG development knowledge base covering chunking, embeddings, vector databases,
-  retrieval strategies, advanced patterns (Graph RAG, CRAG, Self-RAG, Agentic RAG), evaluation,
-  and production deployment. Use when building, optimizing, or auditing RAG systems.
+  Comprehensive RAG development knowledge base covering chunking, embeddings, vector databases, retrieval strategies, advanced patterns (Graph RAG, CRAG, Self-RAG, Agentic RAG), evaluation, and production deployment.
+  TRIGGER WHEN: building, optimizing, or auditing RAG systems.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # RAG Development

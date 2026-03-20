@@ -1,6 +1,8 @@
 ---
-description: "Generate a human-readable codebase guide - explores the project, writes 10 narrative documents with Mermaid diagrams, and produces an INDEX.md entry point"
-argument-hint: "[target-path]"
+description: >
+  "Generate a human-readable codebase guide - explores the project, writes 10 narrative documents with Mermaid diagrams, and produces an INDEX.md entry point" argument-hint: "[target-path]".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Map Codebase

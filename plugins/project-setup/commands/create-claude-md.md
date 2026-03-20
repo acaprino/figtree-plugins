@@ -1,6 +1,9 @@
 ---
 name: create-claude-md
-description: Create a new CLAUDE.md file tailored to your project through interactive questionnaire
+description: >
+  Create a new CLAUDE.md file tailored to your project through interactive questionnaire.
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 subagent: project-setup:claude-md-auditor
 ---
 

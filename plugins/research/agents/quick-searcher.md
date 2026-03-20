@@ -1,10 +1,9 @@
 ---
 name: quick-searcher
 description: >
-  Fast search agent for simple fact-finding, single-concept lookups, and quick answers.
-  Use when you need a fast answer to a straightforward question -- a specific fact, a file
-  location, a config value, or a quick web lookup. Do NOT use for complex multi-source
-  research requiring systematic coverage or iterative refinement.
+  Fast search agent for simple fact-finding, single-concept lookups, and quick answers. Do NOT use for complex multi-source research requiring systematic coverage or iterative refinement.
+  TRIGGER WHEN: you need a fast answer to a straightforward question -- a specific fact, a file location, a config value, or a quick web lookup
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 tools: Read, Grep, Glob, WebFetch, WebSearch
 model: sonnet
 color: cyan

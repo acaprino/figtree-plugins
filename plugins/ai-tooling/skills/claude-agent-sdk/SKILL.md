@@ -1,14 +1,9 @@
 ---
 name: claude-agent-sdk
 description: >
-  Build apps with the Claude Agent SDK (formerly Claude Code SDK). Use when code imports
-  `claude_agent_sdk` / `@anthropic-ai/claude-agent-sdk`, or user asks to use the Agent SDK,
-  build programmatic agents, integrate Claude Code into applications, manage subagents,
-  create custom tools, or deploy agent workflows.
-  TRIGGER when: code references claude-agent-sdk, user says "agent sdk", "build an agent",
-  "programmatic claude", "claude code sdk", "sidecar", "run claude programmatically".
-  DO NOT TRIGGER when: user is using the Claude API client SDK (`anthropic`/`@anthropic-ai/sdk`)
-  for direct chat completions, or doing general programming unrelated to agent orchestration.
+  Build apps with the Claude Agent SDK (formerly Claude Code SDK). DO NOT.
+  TRIGGER WHEN: code references claude-agent-sdk, user says "agent sdk", "build an agent", "programmatic claude", "claude code sdk", "sidecar", "run claude programmatically".
+  DO NOT TRIGGER WHEN: user is using the Claude API client SDK (`anthropic`/`@anthropic-ai/sdk`) for direct chat completions, or doing general programming unrelated to agent orchestration.
 ---
 
 # Claude Agent SDK

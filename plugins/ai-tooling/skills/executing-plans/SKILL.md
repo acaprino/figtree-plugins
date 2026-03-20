@@ -1,6 +1,9 @@
 ---
 name: executing-plans
-description: "Use when you have a written implementation plan to execute with review checkpoints. Also use when a plan file exists in docs/plans/ or when resuming multi-step work. TRIGGER when: user says 'execute the plan', 'run the plan', 'implement the plan', 'start implementing'. DO NOT TRIGGER when: user wants to write a plan (use writing-plans), wants to brainstorm (use brainstorming), or is doing ad-hoc implementation."
+description: >
+  "Also DO NOT.
+  TRIGGER WHEN: user says 'execute the plan', 'run the plan', 'implement the plan', 'start implementing'.
+  DO NOT TRIGGER WHEN: user wants to write a plan (use writing-plans), wants to brainstorm (use brainstorming), or is doing ad-hoc implementation."
 ---
 
 Source: Ported from [obra/superpowers](https://github.com/obra/superpowers) -- `skills/executing-plans`

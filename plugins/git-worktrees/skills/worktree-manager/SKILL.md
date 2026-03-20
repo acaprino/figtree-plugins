@@ -1,14 +1,9 @@
 ---
 name: worktree-manager
 description: >
-  Proactive git worktree orchestration -- detects WIP state (uncommitted changes, stashes,
-  unpushed commits) and offers to isolate work into worktrees. MUST activate BEFORE any
-  implementation task (add, create, build, implement, develop, make, fix, refactor) when
-  the working directory has uncommitted changes or stashes. Also provides dashboard, context
-  recovery, multi-worktree creation, cleanup advisor, and conflict early warning across
-  parallel development sessions. Triggers: any implementation request when WIP exists,
-  "show my worktrees", "what am I working on", "help me manage parallel tasks",
-  "worktree status", "coordinate my work".
+  Proactive git worktree orchestration -- detects WIP state (uncommitted changes, stashes, unpushed commits) and offers to isolate work into worktrees. MUST activate BEFORE any implementation task (add, create, build, implement, develop, make, fix, refactor) when the working directory has uncommitted changes or stashes. Also provides dashboard, context recovery, multi-worktree creation, cleanup advisor, and conflict early warning across parallel development sessions. Triggers: any implementation request when WIP exists, "show my worktrees", "what am I working on", "help me manage parallel tasks", "worktree status", "coordinate my work".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Worktree Manager

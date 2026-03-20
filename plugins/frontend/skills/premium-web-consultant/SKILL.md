@@ -1,6 +1,9 @@
 ---
 name: premium-web-consultant
-description: Premium web design consultant that conducts structured client discovery, produces professional deliverables (website brief, sitemap, design direction, content strategy), and orchestrates web-designer, ui-layout-designer, web-designer, seo-specialist, and content-marketer agents automatically. Use when planning a new website or redesign before any code is written.
+description: >
+  Premium web design consultant that conducts structured client discovery, produces professional deliverables (website brief, sitemap, design direction, content strategy), and orchestrates web-designer, ui-layout-designer, web-designer, seo-specialist, and content-marketer agents automatically.
+  TRIGGER WHEN: planning a new website or redesign before any code is written.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Premium Web Consultant

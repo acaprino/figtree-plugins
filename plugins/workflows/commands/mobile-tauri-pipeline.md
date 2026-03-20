@@ -1,6 +1,8 @@
 ---
-description: "End-to-end mobile app pipeline -- competitor analysis via ADB, brainstorm features, UX design, implementation plan, scaffold Tauri 2 mobile app, Rust backend review, and IPC optimization"
-argument-hint: "<app-package-name or description> [--device <device-id>] [--skip-scaffold] [--skip-review] [--strict-mode]"
+description: >
+  "End-to-end mobile app pipeline -- competitor analysis via ADB, brainstorm features, UX design, implementation plan, scaffold Tauri 2 mobile app, Rust backend review, and IPC optimization" argument-hint: "<app-package-name or description> [--device <device-id>] [--skip-scaffold] [--skip-review] [--strict-mode]".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Mobile Tauri Pipeline

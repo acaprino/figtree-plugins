@@ -1,11 +1,13 @@
 ---
-description: "Rewrite source code to be more readable and human-friendly -- improves naming, removes AI boilerplate, simplifies structure, adds clarity comments -- without changing behavior"
-argument-hint: "<file or directory> [--dry-run] [--strict] [--yes]"
+description: >
+  "Rewrite source code to be more readable and human-friendly -- improves naming, removes AI boilerplate, simplifies structure, adds clarity comments -- without changing behavior" argument-hint: "<file or directory> [--dry-run] [--strict] [--yes]".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
-# Humanize Code
+# Clean Code
 
-Use the `code-humanizer` agent to rewrite source code for readability without changing behavior.
+Use the `clean-code-agent` to rewrite source code for readability without changing behavior.
 
 ## CRITICAL RULES
 
@@ -16,12 +18,12 @@ Use the `code-humanizer` agent to rewrite source code for readability without ch
 
 ## Step 1: Identify Target
 
-From `$ARGUMENTS`, determine files to humanize:
-- If a file path: humanize that file
-- If a directory: humanize all source files in it
+From `$ARGUMENTS`, determine files to clean:
+- If a file path: clean that file
+- If a directory: clean all source files in it
 - Filter out test files (unless they reference renamed symbols)
 
-List the files to be humanized and their language.
+List the files to be cleaned and their language.
 
 ## Step 2: Establish Test Baseline
 
@@ -30,7 +32,7 @@ Detect the test runner by inspecting project files (e.g. `package.json` -> `npm 
 Record passing/failing tests. If no tests exist, warn the user:
 
 ```
-No tests found. Humanization changes can't be automatically validated.
+No tests found. Clean code changes can't be automatically validated.
 
 1. Proceed anyway -- I'll be extra careful
 2. Cancel -- set up tests first
@@ -52,7 +54,7 @@ For each file, analyze and propose:
 Present the preview:
 
 ```
-Humanization preview for: [target]
+Clean Code preview for: [target]
 
 [file1]:
 - Rename `data` → `user_profile` (line 23)
@@ -75,17 +77,17 @@ If `--dry-run`, stop after the preview.
 
 ## Step 4: Apply Changes
 
-Use the `humanize` agent:
+Use the `clean-code-agent` agent:
 
 ```
 Task:
-  subagent_type: "humanize-code"
-  description: "Humanize [target] for readability"
+  subagent_type: "clean-code-agent"
+  description: "Clean [target] for readability"
   prompt: |
     Improve the readability and human-friendliness of this code.
     Do NOT change behavior -- only improve naming, comments, structure, and clarity.
 
-    ## Files to Humanize
+    ## Files to Clean
     [list of files]
 
     ## Approved Changes
@@ -119,7 +121,7 @@ If any test that was passing in the baseline now fails: immediately revert the c
 Present summary:
 
 ```
-Humanization complete for: [target]
+Clean Code complete for: [target]
 
 Files modified: [count]
 Changes made:
@@ -151,6 +153,6 @@ If `--strict` flag is set, also flag any remaining readability concerns that wer
 
 For deeper restructuring, use `/python-refactor` for metrics-driven refactoring.
 
-Humanize the following:
+Clean the following:
 
 $ARGUMENTS

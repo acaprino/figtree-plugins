@@ -1,6 +1,9 @@
 ---
 name: python-packaging
-description: Create distributable Python packages with proper project structure, setup.py/pyproject.toml, and publishing to PyPI. Use when packaging Python libraries, creating CLI tools, or distributing Python code.
+description: >
+  Create distributable Python packages with proper project structure, setup.py/pyproject.toml, and publishing to PyPI.
+  TRIGGER WHEN: packaging Python libraries, creating CLI tools, or distributing Python code.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Python Packaging

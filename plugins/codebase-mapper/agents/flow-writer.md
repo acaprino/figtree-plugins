@@ -1,9 +1,9 @@
 ---
 name: flow-writer
 description: >
-  Phase 2 writer for codebase-mapper. Produces 05-workflows.md and 06-data-model.md
-  from the context brief. Documents user/system workflows with flowcharts and sequence
-  diagrams, and data structures with ER diagrams. Spawned in parallel with other writer agents.
+  Phase 2 writer for codebase-mapper. Produces 05-workflows.md and 06-data-model.md from the context brief. Documents user/system workflows with flowcharts and sequence diagrams, and data structures with ER diagrams. Spawned in parallel with other writer agents.
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 model: opus
 tools: Read, Write, Glob, Grep
 color: purple

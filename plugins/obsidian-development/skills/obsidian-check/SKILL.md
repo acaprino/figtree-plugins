@@ -1,6 +1,9 @@
 ---
 name: obsidian-check
-description: Use when preparing an Obsidian plugin for submission or before pushing code. Reviews code against all ObsidianReviewBot rules and reports violations with fixes. Use PROACTIVELY before any git push on an Obsidian plugin project.
+description: >
+  Reviews code against all ObsidianReviewBot rules and reports violations with fixes. Use PROACTIVELY before any git push on an Obsidian plugin project.
+  TRIGGER WHEN: preparing an Obsidian plugin for submission or before pushing code
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Obsidian Check

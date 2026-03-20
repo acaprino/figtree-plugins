@@ -1,6 +1,8 @@
 ---
-description: "End-to-end UI development pipeline -- brainstorm product concept, design direction, layout, UX patterns, write implementation plan, execute with TDD, polish, performance review, and code review"
-argument-hint: "<product goal or feature description> [--skip-brainstorm] [--skip-review] [--skip-humanize] [--strict-mode] [--framework react|vue|svelte|html]"
+description: >
+  "End-to-end UI development pipeline -- brainstorm product concept, design direction, layout, UX patterns, write implementation plan, execute with TDD, polish, performance review, and code review" argument-hint: "<product goal or feature description> [--skip-brainstorm] [--skip-review] [--skip-humanize] [--strict-mode] [--framework react|vue|svelte|html]".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # UI Studio Pipeline

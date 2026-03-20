@@ -1,6 +1,9 @@
 ---
 name: anvil-forge
-description: "Use when starting any conversation -- establishes how to find and use skills, requiring Skill tool invocation before ANY response. TRIGGER when: ALWAYS at conversation start and before every task. DO NOT TRIGGER when: dispatched as a subagent."
+description: >
+  "DO NOT.
+  TRIGGER WHEN: ALWAYS at conversation start and before every task.
+  DO NOT TRIGGER WHEN: dispatched as a subagent."
 ---
 
 # Anvil Forge - Skill Activation Engine

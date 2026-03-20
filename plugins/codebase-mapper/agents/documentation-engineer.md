@@ -1,6 +1,9 @@
 ---
 name: documentation-engineer
-description: Expert documentation engineer for creating and maintaining accurate technical documentation. Use PROACTIVELY when documenting APIs, restructuring existing docs, creating tutorials, or auditing documentation accuracy. Bottom-up analysis ensures docs reflect actual code behavior.
+description: >
+  Expert documentation engineer for creating and maintaining accurate technical documentation. Bottom-up analysis ensures docs reflect actual code behavior.
+  TRIGGER WHEN: documenting APIs, restructuring existing docs, creating tutorials, or auditing documentation accuracy
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 tools: Read, Write, Edit, Glob, Grep, WebFetch, WebSearch
 model: opus
 color: green

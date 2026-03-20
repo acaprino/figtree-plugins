@@ -1,6 +1,9 @@
 ---
 name: react-performance-optimizer
-description: Expert in React 19 performance optimization including React Compiler, Server Components, bundle optimization, state management, and profiling. Fully compatible with tauri-desktop for desktop apps. Use proactively for React performance reviews, bundle analysis, state management decisions, or re-render optimization.
+description: >
+  Expert in React 19 performance optimization including React Compiler, Server Components, bundle optimization, state management, and profiling. Fully compatible with tauri-desktop for desktop apps. Use proactively for React performance reviews, bundle analysis, state management decisions, or re-render optimization.
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 model: opus
 color: purple
 ---

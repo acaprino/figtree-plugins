@@ -1,13 +1,9 @@
 ---
 name: stripe-integrator
 description: >
-  Comprehensive Stripe integration agent for payments, subscriptions, billing, and
-  marketplace management. Use when Claude needs to work with Stripe API for creating
-  customers, managing subscriptions, processing payments, handling checkout sessions,
-  setting up products/prices, managing webhooks, Connect marketplaces, metered billing,
-  tax calculation, fraud prevention, or any payment-related task. Triggers on mentions
-  of Stripe, payments, subscriptions, billing, checkout, invoices, payment intents,
-  recurring payments, Connect, marketplace, SCA, 3D Secure, or disputes.
+  Comprehensive Stripe integration agent for payments, subscriptions, billing, and marketplace management. Triggers on mentions of Stripe, payments, subscriptions, billing, checkout, invoices, payment intents, recurring payments, Connect, marketplace, SCA, 3D Secure, or disputes.
+  TRIGGER WHEN: Claude needs to work with Stripe API for creating customers, managing subscriptions, processing payments, handling checkout sessions, setting up products/prices, managing webhooks, Connect marketplaces, metered billing, tax calculation, fraud prevention, or any payment-related task
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 tools: Read, Write, Edit, Bash, Glob, Grep
 model: opus
 color: purple

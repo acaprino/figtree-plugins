@@ -1,12 +1,9 @@
 ---
 name: radix-ui
 description: >
-  Expert guidance for building with Radix UI -- Primitives (unstyled accessible components)
-  and Themes (pre-styled design system). Covers composition patterns, asChild prop,
-  accessibility, animation, theming, color system, and keyboard navigation.
-  Trigger when working with Radix components, @radix-ui packages, or building accessible
-  UI primitives. Also trigger on mentions of "radix", "radix-ui", "radix primitives",
-  "radix themes", "@radix-ui/react-*", or the unified "radix-ui" package.
+  Expert guidance for building with Radix UI -- Primitives (unstyled accessible components) and Themes (pre-styled design system). Covers composition patterns, asChild prop, accessibility, animation, theming, color system, and keyboard navigation. Trigger when working with Radix components, @radix-ui packages, or building accessible UI primitives. Also trigger on mentions of "radix", "radix-ui", "radix primitives", "radix themes", "@radix-ui/react-*", or the unified "radix-ui" package.
+  TRIGGER WHEN: working with Radix components, @radix-ui packages, or building accessible UI primitives
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Radix UI Expert

@@ -1,6 +1,8 @@
 ---
-description: Generate a mind map in Obsidian MarkMind Rich format from any topic, text, or file
-argument-hint: <topic | "text to map" | path/to/file.md>
+description: >
+  Generate a mind map in Obsidian MarkMind Rich format from any topic, text, or file argument-hint: <topic | "text to map" | path/to/file.md>.
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 Generate a MarkMind mind map for: $ARGUMENTS

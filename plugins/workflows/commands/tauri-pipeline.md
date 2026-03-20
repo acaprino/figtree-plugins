@@ -1,6 +1,8 @@
 ---
-description: "End-to-end Tauri 2 desktop app pipeline — Rust backend review, Tauri IPC optimization, React performance, layout composition, and UI polish"
-argument-hint: "<target path or description> [--rust-only] [--frontend-only] [--strict-mode]"
+description: >
+  "End-to-end Tauri 2 desktop app pipeline — Rust backend review, Tauri IPC optimization, React performance, layout composition, and UI polish" argument-hint: "<target path or description> [--rust-only] [--frontend-only] [--strict-mode]".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Tauri Desktop Pipeline

@@ -1,6 +1,9 @@
 ---
 name: obsidian-scaffold
-description: Use PROACTIVELY when the user asks to start, create, bootstrap, or initialize a new Obsidian community plugin. Scaffolds project structure, manifest, tsconfig, esbuild config, and a minimal plugin class that passes ObsidianReviewBot checks.
+description: >
+  Scaffolds project structure, manifest, tsconfig, esbuild config, and a minimal plugin class that passes ObsidianReviewBot checks.
+  TRIGGER WHEN: the user asks to start, create, bootstrap, or initialize a new Obsidian community plugin
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Obsidian Plugin Scaffold

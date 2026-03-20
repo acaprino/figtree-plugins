@@ -1,11 +1,9 @@
 ---
 name: marketplace-audit
 description: >
-  Validate anvil-toolset marketplace integrity. Use PROACTIVELY before any
-  commit that modifies plugin files or marketplace.json. Checks marketplace.json
-  consistency, verifies all referenced files exist, validates frontmatter
-  fields, detects orphaned plugins/skills/agents/commands, and reports
-  naming convention violations.
+  Validate anvil-toolset marketplace integrity. Use PROACTIVELY before any commit that modifies plugin files or marketplace.json. Checks marketplace.json consistency, verifies all referenced files exist, validates frontmatter fields, detects orphaned plugins/skills/agents/commands, and reports naming convention violations.
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Marketplace Audit

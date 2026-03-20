@@ -1,6 +1,8 @@
 ---
-description: "Marketing material and conversion optimization audit — UX patterns, CTAs, social media, copy quality, product presentation, and visual media with parallel analysis and persistent report"
-argument-hint: "<url or local path> [--focus <areas>] [--competitor <url>] [--social] [--strict-mode]"
+description: >
+  "Marketing material and conversion optimization audit — UX patterns, CTAs, social media, copy quality, product presentation, and visual media with parallel analysis and persistent report" argument-hint: "<url or local path> [--focus <areas>] [--competitor <url>] [--social] [--strict-mode]".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Content Strategy Audit

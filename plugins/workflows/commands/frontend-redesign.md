@@ -1,6 +1,8 @@
 ---
-description: "Full frontend redesign pipeline — UX audit, layout design, implementation, React performance optimization, UI polish, and visual HTML audit report"
-argument-hint: "<target path or description> [--framework react|vue|svelte] [--skip-performance] [--strict-mode]"
+description: >
+  "Full frontend redesign pipeline — UX audit, layout design, implementation, React performance optimization, UI polish, and visual HTML audit report" argument-hint: "<target path or description> [--framework react|vue|svelte] [--skip-performance] [--strict-mode]".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Frontend Redesign Pipeline

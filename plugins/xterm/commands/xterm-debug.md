@@ -1,6 +1,8 @@
 ---
-description: "Diagnose and fix xterm.js terminal issues -- pitfall scan plus deep architectural analysis covering race conditions, error boundaries, fragile assumptions, performance, and edge cases"
-argument-hint: "[path] [--issue <description>] [--dry-run] [--shallow]"
+description: >
+  "Diagnose and fix xterm.js terminal issues -- pitfall scan plus deep architectural analysis covering race conditions, error boundaries, fragile assumptions, performance, and edge cases" argument-hint: "[path] [--issue <description>] [--dry-run] [--shallow]".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # xterm.js Terminal Debugger

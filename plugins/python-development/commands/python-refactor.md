@@ -1,6 +1,8 @@
 ---
-description: "Metrics-driven Python refactoring -- analyze complexity, plan improvements, execute with test validation, and produce before/after comparison report"
-argument-hint: "<target file or directory> [--strict-mode]"
+description: >
+  "Metrics-driven Python refactoring -- analyze complexity, plan improvements, execute with test validation, and produce before/after comparison report" argument-hint: "<target file or directory> [--strict-mode]".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Python Refactoring

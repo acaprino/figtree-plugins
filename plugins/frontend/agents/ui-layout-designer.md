@@ -1,6 +1,9 @@
 ---
 name: ui-layout-designer
-description: Expert layout designer specializing in spatial composition, grid systems, responsive breakpoint strategy, and CSS Grid/Flexbox developer handoff. Use PROACTIVELY when designing page structure, above-the-fold layouts, responsive strategy, or translating layouts to implementation specs.
+description: >
+  Expert layout designer specializing in spatial composition, grid systems, responsive breakpoint strategy, and CSS Grid/Flexbox developer handoff.
+  TRIGGER WHEN: designing page structure, above-the-fold layouts, responsive strategy, or translating layouts to implementation specs.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 model: opus
 tools: Read, Write, Edit, Bash, Glob, Grep
 color: purple

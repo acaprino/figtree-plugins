@@ -1,14 +1,9 @@
 ---
 name: readme-craft
 description: >
-  Craft magnetic, top-tier README.md files for open-source and public projects.
-  Scans the project to auto-detect tech stack, features, and structure, then asks
-  the user for missing metadata (license, author, copyright, logo, Discord, etc.).
-  Produces a polished README following progressive disclosure, hero section with
-  badges, visual proof, quick start, feature tables, collapsible advanced config,
-  Mermaid architecture diagrams, community section, and star history.
-  Trigger on: "readme", "write a readme", "create readme", "readme.md",
-  "scrivi il readme", "crea il readme", "project readme".
+  Craft magnetic, top-tier README.md files for open-source and public projects. Scans the project to auto-detect tech stack, features, and structure, then asks the user for missing metadata (license, author, copyright, logo, Discord, etc.). Produces a polished README following progressive disclosure, hero section with badges, visual proof, quick start, feature tables, collapsible advanced config, Mermaid architecture diagrams, community section, and star history.
+  TRIGGER WHEN: "readme", "write a readme", "create readme", "readme.md", "scrivi il readme", "crea il readme", "project readme".
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # README Craft

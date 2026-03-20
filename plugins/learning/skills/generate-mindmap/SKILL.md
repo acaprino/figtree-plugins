@@ -1,6 +1,9 @@
 ---
 name: generate-mindmap
-description: "Brainstorm and generate a Buzan-style structured mindmap JSON outline from any content. Use this skill whenever the user asks to create a mind map, mappa mentale, concept map, or visual summary. The skill prioritizes COGNITIVE EFFECTIVENESS over structural efficiency: it uses single keywords, strong visual associations (emojis), organic radiant thinking, and cross-linking to maximize memory retention and idea generation."
+description: >
+  "Brainstorm and generate a Buzan-style structured mindmap JSON outline from any content. Use this skill whenever the user asks to create a mind map, mappa mentale, concept map, or visual summary. The skill prioritizes COGNITIVE EFFECTIVENESS over structural efficiency: it uses single keywords, strong visual associations (emojis), organic radiant thinking, and cross-linking to maximize memory retention and idea generation.".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Generate Mindmap (Buzan Method)

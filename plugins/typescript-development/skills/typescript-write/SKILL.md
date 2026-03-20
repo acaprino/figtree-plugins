@@ -1,6 +1,9 @@
 ---
 name: typescript-write
-description: "Write TypeScript and JavaScript code following modern best practices and coding standards. Use PROACTIVELY when writing or reviewing TypeScript/JavaScript code."
+description: >
+  "Write TypeScript and JavaScript code following modern best practices and coding standards.
+  TRIGGER WHEN: writing or reviewing TypeScript/JavaScript code."
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # TypeScript/JavaScript Development Skill

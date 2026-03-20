@@ -1,6 +1,9 @@
 ---
 name: rust-engineer
-description: "Expert Rust developer for writing, reviewing, and debugging Rust code. Use when working on Rust implementations -- ownership patterns, async programming, trait design, error handling, FFI, performance optimization, or unsafe code review."
+description: >
+  "Expert Rust developer for writing, reviewing, and debugging Rust code.
+  TRIGGER WHEN: working on Rust implementations -- ownership patterns, async programming, trait design, error handling, FFI, performance optimization, or unsafe code review."
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 tools: Read, Write, Edit, Bash, Glob, Grep
 model: opus
 color: blue

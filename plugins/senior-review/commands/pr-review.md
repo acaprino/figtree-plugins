@@ -1,6 +1,8 @@
 ---
-description: "Analyze current branch changes, generate a comprehensive PR description with risk assessment and review checklist, and optionally create the PR via gh CLI"
-argument-hint: "[--base main] [--create] [--split-check] [--strict-mode]"
+description: >
+  "Analyze current branch changes, generate a comprehensive PR description with risk assessment and review checklist, and optionally create the PR via gh CLI" argument-hint: "[--base main] [--create] [--split-check] [--strict-mode]".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # PR Enhancement Pipeline

@@ -1,6 +1,8 @@
 ---
-description: "Rewrite existing documentation to be human-readable - removes AI-style density, applies progressive disclosure, improves scannability"
-argument-hint: "<path-to-docs>"
+description: >
+  "Rewrite existing documentation to be human-readable - removes AI-style density, applies progressive disclosure, improves scannability" argument-hint: "<path-to-docs>".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Humanize Documentation

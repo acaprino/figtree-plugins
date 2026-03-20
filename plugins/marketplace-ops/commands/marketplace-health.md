@@ -1,6 +1,8 @@
 ---
-description: "Quick marketplace health check -- validates marketplace.json, checks file references, reports plugin counts and version status"
-argument-hint: "[--fix] [--verbose]"
+description: >
+  "Quick marketplace health check -- validates marketplace.json, checks file references, reports plugin counts and version status" argument-hint: "[--fix] [--verbose]".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Marketplace Health Check

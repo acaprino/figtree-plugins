@@ -1,6 +1,9 @@
 ---
 name: content-marketer
-description: Expert content marketer. Use PROACTIVELY when the user asks about marketing materials, conversion optimization, content strategy, social media, CTAs, or landing page copy. Covers multi-channel content creation, analytics, and conversion optimization.
+description: >
+  Expert content marketer. Covers multi-channel content creation, analytics, and conversion optimization.
+  TRIGGER WHEN: the user asks about marketing materials, conversion optimization, content strategy, social media, CTAs, or landing page copy
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 tools: Read, Write, Edit, Glob, Grep, WebFetch, WebSearch
 model: opus
 color: orange

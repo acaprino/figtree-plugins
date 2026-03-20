@@ -1,7 +1,10 @@
 ---
 # Upstream source: https://github.com/lackeyjb/playwright-skill - skills/playwright-skill/SKILL.md
 name: playwright-skill
-description: "Complete browser automation with Playwright. Use PROACTIVELY when the user mentions testing a website, automating browser tasks, taking screenshots, checking links, or any browser interaction. Auto-detects dev servers, writes clean test scripts to /tmp. Test pages, fill forms, take screenshots, check responsive design, validate UX, test login flows, check links."
+description: >
+  "Complete browser automation with Playwright. Auto-detects dev servers, writes clean test scripts to /tmp. Test pages, fill forms, take screenshots, check responsive design, validate UX, test login flows, check links.".
+  TRIGGER WHEN: the user mentions testing a website, automating browser tasks, taking screenshots, checking links, or any browser interaction
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 **IMPORTANT - Path Resolution:**

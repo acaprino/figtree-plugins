@@ -1,12 +1,9 @@
 ---
 name: reply-to-customer-review
 description: >
-  Generate professional, empathetic, on-brand responses to online customer reviews.
-  Analyzes sentiment, detects severity, adapts tone, and provides operational suggestions.
-  Supports hospitality (Airbnb, Booking, Tripadvisor) and e-commerce/app (Amazon, App Store,
-  Trustpilot) with sector-specific patterns. Trigger on: review, recensione, reply to review,
-  respond to review, risposta recensione, customer review, negative review, bad review,
-  rispondere alla recensione, gestione recensioni, review response.
+  Generate professional, empathetic, on-brand responses to online customer reviews. Analyzes sentiment, detects severity, adapts tone, and provides operational suggestions. Supports hospitality (Airbnb, Booking, Tripadvisor) and e-commerce/app (Amazon, App Store, Trustpilot) with sector-specific patterns.
+  TRIGGER WHEN: review, recensione, reply to review, respond to review, risposta recensione, customer review, negative review, bad review, rispondere alla recensione, gestione recensioni, review response.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Reply to Customer Review

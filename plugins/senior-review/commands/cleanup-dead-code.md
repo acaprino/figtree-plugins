@@ -1,6 +1,8 @@
 ---
-description: "Find and remove dead code -- auto-detects language: Knip for TypeScript/JavaScript, vulture + ruff for Python"
-argument-hint: "[path] [--dry-run] [--dependencies-only] [--exports-only] [--production]"
+description: >
+  "Find and remove dead code -- auto-detects language: Knip for TypeScript/JavaScript, vulture + ruff for Python" argument-hint: "[path] [--dry-run] [--dependencies-only] [--exports-only] [--production]".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Cleanup Dead Code

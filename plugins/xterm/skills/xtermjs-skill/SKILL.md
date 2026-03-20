@@ -1,12 +1,9 @@
 ---
 name: xtermjs
 description: >
-  Expert guidance for building, configuring, and integrating xterm.js terminal emulators in web
-  and Electron applications. Use this skill whenever the user mentions xterm, xterm.js, @xterm/xterm,
-  terminal emulator in the browser, web terminal, WebSSH, in-browser shell, or asks about addons like
-  FitAddon, WebglAddon, SearchAddon, AttachAddon, or integration with node-pty. Also trigger for
-  questions about ANSI/VT sequences, terminal theming, PTY over WebSocket, custom key handlers,
-  parser hooks, or embedding a terminal in React/Vue/Angular/Electron apps.
+  Expert guidance for building, configuring, and integrating xterm.js terminal emulators in web and Electron applications. Use this skill whenever the user mentions xterm, xterm.js, @xterm/xterm, terminal emulator in the browser, web terminal, WebSSH, in-browser shell, or asks about addons like FitAddon, WebglAddon, SearchAddon, AttachAddon, or integration with node-pty. Also trigger for questions about ANSI/VT sequences, terminal theming, PTY over WebSocket, custom key handlers, parser hooks, or embedding a terminal in React/Vue/Angular/Electron apps.
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # xterm.js Development Skill

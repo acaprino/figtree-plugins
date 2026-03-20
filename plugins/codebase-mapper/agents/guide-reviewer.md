@@ -1,9 +1,9 @@
 ---
 name: guide-reviewer
 description: >
-  Phase 3 of codebase-mapper. Reviews all 8 generated documents for consistency, adds
-  cross-references, uniformizes tone, and produces INDEX.md. Flags gaps and contradictions.
-  Spawned by the map-codebase command after all writer agents complete.
+  Phase 3 of codebase-mapper. Reviews all 8 generated documents for consistency, adds cross-references, uniformizes tone, and produces INDEX.md. Flags gaps and contradictions. Spawned by the map-codebase command after all writer agents complete.
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 model: opus
 tools: Read, Write, Edit, Glob, Grep
 color: yellow

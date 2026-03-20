@@ -1,10 +1,9 @@
 ---
 name: test-writer
 description: >
-  Generate tests for existing code or guide TDD for new features. Analyzes targets
-  (function, class, module, area) and produces behavior-driven test suites.
-  Language-agnostic -- auto-detects test framework from project config.
-  Use PROACTIVELY when user asks to write tests, add test coverage, or do TDD.
+  Generate tests for existing code or guide TDD for new features. Analyzes targets (function, class, module, area) and produces behavior-driven test suites. Language-agnostic -- auto-detects test framework from project config.
+  TRIGGER WHEN: user asks to write tests, add test coverage, or do TDD.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 model: opus
 tools: Read, Write, Edit, Bash, Glob, Grep
 color: green

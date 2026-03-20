@@ -1,6 +1,8 @@
 ---
-description: "End-to-end feature pipeline -- brainstorm design, write plan, execute with checkpoints, review changes, and humanize code"
-argument-hint: "<feature description> [--skip-brainstorm] [--skip-humanize] [--strict-mode]"
+description: >
+  "End-to-end feature pipeline -- brainstorm design, write plan, execute with checkpoints, review changes, and humanize code" argument-hint: "<feature description> [--skip-brainstorm] [--skip-humanize] [--strict-mode]".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Feature End-to-End Pipeline

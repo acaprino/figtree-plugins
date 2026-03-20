@@ -1,10 +1,9 @@
 ---
 name: rag-architect
 description: >
-  Expert in RAG system design, implementation, and optimization. Use PROACTIVELY when building
-  retrieval-augmented generation pipelines, choosing chunking strategies, selecting embedding models,
-  designing hybrid search, configuring re-ranking, or optimizing RAG for production. Covers the full
-  pipeline from document ingestion to answer generation.
+  Expert in RAG system design, implementation, and optimization. Covers the full pipeline from document ingestion to answer generation.
+  TRIGGER WHEN: building retrieval-augmented generation pipelines, choosing chunking strategies, selecting embedding models, designing hybrid search, configuring re-ranking, or optimizing RAG for production
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 model: opus
 color: cyan
 tools: Read, Write, Edit, Bash, Glob, Grep, WebFetch, WebSearch

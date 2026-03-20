@@ -1,6 +1,8 @@
 ---
-description: "Frontend design review -- auto-detects scope: diff mode for changed frontend files, or full audit for entire frontend. UX patterns, component hierarchy, spacing, typography, accessibility, CSS architecture, and visual polish -- outputs an actionable markdown report"
-argument-hint: "[src-path] [--full] [--framework react|vue|svelte] [--strict-mode]"
+description: >
+  "Frontend design review -- auto-detects scope: diff mode for changed frontend files, or full audit for entire frontend. UX patterns, component hierarchy, spacing, typography, accessibility, CSS architecture, and visual polish -- outputs an actionable markdown report" argument-hint: "[src-path] [--full] [--framework react|vue|svelte] [--strict-mode]".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Frontend Design & Performance Review

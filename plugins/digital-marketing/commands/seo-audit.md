@@ -1,6 +1,8 @@
 ---
-description: "Comprehensive technical SEO audit with Playwright-powered analysis, scoring, prioritized fixes, and a persistent markdown report"
-argument-hint: "<url or local path> [--focus <categories>] [--competitor <url>] [--local] [--strict-mode]"
+description: >
+  "Comprehensive technical SEO audit with Playwright-powered analysis, scoring, prioritized fixes, and a persistent markdown report" argument-hint: "<url or local path> [--focus <categories>] [--competitor <url>] [--local] [--strict-mode]".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # SEO Audit

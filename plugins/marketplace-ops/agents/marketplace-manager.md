@@ -1,10 +1,9 @@
 ---
 name: marketplace-manager
 description: >
-  Expert marketplace and plugin consolidation manager for anvil-toolset.
-  Use when adding, auditing, reorganizing, versioning, or syncing plugins,
-  skills, agents, and commands. Handles marketplace.json consistency,
-  plugin scaffolding, upstream sync, and structural validation.
+  Expert marketplace and plugin consolidation manager for anvil-toolset. Handles marketplace.json consistency, plugin scaffolding, upstream sync, and structural validation.
+  TRIGGER WHEN: adding, auditing, reorganizing, versioning, or syncing plugins, skills, agents, and commands
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 tools: Read, Write, Edit, Bash, Glob, Grep, WebFetch
 model: opus
 color: yellow

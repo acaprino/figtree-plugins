@@ -1,9 +1,9 @@
 ---
 name: Knip Dead Code Detection
-description: |
-  Knip finds unused files, dependencies, exports, and types in JavaScript/TypeScript projects.
-  Plugin system for frameworks (React, Next.js, Vite), test runners (Vitest, Jest), and build tools.
-  Use when cleaning up codebases, optimizing bundle size, or enforcing strict dependency hygiene in CI.
+description: >
+  Knip finds unused files, dependencies, exports, and types in JavaScript/TypeScript projects. Plugin system for frameworks (React, Next.js, Vite), test runners (Vitest, Jest), and build tools.
+  TRIGGER WHEN: cleaning up codebases, optimizing bundle size, or enforcing strict dependency hygiene in CI.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Knip Dead Code Detection

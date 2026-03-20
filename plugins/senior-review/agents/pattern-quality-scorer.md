@@ -1,6 +1,9 @@
 ---
 name: pattern-quality-scorer
-description: "Pattern consistency analyzer and quantitative code quality scorer. Detects pattern deviations per file, runs a 16-item anti-pattern checklist, applies 6 mental models (security engineer, performance engineer, team lead, systems architect, SRE, pattern detective), and produces a 1-10 Code Quality Score per category. Use in senior-review pipeline Phase 1C."
+description: >
+  "Pattern consistency analyzer and quantitative code quality scorer. Detects pattern deviations per file, runs a 16-item anti-pattern checklist, applies 6 mental models (security engineer, performance engineer, team lead, systems architect, SRE, pattern detective), and produces a 1-10 Code Quality Score per category. Use in senior-review pipeline Phase 1C.".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 model: opus
 color: blue
 ---

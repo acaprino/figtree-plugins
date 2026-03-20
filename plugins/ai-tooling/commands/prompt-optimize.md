@@ -1,6 +1,8 @@
 ---
-description: "Analyze, evaluate, and optimize prompts for LLMs -- improve clarity, reduce token usage, add structure, and test variations"
-argument-hint: "<prompt text or file path> [--model claude|gpt|gemini] [--optimize-for clarity|tokens|reliability] [--compare]"
+description: >
+  "Analyze, evaluate, and optimize prompts for LLMs -- improve clarity, reduce token usage, add structure, and test variations" argument-hint: "<prompt text or file path> [--model claude|gpt|gemini] [--optimize-for clarity|tokens|reliability] [--compare]".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Prompt Optimization

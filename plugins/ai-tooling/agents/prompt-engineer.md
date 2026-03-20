@@ -1,6 +1,9 @@
 ---
 name: prompt-engineer
-description: "Expert prompt engineer for designing, optimizing, and managing prompts for LLMs. Use PROACTIVELY when writing system prompts, designing agent instructions, or optimizing prompt performance for reliability and token efficiency"
+description: >
+  Expert prompt engineer for designing, optimizing, and managing prompts for LLMs.
+  TRIGGER WHEN: writing system prompts, designing agent instructions, or optimizing prompt performance for reliability and token efficiency.
+  DO NOT TRIGGER WHEN: the user is asking for general coding tasks unrelated to prompt engineering.
 tools: Read, Write, Edit, Bash, Glob, Grep
 model: opus
 color: pink

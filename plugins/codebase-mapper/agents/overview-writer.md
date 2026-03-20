@@ -1,9 +1,9 @@
 ---
 name: overview-writer
 description: >
-  Phase 2 writer for codebase-mapper. Produces 01-overview.md and 02-features.md from
-  the context brief. Writes narrative project overview with mindmap diagram and detailed
-  feature catalog. Spawned in parallel with other writer agents.
+  Phase 2 writer for codebase-mapper. Produces 01-overview.md and 02-features.md from the context brief. Writes narrative project overview with mindmap diagram and detailed feature catalog. Spawned in parallel with other writer agents.
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 model: opus
 tools: Read, Write, Glob, Grep
 color: green

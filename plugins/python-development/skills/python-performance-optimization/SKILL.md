@@ -1,6 +1,9 @@
 ---
 name: python-performance-optimization
-description: Profile and optimize Python code using cProfile, memory profilers, and performance best practices. Use when debugging slow Python code, optimizing bottlenecks, or improving application performance.
+description: >
+  Profile and optimize Python code using cProfile, memory profilers, and performance best practices.
+  TRIGGER WHEN: debugging slow Python code, optimizing bottlenecks, or improving application performance.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Python Performance Optimization

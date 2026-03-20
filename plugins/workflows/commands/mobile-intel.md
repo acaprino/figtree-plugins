@@ -1,6 +1,8 @@
 ---
-description: "Competitive mobile intelligence pipeline — analyze competitor Android app via ADB, brainstorm differentiating features, design improved UX, plan implementation, and scaffold Tauri 2 mobile app"
-argument-hint: "<app-package-name or description> [--device <device-id>] [--skip-scaffold]"
+description: >
+  "Competitive mobile intelligence pipeline — analyze competitor Android app via ADB, brainstorm differentiating features, design improved UX, plan implementation, and scaffold Tauri 2 mobile app" argument-hint: "<app-package-name or description> [--device <device-id>] [--skip-scaffold]".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Mobile Intelligence Pipeline

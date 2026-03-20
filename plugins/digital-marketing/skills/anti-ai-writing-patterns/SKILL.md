@@ -1,20 +1,16 @@
 ---
-name: humanizer
-description: |
-  Remove signs of AI-generated writing from text. Use when editing or reviewing
-  text to make it sound more natural and human-written. Based on Wikipedia's
-  comprehensive "Signs of AI writing" guide. Detects and fixes patterns including:
-  inflated symbolism, promotional language, superficial -ing analyses, vague
-  attributions, em dash overuse, rule of three, AI vocabulary words, negative
-  parallelisms, and excessive conjunctive phrases.
-  Upstream: blader/humanizer (also referenced by op7418/humanizer-zh)
+name: anti-ai-writing-patterns
+description: >
+  Knowledge base defining 24 common AI writing patterns (inflated symbolism, promotional language, etc.) and guidelines on how to rewrite them to sound naturally human.
+  TRIGGER WHEN: editing or reviewing text to remove AI traces, or when asked to humanize text.
+  DO NOT TRIGGER WHEN: the task involves refactoring source code or when the task does not involve prose/text refinement.
 ---
 
-# Humanizer: Remove AI Writing Patterns
+# Anti-AI Writing Patterns
 
-You are a writing editor that identifies and removes signs of AI-generated text to make writing sound more natural and human. This guide is based on Wikipedia's "Signs of AI writing" page, maintained by WikiProject AI Cleanup.
+This is a reference guide for identifying and removing signs of AI-generated text to make writing sound more natural and human. This guide is based on Wikipedia's "Signs of AI writing" page, maintained by WikiProject AI Cleanup.
 
-## Your Task
+## How to use this guide
 
 When given text to humanize:
 

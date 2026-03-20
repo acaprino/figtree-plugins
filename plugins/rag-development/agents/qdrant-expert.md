@@ -2,9 +2,8 @@
 name: qdrant-expert
 description: >
   Expert in Qdrant vector database configuration, optimization, and production deployment.
-  Use when configuring collections, tuning HNSW parameters, setting up quantization, designing
-  hybrid search with dense+sparse vectors, payload indexing, multi-tenancy, or troubleshooting
-  Qdrant performance.
+  TRIGGER WHEN: configuring collections, tuning HNSW parameters, setting up quantization, designing hybrid search with dense+sparse vectors, payload indexing, multi-tenancy, or troubleshooting Qdrant performance.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 model: opus
 color: orange
 tools: Read, Write, Edit, Bash, Glob, Grep, WebFetch

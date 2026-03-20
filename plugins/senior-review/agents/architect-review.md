@@ -1,6 +1,9 @@
 ---
 name: architect-review
-description: Critical architecture reviewer. Hunts for coupling violations, broken abstractions, missing error handling, state management issues, and API design flaws. Assumes code has bugs and finds them. Use in senior-review pipeline.
+description: >
+  Critical architecture reviewer. Hunts for coupling violations, broken abstractions, missing error handling, state management issues, and API design flaws. Assumes code has bugs and finds them. Use in senior-review pipeline.
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 model: opus
 color: blue
 ---

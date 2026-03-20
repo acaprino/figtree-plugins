@@ -1,6 +1,8 @@
 ---
-description: "Use when organizing messy folders (Downloads, Desktop, Documents), finding duplicate files, cleaning up directories, or restructuring file hierarchies"
-argument-hint: "<path> [find duplicates | by type | by date]"
+description: >
+  ".
+  TRIGGER WHEN: organizing messy folders (Downloads, Desktop, Documents), finding duplicate files, cleaning up directories, or restructuring file hierarchies" argument-hint: "<path> [find duplicates | by type | by date]"
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # File Organizer

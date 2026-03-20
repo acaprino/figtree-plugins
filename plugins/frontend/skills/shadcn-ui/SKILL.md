@@ -1,11 +1,9 @@
 ---
 name: shadcn-ui
 description: >
-  Expert guidance for building with shadcn/ui -- component composition, registry system,
-  form patterns, data tables, sidebar navigation, theming, and Tailwind v4 migration.
-  Trigger when working with shadcn/ui components, adding shadcn to a project, composing
-  complex UI from shadcn primitives, or customizing shadcn themes. Also trigger on mentions
-  of "shadcn", "shadcn/ui", "shadcn components", "shadcn registry", or "shadcn blocks".
+  Expert guidance for building with shadcn/ui -- component composition, registry system, form patterns, data tables, sidebar navigation, theming, and Tailwind v4 migration. Trigger when working with shadcn/ui components, adding shadcn to a project, composing complex UI from shadcn primitives, or customizing shadcn themes. Also trigger on mentions of "shadcn", "shadcn/ui", "shadcn components", "shadcn registry", or "shadcn blocks".
+  TRIGGER WHEN: working with shadcn/ui components, adding shadcn to a project, composing complex UI from shadcn primitives, or customizing shadcn themes
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # shadcn/ui Expert

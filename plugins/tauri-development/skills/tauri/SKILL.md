@@ -2,9 +2,8 @@
 name: tauri
 description: >
   Unified Tauri 2 development knowledge base covering core patterns, desktop, and mobile.
-  Use when working with Tauri commands, IPC, plugins, project setup, OAuth, CI/CD,
-  window management, shell plugin, desktop bundling, platform WebViews,
-  mobile environment setup, emulator/ADB, mobile plugins, IAP, and store deployment.
+  TRIGGER WHEN: working with Tauri commands, IPC, plugins, project setup, OAuth, CI/CD, window management, shell plugin, desktop bundling, platform WebViews, mobile environment setup, emulator/ADB, mobile plugins, IAP, and store deployment.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Tauri 2 Development

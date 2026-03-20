@@ -1,10 +1,9 @@
 ---
 name: tauri-desktop
 description: >
-  Expert in Tauri v2 + React desktop application optimization for trading and high-frequency
-  data scenarios. Use proactively for performance reviews, IPC architecture, state management,
-  memory leak detection, Rust backend optimization, WebView tuning, window management,
-  shell plugin integration, desktop bundling/signing, and platform WebView differences.
+  Expert in Tauri v2 + React desktop application optimization for trading and high-frequency data scenarios. Use proactively for performance reviews, IPC architecture, state management, memory leak detection, Rust backend optimization, WebView tuning, window management, shell plugin integration, desktop bundling/signing, and platform WebView differences.
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 model: opus
 color: blue
 ---

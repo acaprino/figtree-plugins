@@ -1,6 +1,8 @@
 ---
-description: "Systematic codebase analysis combining structure extraction with semantic understanding -- documents WHAT, WHY, HOW, and CONSEQUENCES of code with phased output"
-argument-hint: "<target path> [--critical] [--comments] [--docs-only] [--phase N] [--depth=lite|full]"
+description: >
+  "Systematic codebase analysis combining structure extraction with semantic understanding -- documents WHAT, WHY, HOW, and CONSEQUENCES of code with phased output" argument-hint: "<target path> [--critical] [--comments] [--docs-only] [--phase N] [--depth=lite|full]".
+  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
 # Deep Dive Analysis
