@@ -1,6 +1,6 @@
 ---
 description: >
-  "End-to-end feature pipeline -- brainstorm design, write plan, execute with checkpoints, review changes, and humanize code" argument-hint: "<feature description> [--skip-brainstorm] [--skip-humanize] [--strict-mode]".
+  "End-to-end feature pipeline -- brainstorm design, write plan, isolate in worktree, execute with platform-engineering guardrails, test verification, review changes, humanize code, and create PR" argument-hint: "<feature description> [--skip-brainstorm] [--skip-humanize] [--worktree] [--strict-mode]".
   TRIGGER WHEN: the user requires assistance with tasks related to this domain.
   DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
@@ -17,7 +17,8 @@ You MUST follow these rules exactly. Violating any of them is a failure.
 4. **Halt on failure.** If any step fails (agent error, test failure, missing files), STOP immediately. Present the error and ask the user how to proceed. Do NOT silently continue.
 5. **Never enter plan mode autonomously.** Do NOT use EnterPlanMode. This command IS the plan -- execute it.
 6. **Brainstorming is interactive.** Phase 1 MUST involve back-and-forth with the user -- ask questions one at a time, propose approaches, get approval before proceeding.
-7. **Respect skip flags.** If `--skip-brainstorm` is set, start at Phase 2 (user must provide a design doc or requirements). If `--skip-humanize` is set, skip Phase 5.
+7. **Respect skip flags.** If `--skip-brainstorm` is set, start at Phase 2 (user must provide a design doc or requirements). If `--skip-humanize` is set, skip Phase 6.
+8. **Worktree isolation.** If `--worktree` is set, create an isolated worktree before Phase 3 execution begins. All implementation work happens in the worktree.
 
 ## Pre-flight Checks
 
@@ -27,8 +28,13 @@ This command requires agents and skills from other plugins. Before proceeding, v
 
 **Required plugins:**
 - `ai-tooling` -- brainstorming, writing-plans, executing-plans skills
-- `senior-review` -- code-auditor, security-auditor agents
-- `humanize` -- humanize agent (skip Phase 5 if missing)
+- `senior-review` -- architect-review, security-auditor, pattern-quality-scorer agents
+- `platform-engineering` -- platform-reviewer agent, platform-engineering skill
+- `testing` -- test-writer agent, tdd skill
+
+**Optional plugins:**
+- `humanize` -- humanize agent (skip Phase 6 if missing)
+- `git-worktrees` -- worktree management (required if `--worktree` flag is set)
 
 Check by looking for the agent/skill files. If a required plugin is missing, STOP and tell the user:
 
@@ -71,25 +77,29 @@ Create `.feature-e2e/` directory and `state.json`:
   "flags": {
     "skip_brainstorm": false,
     "skip_humanize": false,
+    "worktree": false,
     "strict_mode": false
   },
   "current_phase": 1,
   "completed_phases": [],
   "files_created": [],
+  "worktree_path": null,
+  "worktree_branch": null,
   "started_at": "ISO_TIMESTAMP",
   "last_updated": "ISO_TIMESTAMP"
 }
 ```
 
-Parse `$ARGUMENTS` for `--skip-brainstorm`, `--skip-humanize`, and `--strict-mode` flags.
+Parse `$ARGUMENTS` for `--skip-brainstorm`, `--skip-humanize`, `--worktree`, and `--strict-mode` flags.
 
 ### 3. Explore project context
 
 Scan the current project to understand:
 - Language and framework (check package.json, Cargo.toml, pyproject.toml, etc.)
 - Project structure and conventions
-- Existing test patterns
+- Existing test patterns and test runner commands
 - Recent git history
+- Detected platforms (SPA, PWA, Mobile, Electron, Tauri) for platform-engineering rules
 
 **Output file:** `.feature-e2e/00-context.md`
 
@@ -103,19 +113,26 @@ Scan the current project to understand:
 - Language: [detected]
 - Framework: [detected]
 - Test framework: [detected]
+- Test command: [detected]
 - Build tool: [detected]
+
+## Detected Platforms
+[SPA, PWA, Mobile, Electron, Tauri -- based on package.json, manifest files, build configs]
 
 ## Flags
 - Skip Brainstorm: [yes/no]
 - Skip Humanize: [yes/no]
+- Worktree: [yes/no]
 - Strict Mode: [yes/no]
 
 ## Pipeline Phases
 1. Brainstorm Design
 2. Write Implementation Plan
-3. Execute Plan
-4. Review Changes
-5. Humanize Code
+3. Execute Plan (with platform-engineering guardrails)
+4. Review Changes (architecture + security + patterns + platform)
+5. Test Verification
+6. Humanize Code
+7. Create PR
 ```
 
 ---
@@ -278,7 +295,7 @@ Plan summary:
 Please review:
 - .feature-e2e/02-plan.md
 
-1. Continue -- execute the plan with batch checkpoints
+1. Continue -- execute the plan
 2. Revise plan -- adjust tasks before executing
 3. Pause -- save progress and stop here
 ```
@@ -287,13 +304,49 @@ Do NOT proceed to Phase 3 until the user approves.
 
 ---
 
+## Phase 2.5: Worktree Isolation (if --worktree)
+
+**Skip if:** `--worktree` flag is NOT set.
+
+Create an isolated git worktree for the implementation work:
+
+1. Create a feature branch name from the target: `feature/e2e-[slugified-target]`
+2. Create the worktree:
+   ```bash
+   git worktree add ../.worktrees/feature-e2e-[slug] -b feature/e2e-[slug]
+   ```
+3. Copy `.feature-e2e/` state directory to the worktree
+4. Update `state.json` with `worktree_path` and `worktree_branch`
+5. All subsequent phases (3-7) execute inside the worktree directory
+
+Tell the user:
+```
+Worktree created at: [path]
+Branch: feature/e2e-[slug]
+All implementation work will happen in the isolated worktree.
+```
+
+---
+
 ## Phase 3: Execute Plan
 
 Read `.feature-e2e/02-plan.md` for the implementation plan.
 
-Follow the executing-plans skill process with batch execution:
+### Platform-Engineering Guardrails
+
+Before executing, load the platform-engineering skill context based on detected platforms from `.feature-e2e/00-context.md`:
+
+- **All projects**: Keep `server-validation` and `secrets-management` rules active
+- **Web (SPA/PWA)**: Also load `auth-tokens`, `xss-csp`, `api-security`
+- **Mobile**: Also load `platform-security` (mobile section), `auth-tokens`
+- **Electron**: Also load `platform-security` (Electron section), `xss-csp`
+- **Tauri**: Also load `platform-security` (Tauri section)
+
+During execution, check each implementation step against loaded rules. If a MUST rule would be violated, STOP and flag it before writing the code.
 
 ### Execution Loop
+
+Follow the executing-plans skill process with batch execution.
 
 Execute tasks in batches of 3:
 
@@ -301,7 +354,9 @@ Execute tasks in batches of 3:
    - Mark as in_progress
    - Follow each step exactly (test first, then implement)
    - Run all verification commands
+   - Check implementation against platform-engineering MUST rules
    - If a test fails: STOP the batch, report the failure, ask the user how to proceed
+   - If a platform-engineering MUST rule is violated: STOP, report the violation with rule reference and fix suggestion
    - Mark as completed
 
 2. **After each batch:**
@@ -324,6 +379,7 @@ Log each task's execution to `.feature-e2e/03-execution-log.md`:
 - Status: completed
 - Files changed: [list]
 - Tests: [pass/fail]
+- Platform-engineering checks: [pass/violations]
 - Commit: [hash]
 
 ## Task 2: [name]
@@ -333,6 +389,7 @@ Log each task's execution to `.feature-e2e/03-execution-log.md`:
 - Tasks completed: [X/Y]
 - Tests passing: [count]
 - Commits made: [count]
+- Platform-engineering violations caught: [count]
 ```
 
 Update `state.json`: set `current_phase` to "checkpoint-3", add phase 3 to `completed_phases`.
@@ -348,12 +405,13 @@ Execution summary:
 - Tasks completed: [X/Y]
 - Tests passing: [count]
 - Commits made: [count]
+- Platform violations caught and fixed: [count]
 
 Please review:
 - .feature-e2e/03-execution-log.md
 - Run the test suite to verify: [test command]
 
-1. Continue -- review the changes with architecture, security, and pattern analysis
+1. Continue -- review the changes with architecture, security, platform, and pattern analysis
 2. Fix issues -- address problems before review
 3. Pause -- save progress and stop here
 ```
@@ -364,7 +422,7 @@ Do NOT proceed to Phase 4 until the user approves.
 
 ## Phase 4: Review Changes
 
-Run the senior-review process -- fire all 3 review agents **in parallel**:
+Run the review process -- fire all 4 review agents **in parallel**:
 
 First, get the diff of all changes made during execution:
 
@@ -377,8 +435,8 @@ git diff HEAD~[number-of-commits-from-phase-3] -- [code files only]
 
 ```
 Task:
-  subagent_type: "senior-review:code-auditor"
-  description: "Code audit of feature implementation"
+  subagent_type: "senior-review:architect-review"
+  description: "Architecture audit of feature implementation"
   prompt: |
     Review the code changes made during feature implementation.
     Focus on code quality and architectural concerns. Skip documentation.
@@ -408,7 +466,7 @@ Task:
 
 ```
 Task:
-  subagent_type: "security-auditor"
+  subagent_type: "senior-review:security-auditor"
   description: "Security review of feature implementation"
   prompt: |
     Review the code changes for security issues. Skip documentation.
@@ -435,7 +493,7 @@ Task:
 
 ```
 Task:
-  subagent_type: "senior-review:code-auditor"
+  subagent_type: "senior-review:pattern-quality-scorer"
   description: "Pattern analysis and quality scoring of feature implementation"
   prompt: |
     Analyze the code changes for pattern consistency and quality score.
@@ -464,6 +522,32 @@ Task:
     | **Overall**  | **X/10** |
 ```
 
+### Agent D: Platform Engineering Compliance
+
+```
+Task:
+  subagent_type: "platform-engineering:platform-reviewer"
+  description: "Platform engineering compliance review"
+  prompt: |
+    Review the code changes against the cross-platform development rulebook.
+
+    ## Detected Platforms
+    [from .feature-e2e/00-context.md]
+
+    ## Changed Files
+    [list of changed code files]
+
+    ## Diff
+    [git diff output]
+
+    ## Instructions
+    Audit against the platform-engineering rulebook for detected platforms.
+    Focus on MUST rule violations (Critical) and DO/DON'T rules (Warnings).
+    Cover all three pillars: Security, Architecture, Performance.
+
+    Output format: standard platform-reviewer report with severity, file + line, rule reference, and fix.
+```
+
 After all agents complete, consolidate into `.feature-e2e/04-review.md`:
 
 ```markdown
@@ -472,7 +556,10 @@ After all agents complete, consolidate into `.feature-e2e/04-review.md`:
 ## Overall Score: X/10
 
 ## Critical & High Issues
-[Merged from all agents, deduplicated]
+[Merged from all 4 agents, deduplicated]
+
+## Platform Engineering Violations
+[MUST rule violations from Agent D]
 
 ## Medium & Low Issues
 [Merged from all agents]
@@ -497,6 +584,7 @@ Phase 4 complete: Code review finished.
 
 Overall Score: X/10
 Critical: [X] | High: [Y] | Medium: [Z] | Low: [W]
+Platform violations: [count]
 
 Top issues:
 1. [critical/high issue]
@@ -506,10 +594,9 @@ Top issues:
 Please review:
 - .feature-e2e/04-review.md
 
-1. Continue -- humanize the code (improve readability)
-2. Fix review issues first -- address findings before humanizing
-3. Skip humanize -- finish without humanizing (same as --skip-humanize)
-4. Pause -- save progress and stop here
+1. Continue -- proceed to test verification
+2. Fix review issues first -- address findings before continuing
+3. Pause -- save progress and stop here
 ```
 
 If `--strict-mode` is set and there are Critical findings, recommend option 2.
@@ -518,9 +605,119 @@ Do NOT proceed to Phase 5 until the user approves.
 
 ---
 
-## Phase 5: Humanize Code
+## Phase 5: Test Verification
 
-**Skip if:** `--skip-humanize` flag is set or user chose option 3 at checkpoint.
+Run a comprehensive test verification to ensure quality and coverage:
+
+### Step 5A: Run full test suite
+
+```bash
+[test command from 00-context.md]
+```
+
+If any test fails, STOP and report. Ask the user whether to fix or continue.
+
+### Step 5B: Coverage analysis
+
+If the project has a coverage tool configured (detected from package.json scripts, pytest.ini, etc.), run it:
+
+```bash
+[coverage command -- e.g., pytest --cov, npx vitest --coverage, etc.]
+```
+
+### Step 5C: Gap analysis
+
+Dispatch the test-writer agent to identify untested paths:
+
+```
+Task:
+  subagent_type: "testing:test-writer"
+  description: "Test gap analysis for feature implementation"
+  prompt: |
+    Analyze the code changes from this feature implementation and identify untested paths.
+
+    ## Changed Files
+    [list of changed code files from .feature-e2e/03-execution-log.md]
+
+    ## Existing Tests
+    [list of test files created/modified during Phase 3]
+
+    ## Instructions
+    DO NOT write tests yet. Only analyze and report:
+
+    1. List every public function/method/endpoint added or modified
+    2. For each, check if a test exists that covers:
+       - Happy path
+       - Error/edge cases
+       - Boundary values
+    3. Flag any untested or under-tested code paths
+    4. Rate overall test coverage confidence: Strong / Adequate / Weak / Insufficient
+
+    Output a structured report of gaps found.
+```
+
+If gaps are found and confidence is Weak or Insufficient:
+- Generate the missing tests using the test-writer agent
+- Run the full suite again to verify new tests pass
+
+**Output file:** `.feature-e2e/05-test-verification.md`
+
+```markdown
+# Phase 5: Test Verification
+
+## Test Suite Results
+- Total tests: [count]
+- Passing: [count]
+- Failing: [count]
+- Skipped: [count]
+
+## Coverage
+- Line coverage: [X%] (if available)
+- Branch coverage: [X%] (if available)
+
+## Gap Analysis
+- Functions/endpoints analyzed: [count]
+- Fully tested: [count]
+- Partially tested: [count]
+- Untested: [count]
+- Coverage confidence: [Strong/Adequate/Weak/Insufficient]
+
+## Tests Added
+[List of tests generated to fill gaps, if any]
+
+## Verification
+- All tests passing after gap fill: [yes/no]
+```
+
+Update `state.json`: set `current_phase` to "checkpoint-5", add phase 5 to `completed_phases`.
+
+---
+
+## PHASE CHECKPOINT 5 -- User Approval Required
+
+```
+Phase 5 complete: Test verification done.
+
+Tests: [passing]/[total] passing
+Coverage confidence: [Strong/Adequate/Weak/Insufficient]
+Tests added to fill gaps: [count]
+
+Please review:
+- .feature-e2e/05-test-verification.md
+
+1. Continue -- humanize the code
+2. Skip humanize -- go straight to PR creation
+3. Add more tests -- improve coverage before continuing
+4. Pause -- save progress and stop here
+```
+
+Do NOT proceed to Phase 6 until the user approves.
+
+---
+
+## Phase 6: Humanize Code
+
+**Skip if:** `--skip-humanize` flag is set or user chose option 2 at checkpoint.
 
 Read `.feature-e2e/04-review.md` to understand which files were changed.
 
@@ -555,10 +752,10 @@ Task:
     Run tests after changes to verify behavior is preserved.
 ```
 
-Log changes to `.feature-e2e/05-humanize-log.md`:
+Log changes to `.feature-e2e/06-humanize-log.md`:
 
 ```markdown
-# Phase 5: Humanize Log
+# Phase 6: Humanize Log
 
 ## Files Modified
 [List of files with changes made]
@@ -569,6 +766,116 @@ Log changes to `.feature-e2e/05-humanize-log.md`:
 
 ## Tests
 - All tests still passing: [yes/no]
+```
+
+Update `state.json`: set `current_phase` to "checkpoint-6", add phase 6 to `completed_phases`.
+
+---
+
+## Phase 7: Create PR
+
+Generate a PR with full context from the pipeline:
+
+### Step 7A: Prepare PR description
+
+Read all pipeline output files to build a comprehensive PR:
+
+```
+Task:
+  subagent_type: "general-purpose"
+  description: "Generate PR description from pipeline outputs"
+  prompt: |
+    Generate a pull request description from the feature pipeline outputs.
+
+    ## Design
+    [Insert .feature-e2e/01-design.md]
+
+    ## Execution Log
+    [Insert .feature-e2e/03-execution-log.md]
+
+    ## Review Results
+    [Insert .feature-e2e/04-review.md]
+
+    ## Test Verification
+    [Insert .feature-e2e/05-test-verification.md]
+
+    ## Instructions
+    Write a PR description following this format:
+
+    ## Summary
+    [2-3 bullet points: what this PR does and why]
+
+    ## Design Decisions
+    [Key decisions from brainstorming with rationale]
+
+    ## Changes
+    [Grouped list of changes by component/area]
+
+    ## Testing
+    - Tests added: [count]
+    - Coverage confidence: [level]
+    - Test command: [command]
+
+    ## Review Results
+    - Quality Score: [X/10]
+    - Critical issues resolved: [count]
+    - Platform compliance: [pass/warnings]
+
+    ## Risk Assessment
+    [High/Medium/Low with explanation]
+
+    ## Checklist
+    - [ ] All tests passing
+    - [ ] No critical review findings unresolved
+    - [ ] Platform-engineering MUST rules satisfied
+    - [ ] Code humanized for readability
+```
+
+### Step 7B: Create PR
+
+If working in a worktree (`--worktree` was set):
+
+```bash
+# Push the feature branch
+git push -u origin [worktree_branch]
+
+# Create PR
+gh pr create --title "[PR title]" --body "$(cat <<'EOF'
+[generated PR description]
+EOF
+)"
+```
+
+If working on the main branch (no worktree):
+
+```bash
+# Create a feature branch from current state
+git checkout -b feature/e2e-[slug]
+git push -u origin feature/e2e-[slug]
+
+# Create PR
+gh pr create --title "[PR title]" --body "$(cat <<'EOF'
+[generated PR description]
+EOF
+)"
+```
+
+**Output file:** `.feature-e2e/07-pr.md`
+
+```markdown
+# Phase 7: Pull Request
+
+## PR URL
+[URL from gh pr create]
+
+## Branch
+[branch name]
+
+## Title
+[PR title]
+
+## Risk Assessment
+[High/Medium/Low]
 ```
 
 Update `state.json`: set `status` to `"complete"`, `last_updated` to current timestamp.
@@ -583,24 +890,28 @@ Present the final summary:
 Feature end-to-end pipeline complete for: $ARGUMENTS
 
 ## Output Files
-- Project Context: .feature-e2e/00-context.md
-- Design: .feature-e2e/01-design.md
+- Project Context:    .feature-e2e/00-context.md
+- Design:            .feature-e2e/01-design.md
 - Implementation Plan: .feature-e2e/02-plan.md
-- Execution Log: .feature-e2e/03-execution-log.md
-- Code Review: .feature-e2e/04-review.md
-- Humanize Log: .feature-e2e/05-humanize-log.md [if not skipped]
+- Execution Log:     .feature-e2e/03-execution-log.md
+- Code Review:       .feature-e2e/04-review.md
+- Test Verification: .feature-e2e/05-test-verification.md
+- Humanize Log:      .feature-e2e/06-humanize-log.md [if not skipped]
+- Pull Request:      .feature-e2e/07-pr.md
 
 ## Summary
 - Feature: [name]
 - Tasks executed: [count]
 - Tests passing: [count]
+- Coverage confidence: [level]
 - Code Quality Score: [X/10]
+- Platform compliance: [pass/warnings]
 - Files changed: [count]
+- PR: [URL]
 
-## Next Steps
-1. Review the final code review at .feature-e2e/04-review.md
-2. Run the full test suite to confirm: [test command]
-3. Commit any remaining changes and push
+## Pipeline Duration
+- Started: [timestamp]
+- Completed: [timestamp]
 ```
 
 If `--strict-mode` is set and there were Critical review findings that weren't addressed:
