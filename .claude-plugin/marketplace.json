@@ -6,34 +6,9 @@
   },
   "metadata": {
     "description": "Custom development workflow agents and skills for code quality, Tauri/Rust development, frontend optimization, AI tooling, and constraint programming optimization",
-    "version": "3.6.0"
+    "version": "3.7.0"
   },
   "plugins": [
-    {
-      "name": "humanize",
-      "source": "./plugins/humanize",
-      "description": "Rewrites source code to be more readable and human-friendly without changing behavior - improves naming, comments, and structure with mandatory test validation",
-      "version": "2.8.0",
-      "author": {
-        "name": "Alfio"
-      },
-      "license": "MIT",
-      "keywords": [
-        "humanize",
-        "readability",
-        "naming",
-        "refactor",
-        "cleanup"
-      ],
-      "category": "review",
-      "strict": false,
-      "agents": [
-        "./agents/humanize-code.md"
-      ],
-      "commands": [
-        "./commands/humanize.md"
-      ]
-    },
     {
       "name": "deep-dive-analysis",
       "source": "./plugins/deep-dive-analysis",
@@ -622,7 +597,7 @@
       "name": "workflows",
       "source": "./plugins/workflows",
       "description": "Cross-plugin orchestration pipelines -- feature development with UI-aware stack routing, frontend redesign, UI studio, full code review, mobile intelligence, mobile Tauri, and Tauri desktop review",
-      "version": "2.10.0",
+      "version": "2.11.0",
       "author": {
         "name": "Alfio"
       },
@@ -643,7 +618,6 @@
         "frontend",
         "react-development",
         "senior-review",
-        "humanize",
         "ai-tooling",
         "tauri-development",
         "app-analyzer",
@@ -651,6 +625,9 @@
         "platform-engineering",
         "testing",
         "git-worktrees"
+      ],
+      "optionalDependencies": [
+        "humanize"
       ],
       "commands": [
         "./commands/develop-feature.md",
