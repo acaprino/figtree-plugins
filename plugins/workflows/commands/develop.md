@@ -12,7 +12,7 @@ description: >
 You MUST follow these rules exactly. Violating any of them is a failure.
 
 1. **Execute phases in order.** Do NOT skip ahead, reorder, or merge phases.
-2. **Write output files.** Each phase MUST produce its output file in `.feature-e2e/` before the next phase begins. Read from prior phase files -- do NOT rely on context window memory.
+2. **Write output files.** Each phase MUST produce its output file in `.develop/` before the next phase begins. Read from prior phase files -- do NOT rely on context window memory.
 3. **Stop at checkpoints.** When you reach a `PHASE CHECKPOINT`, you MUST stop and wait for explicit user approval before continuing. Use the AskUserQuestion tool with clear options.
 4. **Halt on failure.** If any step fails (agent error, test failure, missing files), STOP immediately. Present the error and ask the user how to proceed. Do NOT silently continue.
 5. **Never enter plan mode autonomously.** Do NOT use EnterPlanMode. This command IS the plan -- execute it.
@@ -53,7 +53,7 @@ If only `humanize` is missing, warn but continue (treat as `--skip-humanize`).
 
 ### 1. Check for existing session
 
-Check if `.feature-e2e/state.json` exists:
+Check if `.develop/state.json` exists:
 
 - If it exists and `status` is `"in_progress"`: Read it, display the current phase, and ask:
   ```
@@ -68,7 +68,7 @@ Check if `.feature-e2e/state.json` exists:
 
 ### 2. Initialize state
 
-Create `.feature-e2e/` directory and `state.json`:
+Create `.develop/` directory and `state.json`:
 
 ```json
 {
@@ -101,7 +101,7 @@ Scan the current project to understand:
 - Recent git history
 - Detected platforms (SPA, PWA, Mobile, Electron, Tauri) for platform-engineering rules
 
-**Output file:** `.feature-e2e/00-context.md`
+**Output file:** `.develop/00-context.md`
 
 ```markdown
 # Pipeline Context
@@ -139,7 +139,7 @@ Scan the current project to understand:
 
 ## Phase 1: Brainstorm Design
 
-**Skip if:** `--skip-brainstorm` flag is set. If skipped, ask the user to provide a design document or requirements, then save to `.feature-e2e/01-design.md` and proceed to Phase 2.
+**Skip if:** `--skip-brainstorm` flag is set. If skipped, ask the user to provide a design document or requirements, then save to `.develop/01-design.md` and proceed to Phase 2.
 
 Follow the brainstorming skill process -- this phase is **interactive**:
 
@@ -177,7 +177,7 @@ Present the design in sections scaled to complexity. Get user approval after eac
 - Error handling (failure modes, recovery)
 - Testing strategy (what to test, how)
 
-**Output file:** `.feature-e2e/01-design.md`
+**Output file:** `.develop/01-design.md`
 
 ```markdown
 # Phase 1: Feature Design
@@ -224,7 +224,7 @@ Approach: [selected approach summary]
 Components: [count]
 
 Please review:
-- .feature-e2e/01-design.md
+- .develop/01-design.md
 
 1. Continue -- proceed to writing the implementation plan
 2. Revise design -- adjust before planning
@@ -237,7 +237,7 @@ Do NOT proceed to Phase 2 until the user approves.
 
 ## Phase 2: Write Implementation Plan
 
-Read `.feature-e2e/01-design.md` for the approved design.
+Read `.develop/01-design.md` for the approved design.
 
 Follow the writing-plans skill process:
 
@@ -249,10 +249,10 @@ Task:
     You are using the writing-plans skill. Write a comprehensive, bite-sized implementation plan.
 
     ## Design
-    [Insert contents of .feature-e2e/01-design.md]
+    [Insert contents of .develop/01-design.md]
 
     ## Project Context
-    [Insert contents of .feature-e2e/00-context.md]
+    [Insert contents of .develop/00-context.md]
 
     ## Instructions
     Create a plan with bite-sized tasks following TDD principles:
@@ -275,7 +275,7 @@ Task:
     Write the plan as a structured markdown document.
 ```
 
-**Output file:** `.feature-e2e/02-plan.md`
+**Output file:** `.develop/02-plan.md`
 
 Update `state.json`: set `current_phase` to "checkpoint-2", add phase 2 to `completed_phases`.
 
@@ -293,7 +293,7 @@ Plan summary:
 - Tests to write: [count]
 
 Please review:
-- .feature-e2e/02-plan.md
+- .develop/02-plan.md
 
 1. Continue -- execute the plan
 2. Revise plan -- adjust tasks before executing
@@ -313,9 +313,9 @@ Create an isolated git worktree for the implementation work:
 1. Create a feature branch name from the target: `feature/e2e-[slugified-target]`
 2. Create the worktree:
    ```bash
-   git worktree add ../.worktrees/feature-e2e-[slug] -b feature/e2e-[slug]
+   git worktree add ../.worktrees/develop-[slug] -b feature/e2e-[slug]
    ```
-3. Copy `.feature-e2e/` state directory to the worktree
+3. Copy `.develop/` state directory to the worktree
 4. Update `state.json` with `worktree_path` and `worktree_branch`
 5. All subsequent phases (3-7) execute inside the worktree directory
 
@@ -330,11 +330,11 @@ All implementation work will happen in the isolated worktree.
 
 ## Phase 3: Execute Plan
 
-Read `.feature-e2e/02-plan.md` for the implementation plan.
+Read `.develop/02-plan.md` for the implementation plan.
 
 ### Platform-Engineering Guardrails
 
-Before executing, load the platform-engineering skill context based on detected platforms from `.feature-e2e/00-context.md`:
+Before executing, load the platform-engineering skill context based on detected platforms from `.develop/00-context.md`:
 
 - **All projects**: Keep `server-validation` and `secrets-management` rules active
 - **Web (SPA/PWA)**: Also load `auth-tokens`, `xss-csp`, `api-security`
@@ -370,7 +370,7 @@ Execute tasks in batches of 3:
 
 4. **Repeat** until all tasks are complete.
 
-Log each task's execution to `.feature-e2e/03-execution-log.md`:
+Log each task's execution to `.develop/03-execution-log.md`:
 
 ```markdown
 # Phase 3: Execution Log
@@ -408,7 +408,7 @@ Execution summary:
 - Platform violations caught and fixed: [count]
 
 Please review:
-- .feature-e2e/03-execution-log.md
+- .develop/03-execution-log.md
 - Run the test suite to verify: [test command]
 
 1. Continue -- review the changes with architecture, security, platform, and pattern analysis
@@ -442,7 +442,7 @@ Task:
     Focus on code quality and architectural concerns. Skip documentation.
 
     ## Feature Context
-    [Insert summary from .feature-e2e/01-design.md]
+    [Insert summary from .develop/01-design.md]
 
     ## Changed Files
     [list of changed code files]
@@ -532,7 +532,7 @@ Task:
     Review the code changes against the cross-platform development rulebook.
 
     ## Detected Platforms
-    [from .feature-e2e/00-context.md]
+    [from .develop/00-context.md]
 
     ## Changed Files
     [list of changed code files]
@@ -548,7 +548,7 @@ Task:
     Output format: standard platform-reviewer report with severity, file + line, rule reference, and fix.
 ```
 
-After all agents complete, consolidate into `.feature-e2e/04-review.md`:
+After all agents complete, consolidate into `.develop/04-review.md`:
 
 ```markdown
 # Phase 4: Code Review
@@ -592,7 +592,7 @@ Top issues:
 3. [critical/high issue]
 
 Please review:
-- .feature-e2e/04-review.md
+- .develop/04-review.md
 
 1. Continue -- proceed to test verification
 2. Fix review issues first -- address findings before continuing
@@ -637,7 +637,7 @@ Task:
     Analyze the code changes from this feature implementation and identify untested paths.
 
     ## Changed Files
-    [list of changed code files from .feature-e2e/03-execution-log.md]
+    [list of changed code files from .develop/03-execution-log.md]
 
     ## Existing Tests
     [list of test files created/modified during Phase 3]
@@ -660,7 +660,7 @@ If gaps are found and confidence is Weak or Insufficient:
 - Generate the missing tests using the test-writer agent
 - Run the full suite again to verify new tests pass
 
-**Output file:** `.feature-e2e/05-test-verification.md`
+**Output file:** `.develop/05-test-verification.md`
 
 ```markdown
 # Phase 5: Test Verification
@@ -703,7 +703,7 @@ Coverage confidence: [Strong/Adequate/Weak/Insufficient]
 Tests added to fill gaps: [count]
 
 Please review:
-- .feature-e2e/05-test-verification.md
+- .develop/05-test-verification.md
 
 1. Continue -- humanize the code
 2. Skip humanize -- go straight to PR creation
@@ -719,7 +719,7 @@ Do NOT proceed to Phase 6 until the user approves.
 
 **Skip if:** `--skip-humanize` flag is set or user chose option 2 at checkpoint.
 
-Read `.feature-e2e/04-review.md` to understand which files were changed.
+Read `.develop/04-review.md` to understand which files were changed.
 
 ```
 Task:
@@ -733,7 +733,7 @@ Task:
     [list of code files modified during Phase 3 execution]
 
     ## Review Context
-    [Insert consistency findings from .feature-e2e/04-review.md]
+    [Insert consistency findings from .develop/04-review.md]
 
     ## Instructions
     For each changed file:
@@ -752,7 +752,7 @@ Task:
     Run tests after changes to verify behavior is preserved.
 ```
 
-Log changes to `.feature-e2e/06-humanize-log.md`:
+Log changes to `.develop/06-humanize-log.md`:
 
 ```markdown
 # Phase 6: Humanize Log
@@ -788,16 +788,16 @@ Task:
     Generate a pull request description from the feature pipeline outputs.
 
     ## Design
-    [Insert .feature-e2e/01-design.md]
+    [Insert .develop/01-design.md]
 
     ## Execution Log
-    [Insert .feature-e2e/03-execution-log.md]
+    [Insert .develop/03-execution-log.md]
 
     ## Review Results
-    [Insert .feature-e2e/04-review.md]
+    [Insert .develop/04-review.md]
 
     ## Test Verification
-    [Insert .feature-e2e/05-test-verification.md]
+    [Insert .develop/05-test-verification.md]
 
     ## Instructions
     Write a PR description following this format:
@@ -860,7 +860,7 @@ EOF
 )"
 ```
 
-**Output file:** `.feature-e2e/07-pr.md`
+**Output file:** `.develop/07-pr.md`
 
 ```markdown
 # Phase 7: Pull Request
@@ -890,14 +890,14 @@ Present the final summary:
 Feature end-to-end pipeline complete for: $ARGUMENTS
 
 ## Output Files
-- Project Context:    .feature-e2e/00-context.md
-- Design:            .feature-e2e/01-design.md
-- Implementation Plan: .feature-e2e/02-plan.md
-- Execution Log:     .feature-e2e/03-execution-log.md
-- Code Review:       .feature-e2e/04-review.md
-- Test Verification: .feature-e2e/05-test-verification.md
-- Humanize Log:      .feature-e2e/06-humanize-log.md [if not skipped]
-- Pull Request:      .feature-e2e/07-pr.md
+- Project Context:    .develop/00-context.md
+- Design:            .develop/01-design.md
+- Implementation Plan: .develop/02-plan.md
+- Execution Log:     .develop/03-execution-log.md
+- Code Review:       .develop/04-review.md
+- Test Verification: .develop/05-test-verification.md
+- Humanize Log:      .develop/06-humanize-log.md [if not skipped]
+- Pull Request:      .develop/07-pr.md
 
 ## Summary
 - Feature: [name]
@@ -916,5 +916,5 @@ Feature end-to-end pipeline complete for: $ARGUMENTS
 
 If `--strict-mode` is set and there were Critical review findings that weren't addressed:
 ```
-STRICT MODE: Unresolved critical issues remain. Review .feature-e2e/04-review.md before merging.
+STRICT MODE: Unresolved critical issues remain. Review .develop/04-review.md before merging.
 ```
