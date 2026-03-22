@@ -872,9 +872,6 @@
       "strict": true,
       "skills": [
         "./skills/prompt-improver"
-      ],
-      "hooks": [
-        "./hooks"
       ]
     },
     {
