@@ -1,6 +1,6 @@
 <div align="center">
 
-# Figs
+# Figtree Plugins
 
 **33 specialized plugins for Claude Code -- so you spend less time prompting and more time shipping.**
 
@@ -15,7 +15,7 @@
 
 ---
 
-## Why Figs?
+## Why Figtree Plugins?
 
 - **Domain experts, not generic prompts** -- each plugin encodes months of specialized knowledge (Python, Rust, React, security, SEO, legal...)
 - **Multi-agent orchestration** -- code review fires architecture, security, and pattern analysis in parallel
@@ -30,9 +30,9 @@
 claude plugin marketplace add acaprino/figtree-plugins
 
 # Install the plugins you need
-claude plugin install python-development@figs
-claude plugin install senior-review@figs
-claude plugin install frontend@figs
+claude plugin install python-development@figtree-plugins
+claude plugin install senior-review@figtree-plugins
+claude plugin install frontend@figtree-plugins
 ```
 
 That's it. Plugins activate automatically when relevant -- or invoke them directly:
@@ -109,7 +109,7 @@ Plugins are pure Markdown with optional JS/Python helper scripts. No build step,
 <summary><b>Project Structure</b></summary>
 
 ```
-figs/
+figtree-plugins/
 ├── .claude-plugin/
 │   └── marketplace.json       # plugin registry
 ├── docs/plugins/              # per-plugin documentation
@@ -132,7 +132,7 @@ figs/
 
 ```bash
 git clone https://github.com/acaprino/figtree-plugins.git
-claude plugin install ./figs/plugins/python-development
+claude plugin install ./figtree-plugins/plugins/python-development
 ```
 
 </details>
