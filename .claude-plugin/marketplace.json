@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Custom development workflow agents and skills for code quality, Tauri/Rust development, frontend optimization, AI tooling, and constraint programming optimization",
-    "version": "3.11.0"
+    "version": "3.13.0"
   },
   "plugins": [
     {
@@ -1105,6 +1105,73 @@
       ],
       "skills": [
         "./skills/platform-engineering"
+      ]
+    },
+    {
+      "name": "ibkr-trading",
+      "source": "./plugins/ibkr-trading",
+      "description": "Interactive Brokers algotrading -- TWS API architecture, ib_async event-driven programming, market data subscriptions, order execution with bracket orders, reconnection resilience, IBC automation, and Windows production deployment",
+      "version": "1.0.0",
+      "author": {
+        "name": "Alfio"
+      },
+      "license": "MIT",
+      "keywords": [
+        "interactive-brokers",
+        "ibkr",
+        "algotrading",
+        "tws-api",
+        "ib-async",
+        "ib-insync",
+        "trading",
+        "market-data",
+        "bracket-orders",
+        "ibc",
+        "gateway"
+      ],
+      "category": "algotrading",
+      "strict": false,
+      "agents": [
+        "./agents/ibkr-architect.md"
+      ],
+      "skills": [
+        "./skills/ibkr-trading"
+      ],
+      "commands": [
+        "./commands/ibkr-audit.md"
+      ]
+    },
+    {
+      "name": "mt5-trading",
+      "source": "./plugins/mt5-trading",
+      "description": "MetaTrader 5 Python algotrading -- official synchronous API, polling-based event systems, order execution with fill modes, historical data, aiomql async framework, ZeroMQ bridge, and Windows production deployment",
+      "version": "1.0.0",
+      "author": {
+        "name": "Alfio"
+      },
+      "license": "MIT",
+      "keywords": [
+        "metatrader",
+        "mt5",
+        "algotrading",
+        "forex",
+        "cfd",
+        "aiomql",
+        "mql5",
+        "zeromq",
+        "polling",
+        "trading"
+      ],
+      "category": "algotrading",
+      "strict": false,
+      "agents": [
+        "./agents/mt5-architect.md"
+      ],
+      "skills": [
+        "./skills/mt5-trading"
+      ],
+      "commands": [
+        "./commands/mt5-audit.md"
       ]
     }
   ]
