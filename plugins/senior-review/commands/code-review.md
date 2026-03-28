@@ -225,16 +225,16 @@ Agent tool call:
     For each finding: severity, CWE if applicable, file + line, confidence (0-100), attack scenario, concrete fix.
 ```
 
-### Agent B2: Dead Code Detection
+### Agent B2: Dead Code & Unused Parameter Detection
 
 ```
 Agent tool call:
-  - description: "Dead code detection for senior-review command"
+  - description: "Dead code and lint detection for senior-review command"
   - subagent_type: "general-purpose"
   - run_in_background: true
   - prompt: |
-    Analyze the following code changes for dead code introduced or exposed by the diff.
-    You have both the diff AND the full file contents for context.
+    Detect dead code and unused parameters in the files changed by the diff.
+    Use BOTH automated linting tools AND manual analysis.
 
     ## Changed Files
     [list of changed code files with line counts]
@@ -245,26 +245,100 @@ Agent tool call:
     ## Diff
     [paste the git diff output]
 
-    ## Instructions
-    Check ONLY for dead code introduced or exposed by the reviewed changes:
-    1. Unused imports -- new imports added by the diff that are never referenced
-    2. Unused functions/variables/constants -- new definitions (including module-level constants, class attributes, and configuration values) that are never called, read, or imported by any other module
-    3. Unreachable code -- code after return/raise/break added by the diff
-    4. Unused exports -- new exports that no consumer imports
-    5. Orphaned code -- existing code that became dead because the diff removed its only caller
+    ## Phase 1: Automated Lint (MANDATORY)
+
+    You MUST run actual linting tools via Bash on the changed files. Do NOT
+    skip this phase or substitute it with manual reading.
+
+    **Auto-detect language from changed file extensions:**
+
+    ### Python files (.py)
+
+    Run ruff on EACH changed Python file. Use --select to target dead code
+    and unused parameter rules:
+
+    ```bash
+    ruff check --select F401,F841,F811,ARG001,ARG002,ARG003,ARG004,ARG005 --output-format json <file>
+    ```
+
+    Rule coverage:
+    - F401: unused imports
+    - F841: unused local variables
+    - F811: redefined unused names
+    - ARG001: unused function arguments
+    - ARG002: unused method arguments
+    - ARG003: unused class method arguments
+    - ARG004: unused static method arguments
+    - ARG005: unused lambda arguments
+
+    If ruff is not installed, attempt `pip install ruff` (or `uv pip install ruff`)
+    then retry. If installation fails, note it and proceed to Phase 2.
+
+    Also run vulture on each changed Python file if available:
+
+    ```bash
+    vulture --min-confidence 80 <file>
+    ```
+
+    If vulture is not installed, skip it (ruff covers the critical rules).
+
+    ### TypeScript/JavaScript files (.ts, .tsx, .js, .jsx)
+
+    If the project has a tsconfig.json, run:
+
+    ```bash
+    npx knip --include files,exports,dependencies --no-progress
+    ```
+
+    If knip is not available, use the TypeScript compiler for unused checks:
+
+    ```bash
+    npx tsc --noEmit --noUnusedLocals --noUnusedParameters 2>&1 | grep -E "(changed files pattern)"
+    ```
+
+    ### Other languages
+
+    Skip automated lint; rely on Phase 2 manual analysis.
+
+    ## Phase 2: Manual Diff Analysis
+
+    After collecting lint results, also manually analyze the diff for issues
+    that linters miss:
+
+    1. Unreachable code -- code after return/raise/break added by the diff
+    2. Unused exports -- new exports that no consumer imports
+    3. Orphaned code -- existing code that became dead because the diff
+       removed its only caller
+    4. Parameters accepted but never read in the function body (cross-check
+       with ARG results from Phase 1 to avoid duplicates)
+
+    ## Filtering Rules
+
+    Report ONLY findings related to code introduced or exposed by the diff.
 
     Do NOT flag:
-    - Pre-existing dead code unrelated to the diff
-    - Framework conventions (Django views, pytest fixtures, signal handlers, route decorators)
-    - Symbols exported via __all__, used via getattr, referenced dynamically, or used as configuration keys looked up at runtime
+    - Pre-existing issues unrelated to the diff
+    - Framework conventions (Django views, pytest fixtures, signal handlers,
+      route decorators, FastAPI dependencies, click/typer callbacks)
+    - Symbols exported via __all__, used via getattr, referenced dynamically,
+      or used as configuration keys looked up at runtime
     - Dunder methods (__init__, __str__, etc.)
+    - Parameters prefixed with _ (conventional unused marker)
+    - Abstract method parameters (required by interface contract)
+    - **kwargs / **args intentionally passed through
+
+    To filter: cross-reference each lint finding's file and line against the
+    diff hunks. Discard findings on lines NOT touched by the diff.
+
+    ## Output Format
 
     For each finding provide:
+    - Source: "ruff [RULE]", "vulture", "knip", "tsc", or "manual"
     - Severity (High / Medium / Low)
     - File + line
-    - Confidence score (0-100) -- how certain this is truly dead code
+    - Confidence score (0-100)
     - What is unused and why
-    - Recommended action (remove, verify dynamic usage, add to __all__)
+    - Recommended action (remove, prefix with _, verify dynamic usage, add to __all__)
 ```
 
 ### Agent C: UI Race Condition Analysis
@@ -350,9 +424,9 @@ After scoring completes, synthesize everything into the final structured review:
 | # | Severity | File:Line | Finding | Confidence | Fix |
 |---|----------|-----------|---------|------------|-----|
 
-### Dead Code Findings
-| # | Severity | File:Line | Finding | Confidence | Action |
-|---|----------|-----------|---------|------------|--------|
+### Dead Code & Unused Parameters
+| # | Source | Severity | File:Line | Finding | Confidence | Action |
+|---|--------|----------|-----------|---------|------------|--------|
 
 ### Failure Flow & Resilience
 | # | Severity | File:Line | Scenario | Confidence | Fix |
@@ -417,7 +491,7 @@ cat > .full-review/temp_summary_comment.md << 'SUMMARY_EOF'
 [top 3 recommended actions]
 
 ---
-*Reviewed by: code-auditor, security-auditor, dead-code-detector, ui-race-auditor*
+*Reviewed by: code-auditor, security-auditor, dead-code-and-lint-detector, ui-race-auditor*
 SUMMARY_EOF
 
 gh pr comment {number} -F .full-review/temp_summary_comment.md
