@@ -30,7 +30,7 @@ This command requires agents and skills from other plugins. Before proceeding, v
 - `ai-tooling` -- brainstorming, writing-plans, executing-plans skills
 - `senior-review` -- architect-review, security-auditor, pattern-quality-scorer agents
 - `platform-engineering` -- platform-reviewer agent, platform-engineering skill
-- `testing` -- test-writer agent, tdd skill
+- `testing` -- test-writer agent, tdd skill, e2e-testing-patterns skill
 
 **Optional plugins (loaded conditionally based on detected stack):**
 - `humanize` -- humanize agent (skip Phase 6 if missing)
@@ -738,6 +738,28 @@ If gaps are found and confidence is Weak or Insufficient:
 - Generate the missing tests using the test-writer agent
 - Run the full suite again to verify new tests pass
 
+### Step 5D: E2E test verification (conditional)
+
+**Trigger when:** UI changes were detected in Phase 1 (Step 1E) AND the project has Playwright or Cypress configured (detected from `package.json` dependencies, `playwright.config.ts`, or `cypress.config.ts`).
+
+**Skip if:** No UI changes or no E2E framework configured.
+
+Use the `testing:e2e-testing-patterns` skill as guidance for writing and reviewing E2E tests:
+
+1. Check if E2E tests already cover the new feature's critical user journeys
+2. If not, generate E2E tests following skill patterns (Page Object Model, proper waiting strategies, data-testid selectors)
+3. Run the E2E suite:
+   ```bash
+   npx playwright test  # or npx cypress run
+   ```
+4. Report results in the test verification output
+
+If E2E tests need to be created, follow the skill's guidance on:
+- Page Object Model for reusable page interactions
+- Fixtures for test data setup/teardown
+- Auto-waiting assertions instead of fixed timeouts
+- Network mocking for third-party services
+
 **Output file:** `.develop/05-test-verification.md`
 
 ```markdown
@@ -762,6 +784,12 @@ If gaps are found and confidence is Weak or Insufficient:
 
 ## Tests Added
 [List of tests generated to fill gaps, if any]
+
+## E2E Tests (if applicable)
+- E2E framework: [Playwright/Cypress/none]
+- E2E tests covering feature: [count]
+- E2E tests added: [count]
+- E2E suite passing: [yes/no/skipped]
 
 ## Verification
 - All tests passing after gap fill: [yes/no]
