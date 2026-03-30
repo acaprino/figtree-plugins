@@ -16,7 +16,10 @@ const path = require("path");
 const DEFAULT_THRESHOLD = 80;
 const STALE_SECONDS = 60;
 
-const configPath = path.join(process.env.HOME || process.env.USERPROFILE, ".claude", "acp-config.json");
+const homeDir = process.env.HOME || process.env.USERPROFILE;
+const acpConfigPath = path.join(homeDir, ".claude", "acp-config.json");
+const legacyConfigPath = path.join(homeDir, ".claude", "figs-config.json");
+const configPath = fs.existsSync(acpConfigPath) ? acpConfigPath : legacyConfigPath;
 
 // Check config: enabled + threshold
 let enabled = true;
@@ -45,8 +48,13 @@ process.stdin.on("end", () => {
   clearTimeout(stdinTimeout);
   try {
     const data = JSON.parse(input);
-    const sessionId = data.session_id;
+    const rawSessionId = data.session_id;
 
+    if (!rawSessionId) {
+      process.exit(0);
+    }
+
+    const sessionId = String(rawSessionId).replace(/[^a-zA-Z0-9_-]/g, "");
     if (!sessionId) {
       process.exit(0);
     }

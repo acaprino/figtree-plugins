@@ -7,7 +7,10 @@ const fs = require("fs");
 const path = require("path");
 const { execSync } = require("child_process");
 
-const configPath = path.join(process.env.HOME || process.env.USERPROFILE, ".claude", "acp-config.json");
+const homeDir = process.env.HOME || process.env.USERPROFILE;
+const acpConfigPath = path.join(homeDir, ".claude", "acp-config.json");
+const legacyConfigPath = path.join(homeDir, ".claude", "figs-config.json");
+const configPath = fs.existsSync(acpConfigPath) ? acpConfigPath : legacyConfigPath;
 
 // Read config
 let enabled = true;
@@ -44,8 +47,8 @@ process.stdin.on("end", () => {
 
     const command = (event.tool_input?.command || "").trim();
 
-    // Bypass: --no-docs escape hatch
-    if (command.includes("--no-docs")) {
+    // Bypass: --no-docs escape hatch (match as discrete argument)
+    if (command.split(/\s+/).includes("--no-docs")) {
       process.exit(0);
     }
 
@@ -56,12 +59,17 @@ process.stdin.on("end", () => {
       triggered = true;
     }
 
-    // Check for merge INTO main/master (same logic as review-gate)
+    // Check for merge INTO main/master -- only block when on main/master
     if (!triggered && /\bgit\s+merge\b/.test(command)) {
-      const mergeMatch = command.match(/\bgit\s+merge\s+(?:--[^\s]+\s+)*([^\s-][^\s]*)/);
-      if (mergeMatch) {
-        const mergeSource = mergeMatch[1];
-        if (!/^(main|master)$/.test(mergeSource)) {
+      try {
+        const currentBranch = execSync("git rev-parse --abbrev-ref HEAD", { encoding: "utf8", timeout: 5000 }).trim();
+        if (/^(main|master)$/.test(currentBranch)) {
+          triggered = true;
+        }
+      } catch {
+        // If we can't determine branch, fall back to heuristic
+        const mergeMatch = command.match(/\bgit\s+merge\s+(?:--[^\s]+\s+)*([^\s-][^\s]*)/);
+        if (mergeMatch && !/^(main|master)$/.test(mergeMatch[1])) {
           triggered = true;
         }
       }

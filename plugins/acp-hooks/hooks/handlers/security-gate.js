@@ -5,7 +5,10 @@
 const fs = require("fs");
 const path = require("path");
 
-const configPath = path.join(process.env.HOME || process.env.USERPROFILE, ".claude", "acp-config.json");
+const homeDir = process.env.HOME || process.env.USERPROFILE;
+const acpConfigPath = path.join(homeDir, ".claude", "acp-config.json");
+const legacyConfigPath = path.join(homeDir, ".claude", "figs-config.json");
+const configPath = fs.existsSync(acpConfigPath) ? acpConfigPath : legacyConfigPath;
 
 // Check if security gate is enabled
 let enabled = true;
@@ -39,11 +42,17 @@ process.stdin.on("end", () => {
     const filePath = event.tool_input?.file_path || "";
     const ext = path.extname(filePath).toLowerCase();
 
-    // Skip non-source files
-    const skipExts = [".env", ".json", ".md", ".sql", ".lock", ".toml", ".yaml", ".yml", ".xml", ".csv"];
-    const skipPatterns = ["migration", "config", ".env"];
+    // Skip files unlikely to contain hardcoded secrets
+    const skipExts = [".md", ".lock", ".csv", ".svg", ".png", ".jpg", ".gif", ".ico"];
+    const skipFiles = ["package-lock.json", "tsconfig.json", "tslint.json", "eslintrc.json", ".prettierrc.json"];
+    const skipPatterns = ["migration"];
 
     if (skipExts.includes(ext)) {
+      process.exit(0);
+    }
+
+    const fileName = path.basename(filePath).toLowerCase();
+    if (skipFiles.some(f => fileName === f)) {
       process.exit(0);
     }
 
@@ -78,7 +87,8 @@ process.stdin.on("end", () => {
 
     process.exit(0);
   } catch {
-    // If we can't parse input, allow the operation
-    process.exit(0);
+    // Fail closed -- don't allow unchecked operations
+    console.error("[Security Gate] Failed to parse hook input, blocking as precaution");
+    process.exit(1);
   }
 });

@@ -4,8 +4,12 @@
 
 const fs = require("fs");
 const path = require("path");
+const { execSync } = require("child_process");
 
-const configPath = path.join(process.env.HOME || process.env.USERPROFILE, ".claude", "acp-config.json");
+const homeDir = process.env.HOME || process.env.USERPROFILE;
+const acpConfigPath = path.join(homeDir, ".claude", "acp-config.json");
+const legacyConfigPath = path.join(homeDir, ".claude", "figs-config.json");
+const configPath = fs.existsSync(acpConfigPath) ? acpConfigPath : legacyConfigPath;
 
 // Check if review gate is enabled
 let enabled = true;
@@ -38,8 +42,8 @@ process.stdin.on("end", () => {
 
     const command = (event.tool_input?.command || "").trim();
 
-    // Bypass: --no-review escape hatch
-    if (command.includes("--no-review")) {
+    // Bypass: --no-review escape hatch (match as discrete argument)
+    if (command.split(/\s+/).includes("--no-review")) {
       process.exit(0);
     }
 
@@ -52,22 +56,20 @@ process.stdin.on("end", () => {
       reason = "PR creation detected. Run /code-review before creating a PR, then retry this command.";
     }
 
-    // Check for merge INTO main/master
+    // Check for merge INTO main/master -- only block when on main/master
     if (!triggered && /\bgit\s+merge\b/.test(command)) {
-      // Get the current branch to determine if we're ON main/master (merging into it)
-      // The merge target is the current branch, not the argument
-      // "git merge feature-x" while on main = merging INTO main = block
-      // We can't easily detect the current branch from the command alone,
-      // so we check if the merge source is NOT main/master
-      // (if source IS main/master, user is merging main into feature = fine)
-      const mergeMatch = command.match(/\bgit\s+merge\s+(?:--[^\s]+\s+)*([^\s-][^\s]*)/);
-      if (mergeMatch) {
-        const mergeSource = mergeMatch[1];
-        // If merging FROM a non-main branch, user might be on main - block to be safe
-        // If merging FROM main/master, user is on a feature branch pulling in main - allow
-        if (!/^(main|master)$/.test(mergeSource)) {
+      try {
+        const currentBranch = execSync("git rev-parse --abbrev-ref HEAD", { encoding: "utf8", timeout: 5000 }).trim();
+        if (/^(main|master)$/.test(currentBranch)) {
           triggered = true;
-          reason = "Merge detected that may target main/master. Run /code-review before merging to main/master, then retry this command. If this merge does not target main/master, add --no-review to bypass.";
+          reason = "Merge into main/master detected. Run /code-review before merging to main/master, then retry this command. Add --no-review to bypass.";
+        }
+      } catch {
+        // If we can't determine branch, fall back to heuristic
+        const mergeMatch = command.match(/\bgit\s+merge\s+(?:--[^\s]+\s+)*([^\s-][^\s]*)/);
+        if (mergeMatch && !/^(main|master)$/.test(mergeMatch[1])) {
+          triggered = true;
+          reason = "Merge detected that may target main/master. Run /code-review before merging, then retry. Add --no-review to bypass.";
         }
       }
     }

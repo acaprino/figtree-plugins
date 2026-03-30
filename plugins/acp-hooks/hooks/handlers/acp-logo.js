@@ -4,7 +4,7 @@
 // Outside ACP, this hook is a no-op -- Claude's default banner shows normally.
 
 try {
-  if (process.env.ACP_SESSION === "1") {
+  if (process.env.ACP_SESSION === "1" || process.env.FIGS_SESSION === "1") {
     // Inside ACP: emit empty hookSpecificOutput to suppress Claude's banner
     const output = JSON.stringify({
       hookSpecificOutput: {
