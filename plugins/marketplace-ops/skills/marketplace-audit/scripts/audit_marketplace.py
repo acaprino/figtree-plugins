@@ -106,14 +106,17 @@ def parse_frontmatter(filepath):
     except Exception as e:
         return None, str(e)
 
-    if not content.startswith("---"):
+    # Strip leading HTML comments (e.g. upstream attribution lines)
+    stripped = re.sub(r"^(\s*<!--.*?-->\s*)+", "", content, count=1, flags=re.DOTALL)
+
+    if not stripped.startswith("---"):
         return {}, None
 
-    end = content.find("---", 3)
+    end = stripped.find("---", 3)
     if end == -1:
         return {}, None
 
-    fm_text = content[3:end].strip()
+    fm_text = stripped[3:end].strip()
     result = {}
     current_key = None
     current_value_lines = []
@@ -148,15 +151,21 @@ def parse_frontmatter(filepath):
 def set_frontmatter_field(filepath, field, value):
     """Set or replace a frontmatter field in a markdown file."""
     content = filepath.read_text(encoding="utf-8")
-    if not content.startswith("---"):
+
+    # Preserve leading HTML comments (e.g. upstream attribution lines)
+    prefix_match = re.match(r"^(\s*<!--.*?-->\s*)+", content, flags=re.DOTALL)
+    prefix = prefix_match.group(0) if prefix_match else ""
+    stripped = content[len(prefix):]
+
+    if not stripped.startswith("---"):
         return False
 
-    end = content.find("---", 3)
+    end = stripped.find("---", 3)
     if end == -1:
         return False
 
-    fm_block = content[3:end]
-    body = content[end:]
+    fm_block = stripped[3:end]
+    body = stripped[end:]
 
     # Replace existing field or add before closing ---
     field_pattern = re.compile(rf"^{re.escape(field)}:\s*.*$", re.MULTILINE)
@@ -165,7 +174,7 @@ def set_frontmatter_field(filepath, field, value):
     else:
         fm_block = fm_block.rstrip("\n") + f"\n{field}: {value}\n"
 
-    filepath.write_text("---" + fm_block + body, encoding="utf-8")
+    filepath.write_text(prefix + "---" + fm_block + body, encoding="utf-8")
     return True
 
 

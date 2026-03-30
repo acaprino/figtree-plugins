@@ -6,7 +6,7 @@ description: >
   DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 tools: Read, Grep, Glob, WebFetch, WebSearch
 model: sonnet
-color: cyan
+color: pink
 ---
 
 # ROLE

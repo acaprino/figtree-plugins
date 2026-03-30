@@ -11,7 +11,7 @@ description: >
   comparing MT5 vs IBKR approaches
   DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 model: opus
-color: orange
+color: red
 tools: Read, Write, Edit, Bash, Glob, Grep, WebFetch, WebSearch
 ---
 

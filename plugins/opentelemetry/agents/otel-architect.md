@@ -6,7 +6,7 @@ description: >
   DO NOT TRIGGER WHEN: general logging, application monitoring unrelated to OTel, or infrastructure provisioning.
 tools: Read, Write, Edit, Bash, Glob, Grep, WebFetch, WebSearch
 model: opus
-color: cyan
+color: red
 ---
 
 # ROLE

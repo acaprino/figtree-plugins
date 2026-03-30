@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Custom development workflow agents and skills for code quality, Tauri/Rust development, frontend optimization, AI tooling, and constraint programming optimization",
-    "version": "4.3.0"
+    "version": "4.5.0"
   },
   "plugins": [
     {
@@ -328,7 +328,7 @@
       "name": "messaging",
       "source": "./plugins/messaging",
       "description": "RabbitMQ and AMQP messaging -- queue configuration, exchange routing, clustering, high availability, and event-driven architecture optimization",
-      "version": "1.3.0",
+      "version": "1.3.1",
       "author": {
         "name": "Alfio"
       },
@@ -351,7 +351,7 @@
       "name": "research",
       "source": "./plugins/research",
       "description": "Search and research toolkit -- quick-searcher (sonnet) for fast fact-finding and single-concept lookups, deep-researcher (opus) for complex multi-source investigation requiring systematic coverage, cross-referencing, and iterative refinement",
-      "version": "2.5.0",
+      "version": "2.5.1",
       "author": {
         "name": "Alfio"
       },
@@ -577,7 +577,7 @@
       "name": "senior-review",
       "source": "./plugins/senior-review",
       "description": "Multi-agent code review orchestration with unified code auditing (architecture, failure flow, pattern analysis, scoring), security auditing, UI race condition detection, React performance review, distributed flow analysis (cross-service contracts, timeout chains, saga validation), automated lint-based dead code and unused parameter detection (ruff, vulture, knip), and multi-language dead code cleanup. Backed by a comprehensive defect taxonomy knowledge base (140+ defect patterns, CWE/OWASP mappings).",
-      "version": "4.5.0",
+      "version": "4.6.0",
       "author": {
         "name": "Alfio"
       },
@@ -760,7 +760,7 @@
       "name": "marketplace-ops",
       "source": "./plugins/marketplace-ops",
       "description": "Marketplace consolidation and plugin management -- auditing, validation, AI quality review, upstream sync, plugin scaffolding, and health monitoring for the ACP ecosystem",
-      "version": "1.10.0",
+      "version": "1.10.1",
       "author": {
         "name": "Alfio"
       },
@@ -1150,7 +1150,7 @@
       "name": "mt5-trading",
       "source": "./plugins/mt5-trading",
       "description": "MetaTrader 5 Python algotrading -- official synchronous API, polling-based event systems, order execution with fill modes, historical data, aiomql async framework, ZeroMQ bridge, and Windows production deployment",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "Alfio"
       },
@@ -1183,7 +1183,7 @@
       "name": "opentelemetry",
       "source": "./plugins/opentelemetry",
       "description": "OpenTelemetry Python instrumentation -- distributed tracing, async context propagation, custom transport propagators, OTLP exporters, AWS ADOT/X-Ray, and production observability",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "Alfio"
       },

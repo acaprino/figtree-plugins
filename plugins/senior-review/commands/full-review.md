@@ -13,7 +13,7 @@ You MUST follow these rules exactly. Violating any of them is a failure.
 
 1. **Execute phases in order.** Do NOT skip ahead, reorder, or merge phases.
 2. **Write output files.** Each phase MUST produce its output file in `$SESSION_DIR/` before the next phase begins. Read from prior phase files -- do NOT rely on context window memory.
-3. **Stop at checkpoints.** When you reach a `PHASE CHECKPOINT`, you MUST stop and wait for explicit user approval before continuing. Use the AskUserQuestion tool with clear options.
+3. **Checkpoints are informational.** When you reach a `PHASE CHECKPOINT`, display the summary and continue automatically. Only stop for user approval if `--strict-mode` is set AND there are Critical findings.
 4. **Halt on failure.** If any step fails (agent error, missing files, access issues), STOP immediately. Present the error and ask the user how to proceed. Do NOT silently continue.
 5. **Use only local agents.** All `subagent_type` references use agents bundled with this plugin or `general-purpose`. No cross-plugin dependencies.
 6. **Never enter plan mode autonomously.** Do NOT use EnterPlanMode. This command IS the plan -- execute it.
@@ -273,32 +273,17 @@ Update `state.json`: add `"phase_0"` to `completed_steps`.
 
 ---
 
-## PHASE CHECKPOINT 0 -- User Approval Required (if deep dive was run)
+## PHASE CHECKPOINT 0 (if deep dive was run)
 
-Display a summary of deep dive findings:
+Display a brief summary of deep dive findings, then continue automatically to Phase 1.
 
 ```
 Phase 0 complete: Deep dive analysis done.
-
-Summary:
-- Files analyzed: [count]
-- Modules identified: [count]
-- Risks detected: [X critical, Y high, Z medium]
-- Key areas flagged for review: [count]
-
-Please review:
-- $SESSION_DIR/00-deep-dive-context.md (summary)
-- $SESSION_DIR/dd-01-structure.md (structure)
-- $SESSION_DIR/dd-02-interfaces.md (interfaces)
-- $SESSION_DIR/dd-03-flows.md (flows)
-- $SESSION_DIR/dd-04-semantics.md (semantics)
-- $SESSION_DIR/dd-05-risks.md (risks)
-
-1. Continue -- proceed to code review (enriched with deep dive context)
-2. Pause -- save progress and stop here
+- Files analyzed: [count] -- Risks detected: [X critical, Y high, Z medium]
+- Output: $SESSION_DIR/00-deep-dive-context.md
 ```
 
-Do NOT proceed to Phase 1 until the user approves.
+Continue to Phase 1 immediately.
 
 ---
 
@@ -414,29 +399,17 @@ Update `state.json`: set `current_step` to 2, `current_phase` to 2, add step 1A 
 
 ---
 
-## PHASE CHECKPOINT 1 -- User Approval Required
+## PHASE CHECKPOINT 1
 
-Display a summary of findings from Phase 1 and ask:
+Display a brief summary of findings from Phase 1, then continue automatically to Phase 2.
 
 ```
-Phase 1 complete: Code Audit (Architecture + Failure Flow + Patterns) done.
-
-Summary:
-- Architecture: [X critical, Y high, Z medium findings]
-- Failure Flow: [X critical, Y high, Z medium findings]
-- Pattern Consistency: [X deviations found]
-
-Please review:
-- $SESSION_DIR/01-code-audit.md
-
-1. Continue -- proceed to Security & Performance review
-2. Fix critical issues first -- I'll address findings before continuing
-3. Pause -- save progress and stop here
+Phase 1 complete: Code Audit done.
+- Architecture: [X critical, Y high, Z medium] -- Failure Flow: [X critical, Y high, Z medium] -- Patterns: [X deviations]
+- Output: $SESSION_DIR/01-code-audit.md
 ```
 
-If `--strict-mode` flag is set and there are Critical findings, recommend option 2.
-
-Do NOT proceed to Phase 2 until the user approves.
+If `--strict-mode` is set AND there are Critical findings, stop and ask the user whether to fix critical issues first or continue. Otherwise, continue to Phase 2 immediately.
 
 ---
 
@@ -670,31 +643,18 @@ Update `state.json`: set `current_step` to "checkpoint-2", add steps 2A-2E to `c
 
 ---
 
-## PHASE CHECKPOINT 2 -- User Approval Required
+## PHASE CHECKPOINT 2
 
-Display a summary of findings from Phase 2 and ask:
+Display a brief summary of findings from Phase 2, then continue automatically to Phase 3.
 
 ```
-Phase 2 complete: Security, Performance & Specialized reviews done.
-
-Summary:
-- Security: [X critical, Y high, Z medium findings]
-- Performance: [X critical, Y high, Z medium findings]
-- UI Race Conditions: [X findings or N/A]
-- Distributed Flow: [X findings or N/A]
-- React Performance: [X findings or N/A]
-
-Please review:
-- $SESSION_DIR/02-security-performance.md
-
-1. Continue -- proceed to Testing, Documentation & Best Practices review
-2. Fix critical issues first -- I'll address findings before continuing
-3. Pause -- save progress and stop here
+Phase 2 complete: Security & Performance done.
+- Security: [X critical, Y high, Z medium] -- Performance: [X critical, Y high, Z medium]
+- Specialized: UI Race [X or N/A], Distributed [X or N/A], React Perf [X or N/A]
+- Output: $SESSION_DIR/02-security-performance.md
 ```
 
-If `--strict-mode` flag is set and there are Critical findings, recommend option 2.
-
-Do NOT proceed to Phase 3 until the user approves.
+If `--strict-mode` is set AND there are Critical findings, stop and ask the user whether to fix critical issues first or continue. Otherwise, continue to Phase 3 immediately.
 
 ---
 
