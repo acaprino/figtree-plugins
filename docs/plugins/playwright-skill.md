@@ -32,4 +32,4 @@ Browser automation skill that writes custom Playwright code for any task and run
 
 ---
 
-**Related:** [app-explorer](app-explorer.md) (depends on this for web app exploration) | [digital-marketing](digital-marketing.md) (optional dependency for SEO audits)
+**Related:** [app-analyzer](app-analyzer.md) (depends on this for web app exploration) | [digital-marketing](digital-marketing.md) (optional dependency for SEO audits)

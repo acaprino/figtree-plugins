@@ -3,7 +3,7 @@
 
 > Run entire development workflows with one command. Chains brainstorming, planning, implementation, code review, and cleanup into automated pipelines with checkpoints at each stage.
 >
-> **Dependencies:** [frontend](frontend.md), [react-development](react-development.md), [senior-review](senior-review.md), [humanize](humanize.md), [ai-tooling](ai-tooling.md), [tauri-development](tauri-development.md), [mobile-development](mobile-development.md), [deep-dive-analysis](deep-dive-analysis.md)
+> **Dependencies:** [frontend](frontend.md), [react-development](react-development.md), [senior-review](senior-review.md), [clean-code](clean-code.md), [ai-tooling](ai-tooling.md), [tauri-development](tauri-development.md), [app-analyzer](app-analyzer.md), [deep-dive-analysis](deep-dive-analysis.md), [platform-engineering](platform-engineering.md), [testing](testing.md), [git-worktrees](git-worktrees.md)
 
 ## Commands
 
@@ -16,7 +16,7 @@ End-to-end feature pipeline: brainstorm design, write implementation plan, execu
 | **Invoke** | `/feature-e2e <feature description> [--skip-brainstorm] [--skip-humanize] [--strict-mode]` |
 | **Pipeline** | brainstorming -> writing-plans -> executing-plans -> senior-review -> humanize |
 | **Checkpoints** | After design, plan, execution, and review phases |
-| **Dependencies** | [ai-tooling](ai-tooling.md), [senior-review](senior-review.md), [humanize](humanize.md) |
+| **Dependencies** | [ai-tooling](ai-tooling.md), [senior-review](senior-review.md), [clean-code](clean-code.md) |
 
 ```mermaid
 graph TD
@@ -154,7 +154,7 @@ Competitive mobile intelligence: analyze a competitor Android app via ADB, brain
 | **Pipeline** | analyze-mobile-app -> brainstorming -> web-designer -> writing-plans -> tauri-mobile |
 | **Checkpoints** | After analysis, brainstorm, and plan phases |
 | **Pre-flight** | Verifies ADB device connection |
-| **Dependencies** | [mobile-development](mobile-development.md), [ai-tooling](ai-tooling.md), [frontend](frontend.md), [tauri-development](tauri-development.md) |
+| **Dependencies** | [app-analyzer](app-analyzer.md), [ai-tooling](ai-tooling.md), [frontend](frontend.md), [tauri-development](tauri-development.md) |
 
 ```mermaid
 graph TD
@@ -210,7 +210,7 @@ End-to-end mobile app pipeline: competitor analysis via ADB, feature brainstorm,
 | **Invoke** | `/mobile-tauri-pipeline <app-package-name or description> [--device <device-id>] [--skip-scaffold] [--skip-review] [--strict-mode]` |
 | **Pipeline** | analyze-mobile-app -> brainstorming -> web-designer -> writing-plans -> tauri-mobile -> rust-engineer -> tauri-desktop |
 | **Checkpoints** | After analysis, brainstorm, plan, and scaffold phases |
-| **Dependencies** | [mobile-development](mobile-development.md), [ai-tooling](ai-tooling.md), [frontend](frontend.md), [tauri-development](tauri-development.md) |
+| **Dependencies** | [app-analyzer](app-analyzer.md), [ai-tooling](ai-tooling.md), [frontend](frontend.md), [tauri-development](tauri-development.md) |
 
 ---
 
@@ -223,7 +223,20 @@ End-to-end UI development pipeline: brainstorm product concept, design direction
 | **Invoke** | `/ui-studio <product goal or feature description> [--skip-brainstorm] [--skip-review] [--skip-humanize] [--strict-mode] [--framework react\|vue\|svelte\|html]` |
 | **Pipeline** | brainstorming -> web-designer -> ui-layout-designer -> writing-plans -> executing-plans -> web-designer -> react-performance-optimizer -> code-review -> humanize |
 | **Checkpoints** | After design, plan, execution, polish, and review phases |
-| **Dependencies** | [ai-tooling](ai-tooling.md), [frontend](frontend.md), [react-development](react-development.md), [senior-review](senior-review.md), [humanize](humanize.md) |
+| **Dependencies** | [ai-tooling](ai-tooling.md), [frontend](frontend.md), [react-development](react-development.md), [senior-review](senior-review.md), [clean-code](clean-code.md) |
+
+---
+
+### `/python-pipeline`
+
+End-to-end Python development pipeline: architecture design, TDD execution, and refactoring polish.
+
+| | |
+|---|---|
+| **Invoke** | `/python-pipeline <task description> [--skip-tests] [--refactor-only]` |
+| **Pipeline** | python-architect -> python-test-engineer -> python-refactor-agent |
+| **Checkpoints** | After architecture design, TDD execution, and refactoring phases |
+| **Dependencies** | [python-development](python-development.md) |
 
 ---
 
