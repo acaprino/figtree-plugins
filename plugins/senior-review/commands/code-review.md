@@ -18,6 +18,35 @@ You are a thorough code reviewer. Your job is to review code changes -- uncommit
 5. **Run agents in parallel.** Fire all review agents in a single response.
 6. **Skip documentation files.** Ignore `.md`, `.txt`, `.rst`, `README*`, `CHANGELOG*`, `LICENSE*`. Focus only on code.
 
+## Step 0: Pre-Review Skip Check (PR only)
+
+If `$ARGUMENTS` contains a PR number (Case C), run a quick eligibility check **before** gathering any context. Launch a **haiku** agent that checks:
+
+```bash
+# Fetch PR metadata
+gh pr view <N> --json state,isDraft,author,title,labels
+
+# Check for prior Claude comments
+gh pr view <N> --comments --json comments --jq '.comments[].author.login'
+```
+
+**Skip the review and stop** if ANY of these are true:
+- PR state is `CLOSED` or `MERGED`
+- PR is a draft (`isDraft: true`)
+- PR is trivial/automated: author is a bot, title matches version-only bumps (`chore(deps):`, `bump *`, `Merge branch`), or has label `skip-review`
+- Claude has already commented on this PR (check for `claude` or `github-actions[bot]` with Claude-style review content in comments)
+
+**Still review** Claude-generated PRs (author is Claude but content is real code).
+
+If skipped, print the reason and stop:
+```
+Skipping review: [PR is closed / PR is draft / PR is trivial / Already reviewed]
+```
+
+If not a PR review (Cases A, B, D, E), skip this step entirely.
+
+---
+
 ## Step 1: Identify Review Target
 
 From `$ARGUMENTS`, determine what to review using this priority:
@@ -463,13 +492,122 @@ Agent tool call:
     real-world incident reference if applicable, concrete fix.
 ```
 
+### Agent E: Git Blame & History Analysis
+
+Run in parallel with Agents A-D. Provides historical context that other agents lack.
+
+```
+Agent tool call:
+  - description: "Git blame and history analysis for senior-review command"
+  - subagent_type: "general-purpose"
+  - run_in_background: true
+  - prompt: |
+    Analyze the git history and blame data for the following changed files to find
+    history-based issues that pure code analysis would miss.
+
+    ## Changed Files
+    [list of changed code files]
+
+    ## Diff
+    [paste the git diff output]
+
+    ## PR Context
+    [PR title and description, or branch name and recent commit messages]
+
+    ## Instructions
+
+    For each changed file, run:
+
+    ```bash
+    # Recent history (last 10 commits on this file)
+    git log -n 10 --oneline --format="%h %ad %s" --date=short <file>
+
+    # Blame on changed line ranges
+    git blame -L <start>,<end> <file>
+
+    # Churn frequency (commits in last 30 days)
+    git log --since="30 days ago" --oneline <file> | wc -l
+    ```
+
+    Look for these patterns:
+    1. **High churn** -- file changed 3+ times in the last month. Flag as risk factor
+       with recent commit subjects for context.
+    2. **Revert-reintroduce** -- the diff reintroduces code or patterns that were
+       previously removed or reverted. Cross-reference with `git log` subjects.
+    3. **Contradicting recent fixes** -- the change modifies lines that were part of
+       a recent bugfix. The new change might undo the fix.
+    4. **Single-author hotspot** -- all recent changes by one author, now modified
+       by someone else. Flag for knowledge transfer risk.
+    5. **Stale context** -- blame shows surrounding code unchanged for 1+ year while
+       the diff assumes behavior that may have drifted.
+
+    For each finding: severity (High/Medium/Low), file + line, confidence (0-100),
+    description with specific commit references (hashes and subjects).
+
+    If no history-based issues found, say so explicitly.
+```
+
+---
+
 ## Step 4: Consolidate Findings & Extract Score
 
 After all agents complete, collect and organize findings. The code-auditor (Agent A) already produces the quality score -- extract it directly. No separate scoring step needed.
 
+## Step 4b: Validate Critical & High Findings
+
+Before producing the final report, re-verify every **Critical** and **High** severity finding to filter false positives. This reduces noise and ensures only high-signal issues reach the output.
+
+For each Critical/High finding, launch a validation agent **in parallel**:
+
+- **Bug, logic, architecture, failure flow findings** -- use **opus** model
+- **CLAUDE.md compliance, style, pattern findings** -- use **sonnet** model
+
+```
+Agent tool call (one per finding):
+  - description: "Validate finding: [brief finding title]"
+  - subagent_type: "general-purpose"
+  - model: opus  # or sonnet for CLAUDE.md/style findings
+  - run_in_background: true
+  - prompt: |
+    You are a finding validator. Your ONLY job is to verify whether
+    a code review finding is real or a false positive.
+
+    ## The Finding
+    [severity, file:line, description, and suggested fix from the original agent]
+
+    ## The Diff
+    [git diff output for the relevant file]
+
+    ## Full File Content
+    [full content of the file containing the finding]
+
+    ## PR Context
+    [PR title, description, or branch context]
+
+    ## Instructions
+    Verify this finding by checking the actual code:
+    1. Does the code actually have the described problem?
+    2. Is the file:line reference correct?
+    3. Could this be a false positive (pre-existing issue, framework convention,
+       intentional design choice, or misunderstanding of the code)?
+    4. Is the severity appropriate?
+
+    Respond with EXACTLY:
+    - **Verdict:** VALID or FALSE_POSITIVE
+    - **Confidence:** 0-100
+    - **Reasoning:** 1-2 sentences explaining why
+```
+
+**After all validators complete:**
+- Discard findings with verdict `FALSE_POSITIVE`
+- Keep findings with verdict `VALID`
+- Add a line to the final report: `Validation: X of Y Critical/High findings validated (Z filtered as false positives)`
+
+Medium and Low findings skip validation -- they appear in the report as-is with their original confidence scores.
+
 ## Step 5: Final Review Output
 
-After scoring completes, synthesize everything into the final structured review:
+After validation completes, synthesize everything into the final structured review:
 
 ```
 ## Code Review -- [PR title or branch name]
@@ -478,6 +616,7 @@ After scoring completes, synthesize everything into the final structured review:
 - Files reviewed: [N]
 - Lines changed: +X / -Y
 - CLAUDE.md compliance: [checked / not found]
+- Validation: X of Y Critical/High findings validated (Z filtered as false positives)
 
 ### Overall Score: X/10 (confidence: X%)
 
@@ -505,6 +644,10 @@ After scoring completes, synthesize everything into the final structured review:
 ### Platform Engineering (if applicable)
 | # | Severity | File:Line | Rule | Confidence | Fix |
 |---|----------|-----------|------|------------|-----|
+
+### Git History & Churn (if applicable)
+| # | Severity | File:Line | Pattern | Commits Referenced | Confidence |
+|---|----------|-----------|---------|-------------------|------------|
 
 ### Pattern Consistency
 - [pattern deviations found, or "Changes follow established patterns"]
@@ -540,14 +683,33 @@ If `--auto-comment` flag is set and reviewing a PR:
 
 Post only **CRITICAL and HIGH severity** findings as inline PR comments. Do NOT auto-comment MEDIUM or LOW findings -- include those only in the summary report. This prevents comment spam and focuses reviewer attention on what matters.
 
-Write each comment body to a temp file first, then use `-F` to avoid shell injection from LLM-generated content:
+Write each comment body to a temp file first, then use `-F` to avoid shell injection from LLM-generated content.
+
+### Committable Suggestions
+
+For each inline comment, decide whether to include a committable suggestion:
+
+- **Include suggestion** when the fix is small and self-contained (< 6 lines changed, single location, committing the suggestion fully resolves the issue)
+- **No suggestion** when the fix is large (6+ lines), structural, spans multiple locations, or committing the suggestion alone would not fully fix the problem
+- **Never** post a committable suggestion unless committing it fixes the issue entirely -- partial suggestions that require follow-up steps are worse than no suggestion
+
+### Inline comment format
 
 ```bash
-# Write the comment body to a temp file (avoids shell escaping issues)
+# Without committable suggestion (large or multi-location fix)
 cat > .full-review/temp_inline_comment.md << 'COMMENT_EOF'
 **[Severity]** -- [finding summary]
 
-[concrete fix recommendation]
+[concrete fix recommendation describing what to change]
+COMMENT_EOF
+
+# With committable suggestion (small, self-contained fix)
+cat > .full-review/temp_inline_comment.md << 'COMMENT_EOF'
+**[Severity]** -- [finding summary]
+
+```suggestion
+[corrected code that fully fixes the issue when committed]
+```
 COMMENT_EOF
 
 # Post as inline PR comment using -F (file input)
@@ -571,7 +733,7 @@ cat > .full-review/temp_summary_comment.md << 'SUMMARY_EOF'
 [top 3 recommended actions]
 
 ---
-*Reviewed by: code-auditor, security-auditor, dead-code-and-lint-detector, ui-race-auditor*
+*Reviewed by: code-auditor, security-auditor, dead-code-and-lint-detector, ui-race-auditor, git-history-analyzer | Findings validated before posting*
 SUMMARY_EOF
 
 gh pr comment {number} -F .full-review/temp_summary_comment.md
