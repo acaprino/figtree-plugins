@@ -1,12 +1,12 @@
 ---
-name: skills-hammer
+name: skills-creator
 description: >
-  Guided creation of ACP components -- skills, agents, commands, and full plugins. Walks through requirements gathering, generates production-ready files with real content (not placeholders), registers in marketplace.json, and bumps versions. Also trigger on "new skill", "new agent", "new plugin", "add a skill", "add an agent", "skills-hammer". Also helps decide skill vs agent architecture when reorganizing plugins. DO NOT TRIGGER for editing or updating existing components -- only for new creation or architectural decisions (skill vs agent).
+  Guided creation of ACP components -- skills, agents, commands, and full plugins. Walks through requirements gathering, generates production-ready files with real content (not placeholders), registers in marketplace.json, and bumps versions. Also trigger on "new skill", "new agent", "new plugin", "add a skill", "add an agent", "skills-creator", "skills-hammer". Also helps decide skill vs agent architecture when reorganizing plugins. DO NOT TRIGGER for editing or updating existing components -- only for new creation or architectural decisions (skill vs agent).
   TRIGGER WHEN: the user asks to create, add, scaffold, or build a new skill, agent, command, or plugin
   DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
 ---
 
-# Skills Hammer
+# Skills Creator
 
 Create new ACP components with proper conventions and real content.
 

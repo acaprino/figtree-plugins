@@ -44,7 +44,7 @@ Structural validation of the marketplace ecosystem.
 - Naming conventions (kebab-case, filename/name match)
 - Version sanity (valid semver)
 
-### `skills-hammer`
+### `skills-creator`
 
 Guided creation of new ACP components.
 

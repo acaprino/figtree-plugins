@@ -155,6 +155,20 @@ Detected multi-service architecture:
 
 If confirmed, set `distributed: true` in `state.json` and add a `## Services` section to `00-scope.md` listing each service with its path and detected language/framework.
 
+### 6. Fullstack app auto-detection
+
+Check if the target is a fullstack application by looking for **2+ of these signals**:
+
+1. `package.json` with frontend framework (react, vue, svelte, angular, next, nuxt)
+2. Backend framework config (`pyproject.toml` with fastapi/django/flask, `package.json` with express/nest/hono, `Cargo.toml` with actix/axum)
+3. API route definitions (files matching `*/routes/*`, `*/api/*`, `*/endpoints/*`)
+4. Tauri config (`tauri.conf.json`, `Cargo.toml` with tauri)
+5. Electron config (`electron-builder.yml`, main process with `BrowserWindow`)
+6. Mobile config (`android/`, `ios/`, `capacitor.config.ts`, react-native)
+7. `docker-compose.yml` with services
+
+If 2+ signals found, set `fullstack_app: true` in `state.json` and add a `## Platforms Detected` section to `00-scope.md` listing detected platforms (SPA, PWA, Mobile, Electron, Tauri). Include Step 2F in Phase 2.
+
 Update `state.json`: add `"00-scope.md"` to `files_created`, add step 0 to `completed_steps`.
 
 ---
@@ -607,6 +621,53 @@ Agent tool call:
     Write your findings as a structured markdown document.
 ```
 
+### Step 2F: Platform Engineering Review (conditional)
+
+**Only run this agent if fullstack app signals were detected** (2+ signals from pre-flight auto-detection, `fullstack_app: true` in state.json). Skip entirely for libraries, CLI tools, or single-layer projects.
+
+```
+Agent tool call:
+  - description: "Platform engineering review for $ARGUMENTS"
+  - subagent_type: "platform-engineering:platform-reviewer"
+  - run_in_background: true
+  - prompt: |
+    Conduct a comprehensive platform engineering review of the target code
+    against the platform-engineering rulebook.
+
+    ## Review Scope
+    [Insert contents of .full-review/00-scope.md -- includes detected platforms]
+
+    ## Phase 1 Context
+    [Insert contents of .full-review/01-code-audit.md -- focus on architecture and security findings]
+
+    ## Instructions
+    Execute the full 4-phase platform engineering review:
+
+    1. **Platform Context Detection**: Identify target platforms from package.json,
+       manifest files, build configs. Set platform flags (SPA, PWA, Mobile, Electron, Tauri).
+
+    2. **Security Audit**: Server validation (client-only business logic), auth token
+       storage (JWTs in localStorage, missing httpOnly/Secure/SameSite), API security
+       (auth, rate limiting, CORS), XSS/CSP (weak CSP, dangerouslySetInnerHTML),
+       secrets in bundles (REACT_APP_/VITE_/NEXT_PUBLIC_), platform-specific security
+       (Electron nodeIntegration, Tauri permissions, mobile cert pinning, PWA cache).
+
+    3. **Architecture Audit**: Client-server boundary (business logic placement),
+       API design (versioning, pagination, RFC 7807 errors), offline-first readiness,
+       infrastructure (monolith vs microservices, CI/CD, feature flags).
+
+    4. **Performance Audit**: Bundle size budgets (<170KB web, <20MB APK, <10MB Tauri),
+       image optimization, Core Web Vitals (LCP/INP/CLS), API/DB performance (N+1,
+       pooling, indexes), mobile performance (push vs poll, memory leaks), rendering
+       strategy (CSR/SSR/SSG/ISR), caching strategy.
+
+    For each finding: severity (MUST violation / DO recommendation / DON'T warning),
+    file + line, real-world incident reference if applicable, concrete fix with code example.
+
+    Write your findings as a structured markdown document with verdict
+    (PASS / PASS WITH WARNINGS / FAIL).
+```
+
 After all agents complete, consolidate into `.full-review/02-security-performance.md`:
 
 ```markdown
@@ -631,6 +692,10 @@ After all agents complete, consolidate into `.full-review/02-security-performanc
 ## React Performance Findings (if applicable)
 
 [Summary from 2E, organized by severity, or "N/A -- no React files in scope"]
+
+## Platform Engineering Findings (if applicable)
+
+[Summary from 2F, organized by MUST/DO/DON'T severity, or "N/A -- not a fullstack app"]
 
 ## Critical Issues for Phase 3 Context
 
@@ -1078,6 +1143,7 @@ Were there surprises the deep dive missed?]
 - **React Performance**: [count] findings ([breakdown by severity])
 - **Distributed Integration**: [count] findings ([breakdown by severity])
 - **Dead Code**: [count] findings ([breakdown by severity])
+- **Platform Engineering**: [count] findings ([breakdown by MUST/DO/DON'T])
 
 ## Recommended Action Plan
 

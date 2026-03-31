@@ -92,7 +92,7 @@ When advising on plugin reorganization, apply the skills-vs-agents framework:
 - Agents = isolated specialists ("il collega") -- who does the work
 - Start with skill, escalate to agent when isolation/tools/parallel execution needed
 - Healthy pattern: 1 unified skill (knowledge) + N focused agents (workers)
-- See `plugins/marketplace-ops/skills/skills-hammer/references/skills-vs-agents.md` for full decision table and anti-patterns
+- See `plugins/marketplace-ops/skills/skills-creator/references/skills-vs-agents.md` for full decision table and anti-patterns
 
 ## 7. CONSOLIDATION ANALYSIS
 - Identify plugins with overlapping keywords/categories that could merge

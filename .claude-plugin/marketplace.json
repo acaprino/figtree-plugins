@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Custom development workflow agents and skills for code quality, Tauri/Rust development, frontend optimization, AI tooling, and constraint programming optimization",
-    "version": "4.8.0"
+    "version": "4.9.0"
   },
   "plugins": [
     {
@@ -576,8 +576,8 @@
     {
       "name": "senior-review",
       "source": "./plugins/senior-review",
-      "description": "Multi-agent code review orchestration with unified code auditing (architecture, failure flow, pattern analysis, scoring), security auditing, UI race condition detection, React performance review, distributed flow analysis (cross-service contracts, timeout chains, saga validation), automated lint-based dead code and unused parameter detection (ruff, vulture, knip), and multi-language dead code cleanup. Backed by a comprehensive defect taxonomy knowledge base (140+ defect patterns, CWE/OWASP mappings).",
-      "version": "4.7.0",
+      "description": "Multi-agent code review orchestration with unified code auditing (architecture, failure flow, pattern analysis, scoring), security auditing, UI race condition detection, React performance review, distributed flow analysis (cross-service contracts, timeout chains, saga validation), platform engineering review (auto-detected fullstack apps), automated lint-based dead code and unused parameter detection (ruff, vulture, knip), and multi-language dead code cleanup. Backed by a comprehensive defect taxonomy knowledge base (140+ defect patterns, CWE/OWASP mappings).",
+      "version": "4.8.0",
       "author": {
         "name": "Alfio"
       },
@@ -783,7 +783,7 @@
       ],
       "skills": [
         "./skills/marketplace-audit",
-        "./skills/skills-hammer"
+        "./skills/skills-creator"
       ],
       "commands": [
         "./commands/marketplace-health.md",

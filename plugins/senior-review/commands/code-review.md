@@ -68,6 +68,20 @@ Include: source code files (`.py`, `.js`, `.ts`, `.tsx`, `.jsx`, `.rs`, `.go`, `
 
 If no code files remain, say so and stop.
 
+### Fullstack App Auto-Detection
+
+Detect if the codebase is a fullstack application by checking for **2+ of these signals**:
+
+- `package.json` with frontend framework (react, vue, svelte, angular, next, nuxt)
+- Backend framework config (`pyproject.toml` with fastapi/django/flask, `package.json` with express/nest/hono, `Cargo.toml` with actix/axum)
+- API route definitions (files matching `*/routes/*`, `*/api/*`, `*/endpoints/*`)
+- Tauri config (`tauri.conf.json`, `Cargo.toml` with tauri)
+- Electron config (`electron-builder.yml`, main process with `BrowserWindow`)
+- Mobile config (`android/`, `ios/`, `capacitor.config.ts`, react-native)
+- `docker-compose.yml` with multiple services
+
+If 2+ signals found, set `FULLSTACK_APP=true` and run Agent D (Platform Engineering Review) in Step 3.
+
 ## Step 2: Gather Context
 
 For each changed code file:
@@ -402,6 +416,53 @@ Agent tool call:
     (T0->T1->...->RESULT), file + line, confidence (0-100), concrete fix.
 ```
 
+### Agent D: Platform Engineering Review
+
+**Only run this agent if fullstack app signals were detected** (2+ signals from auto-detection in Step 1). Skip entirely for libraries, CLI tools, or single-layer projects.
+
+```
+Agent tool call:
+  - description: "Platform engineering review for senior-review command"
+  - subagent_type: "platform-engineering:platform-reviewer"
+  - run_in_background: true
+  - prompt: |
+    Review the following code changes against the platform-engineering rulebook.
+    You have both the diff AND the full file contents for context.
+
+    ## Platforms Detected
+    [list detected platform signals: SPA, PWA, Mobile, Electron, Tauri]
+
+    ## Changed Files
+    [list of changed code files]
+
+    ## Full File Contents
+    [paste full contents of each changed file]
+
+    ## Diff
+    [paste the git diff output]
+
+    ## Instructions
+    Evaluate the CHANGED code against platform-engineering rules:
+    1. **Server validation**: Is business logic (prices, discounts, eligibility)
+       validated server-side? Are client-only checks trusted?
+    2. **Auth token storage**: Are JWTs in localStorage? Missing httpOnly/Secure/SameSite?
+       OAuth flow correct for the platform?
+    3. **API security**: Unauthenticated endpoints? Missing rate limiting? Permissive CORS?
+       Verbose error responses? GraphQL introspection exposed?
+    4. **XSS/CSP**: Weak or missing CSP? dangerouslySetInnerHTML with user data?
+       unsafe-inline/unsafe-eval?
+    5. **Secrets exposure**: API keys in frontend bundles? REACT_APP_/VITE_/NEXT_PUBLIC_ secrets?
+    6. **Architecture**: Business logic in client code? Missing API versioning? Missing pagination?
+       Direct DB connections from client?
+    7. **Performance**: Bundle size over budget? Missing code splitting? Unoptimized images?
+       N+1 queries? Missing connection pooling?
+    8. **Platform-specific**: Electron (nodeIntegration, contextIsolation, sandbox)?
+       Tauri (overly permissive commands)? Mobile (cert pinning, memory leaks)?
+
+    For each finding: severity (MUST/DO/DON'T), file + line, confidence (0-100),
+    real-world incident reference if applicable, concrete fix.
+```
+
 ## Step 4: Consolidate Findings & Extract Score
 
 After all agents complete, collect and organize findings. The code-auditor (Agent A) already produces the quality score -- extract it directly. No separate scoring step needed.
@@ -440,6 +501,10 @@ After scoring completes, synthesize everything into the final structured review:
 ### UI Race Conditions (if applicable)
 | # | Severity | File:Line | Timeline | Confidence | Fix |
 |---|----------|-----------|----------|------------|-----|
+
+### Platform Engineering (if applicable)
+| # | Severity | File:Line | Rule | Confidence | Fix |
+|---|----------|-----------|------|------------|-----|
 
 ### Pattern Consistency
 - [pattern deviations found, or "Changes follow established patterns"]
