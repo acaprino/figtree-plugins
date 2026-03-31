@@ -15,7 +15,7 @@ plugins/
     hooks/                  # hook handlers (JS/Python) + hooks.json (acp-hooks, prompt-improver)
 ```
 
-39 plugins: clean-code, deep-dive-analysis, tauri-development, frontend, react-development, xterm, ai-tooling, python-development, stripe, system-utils, messaging, research, business, project-setup, app-analyzer, typescript-development, csp, digital-marketing, senior-review, workflows, obsidian-development, browser-extensions, learning, marketplace-ops, playwright-skill, acp-hooks, prompt-improver, cc-usage, codebase-mapper, git-worktrees, rag-development, docs, testing, platform-engineering, ibkr-trading, mt5-trading, opentelemetry, docker, grabber-development.
+40 plugins: clean-code, deep-dive-analysis, tauri-development, frontend, react-development, xterm, ai-tooling, python-development, stripe, system-utils, messaging, research, business, project-setup, app-analyzer, typescript-development, csp, digital-marketing, senior-review, workflows, obsidian-development, browser-extensions, learning, marketplace-ops, playwright-skill, acp-hooks, prompt-improver, cc-usage, codebase-mapper, git-worktrees, rag-development, docs, testing, platform-engineering, ibkr-trading, mt5-trading, opentelemetry, docker, grabber-development, agent-teams.
 
 ## Plugin anatomy
 
@@ -97,6 +97,7 @@ Some plugins are ported from external repositories and should be kept in sync wi
 | `testing` (tdd) | `mattpocock/skills` - `tdd/` | `plugins/testing/skills/tdd/SKILL.md`, `plugins/testing/skills/tdd/references/tests.md`, `plugins/testing/skills/tdd/references/deep-modules.md`, `plugins/testing/skills/tdd/references/mocking.md`, `plugins/testing/skills/tdd/references/interface-design.md`, `plugins/testing/skills/tdd/references/refactoring.md` |
 | `docker` (multi-stage-dockerfile) | `github/awesome-copilot` - `skills/multi-stage-dockerfile/SKILL.md` | `plugins/docker/skills/multi-stage-dockerfile/SKILL.md` |
 | `testing` (e2e-testing-patterns) | `wshobson/agents` - `plugins/developer-essentials/skills/e2e-testing-patterns/SKILL.md` | `plugins/testing/skills/e2e-testing-patterns/SKILL.md` |
+| `agent-teams` | `wshobson/agents` - `plugins/agent-teams/` | `plugins/agent-teams/agents/*.md`, `plugins/agent-teams/commands/*.md`, `plugins/agent-teams/skills/*/SKILL.md`, `plugins/agent-teams/skills/*/references/*.md` |
 
 ### How to sync a plugin
 
@@ -178,6 +179,29 @@ gh api repos/github/awesome-copilot/contents/skills/multi-stage-dockerfile/SKILL
 # Fetch latest e2e-testing-patterns SKILL.md from upstream (wshobson/agents example)
 gh api repos/wshobson/agents/contents/plugins/developer-essentials/skills/e2e-testing-patterns/SKILL.md \
   --jq '.content' | base64 -d
+
+# Fetch latest agent-teams files from upstream (wshobson/agents example)
+# Agents
+for agent in team-lead team-reviewer team-debugger team-implementer; do
+  gh api "repos/wshobson/agents/contents/plugins/agent-teams/agents/$agent.md" \
+    --jq '.content' | base64 -d
+done
+# Commands
+for cmd in team-spawn team-review team-debug team-feature team-delegate team-status team-shutdown; do
+  gh api "repos/wshobson/agents/contents/plugins/agent-teams/commands/$cmd.md" \
+    --jq '.content' | base64 -d
+done
+# Skills (SKILL.md + references/)
+for skill in multi-reviewer-patterns parallel-debugging parallel-feature-development task-coordination-strategies team-communication-protocols team-composition-patterns; do
+  gh api "repos/wshobson/agents/contents/plugins/agent-teams/skills/$skill/SKILL.md" \
+    --jq '.content' | base64 -d
+  # List and fetch references
+  gh api "repos/wshobson/agents/contents/plugins/agent-teams/skills/$skill/references" \
+    --jq '.[].name' | while read ref; do
+    gh api "repos/wshobson/agents/contents/plugins/agent-teams/skills/$skill/references/$ref" \
+      --jq '.content' | base64 -d
+  done
+done
 ```
 
 Then compare with the local file, apply upstream changes while preserving local additions (source attribution line at top of each file, plus any plugin-specific sections like Typography Reference or Isolated Prompting for frontend-design in `plugins/frontend/skills/frontend-design/`), bump the plugin version, bump `metadata.version`, and commit + push.

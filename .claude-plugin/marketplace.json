@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Custom development workflow agents and skills for code quality, Tauri/Rust development, frontend optimization, AI tooling, and constraint programming optimization",
-    "version": "5.4.0"
+    "version": "5.5.0"
   },
   "plugins": [
     {
@@ -1268,6 +1268,51 @@
       ],
       "skills": [
         "./skills/grabber-development"
+      ]
+    },
+    {
+      "name": "agent-teams",
+      "source": "./plugins/agent-teams",
+      "description": "Orchestrate multi-agent teams for parallel code review, hypothesis-driven debugging, and coordinated feature development using Claude Code Agent Teams",
+      "version": "1.0.0",
+      "author": {
+        "name": "Seth Hobson"
+      },
+      "license": "MIT",
+      "keywords": [
+        "agent-teams",
+        "multi-agent",
+        "parallel",
+        "code-review",
+        "debugging",
+        "feature-development",
+        "team-coordination",
+        "file-ownership"
+      ],
+      "category": "development",
+      "strict": false,
+      "agents": [
+        "./agents/team-lead.md",
+        "./agents/team-reviewer.md",
+        "./agents/team-debugger.md",
+        "./agents/team-implementer.md"
+      ],
+      "skills": [
+        "./skills/multi-reviewer-patterns",
+        "./skills/parallel-debugging",
+        "./skills/parallel-feature-development",
+        "./skills/task-coordination-strategies",
+        "./skills/team-communication-protocols",
+        "./skills/team-composition-patterns"
+      ],
+      "commands": [
+        "./commands/team-spawn.md",
+        "./commands/team-review.md",
+        "./commands/team-debug.md",
+        "./commands/team-feature.md",
+        "./commands/team-delegate.md",
+        "./commands/team-status.md",
+        "./commands/team-shutdown.md"
       ]
     }
   ]
