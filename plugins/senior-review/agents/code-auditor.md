@@ -59,6 +59,12 @@ Triage before detailed analysis:
 - Check: does `get_instance()` have an elif/else branch that updates the existing instance when new dependencies are provided? If not, flag silent discard risk
 - Check: is there a mechanism for late binding (`set_broker`, `set_dependency`) that retroactively wires dependencies after singleton creation?
 
+**Test Infrastructure Blocking Scan** (Python projects with tests/ directory)
+- Check root `tests/conftest.py` for heavy imports at module level (scipy, ortools, tensorflow, torch) -- these can hang during collection
+- Check if `sys.modules` mock installations exist ONLY in subdirectory conftest files (`tests/unit/conftest.py`, `tests/handlers/conftest.py`) -- if root-level test files exist, these mocks load too late, flag as HIGH
+- Check for `monkeypatch.setattr` or `mock.patch` targeting lazy-imported functions (imported inside function bodies) at the usage site instead of the definition site -- flag as MEDIUM
+- Check integration conftest for completeness: list external service SDK imports in app code (firebase_admin, boto3, stripe, google.cloud), verify each has a corresponding mock fixture
+
 If critical issues found: report immediately with CRITICAL severity before continuing.
 
 ### Phase 2: Architecture & Boundaries

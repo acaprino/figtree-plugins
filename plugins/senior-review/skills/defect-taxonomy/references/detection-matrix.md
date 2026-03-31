@@ -23,7 +23,7 @@ Cross-cutting detection reference for all 16 defect taxonomy categories.
 | 13 | Performance & Resources | Complexity analyzers, allocation profilers | CPU/memory profiling, load tests, GC analysis | String concat in loop, unbounded collection | JFR, async-profiler, pprof | Medium |
 | 14 | Design Pattern Misuse | SpotBugs, SonarQube pattern rules | Concurrency stress tests, leak detection | DCL patterns, singleton patterns | SonarQube, SpotBugs | Low-Medium |
 | 15 | Build & Deployment | Dependency analyzers, config validators | Startup smoke tests, env parity checks | Secret patterns, hardcoded URL/IP | GitLeaks, Maven Enforcer | Medium |
-| 16 | Testing & Observability | Mutation testing config, coverage tools | Flaky test tracking, observability audits | Missing log/metric patterns | PIT, Stryker, OpenTelemetry | Low-Medium |
+| 16 | Testing & Observability | Mutation testing config, coverage tools, conftest structure analysis, mock target validation | Flaky test tracking, observability audits, platform hang detection | Missing log/metric patterns, heavy mock in sub-conftest, lazy import mock paths | PIT, Stryker, OpenTelemetry, ruff, pytest | High |
 
 ---
 
@@ -40,12 +40,13 @@ Cross-cutting detection reference for all 16 defect taxonomy categories.
 - Category 7: Error handling -- resource leaks cause production outages
 - Category 9: Distributed -- split-brain and retry storms cause cascading failures
 - Category 12: Data -- N+1 and missing indexes cause performance degradation at scale
+- Category 16: Testing infrastructure -- conftest ordering, mock placement, and platform hangs cause blocking test failures
 
 ### Tier 3 - Medium (targeted checks)
 - Categories 3, 8, 10, 11, 13, 15: Important but lower blast radius or easier to catch in review
 
 ### Tier 4 - Low-Medium (periodic audits)
-- Categories 14, 16: Design pattern and testing gaps -- catch in architecture reviews
+- Category 14: Design pattern misuse -- catch in architecture reviews
 
 ---
 
@@ -80,7 +81,7 @@ Cross-cutting detection reference for all 16 defect taxonomy categories.
 | **C/C++** | 1 (Concurrency), 5 (Memory) | Data races, buffer overflow, use-after-free, dangling pointers, memory leaks |
 | **JVM (Java/Kotlin/Scala)** | 2 (State), 7 (Error handling), 8 (API contracts) | Null refs, resource leaks, unchecked exceptions, API misuse, type erasure |
 | **JS/TS** | 4 (Types), 6 (Security) | Type coercion, XSS, prototype pollution, async anti-patterns, stale closures |
-| **Python** | 4 (Types), 6 (Security) | Type errors at runtime, injection, mutable defaults, GIL misconceptions |
+| **Python** | 4 (Types), 6 (Security), 16 (Testing) | Type errors at runtime, injection, mutable defaults, GIL misconceptions, conftest ordering, mock target errors, heavy dep mock placement |
 | **Go** | 1 (Concurrency), 7 (Error handling) | Goroutine leaks, unchecked errors, variable shadowing with `:=`, channel deadlocks |
 | **Rust** | 1 (Concurrency), 8 (API contracts) | Unsafe blocks, logic errors (compiler catches memory/type), unwrap in prod |
 
@@ -96,6 +97,7 @@ These categories lack CWE identifiers but cause major production incidents:
 | **10 - Communication** | Protocol drift, missing heartbeat, timeout misconfiguration | Protocol-level issues outside CWE scope | Grep for HTTP/gRPC client creation without timeout, missing DLQ config, heartbeat interval settings |
 | **11 - Integration** | Circular dependencies, config drift, feature flag interactions | Architectural issues, not code-level | Dependency graph analysis, config source audit, flag inventory age tracking |
 | **13 - Performance** | Algorithmic complexity, unbounded growth, GC thrashing | Performance not traditionally security/safety | Loop nesting analysis, collection growth without bounds, allocation hotspot detection |
+| **16 - Testing Infrastructure** | Conftest scope errors, collection-order mock failures, platform initialization hangs, monkeypatch target errors, incomplete service mocking | CWE focuses on production code, not test infrastructure | conftest hierarchy analysis (root vs subdirectory placement of `sys.modules` mocks), import graph tracing for mock target validation, external service client inventory vs mock inventory diff, platform-specific plugin interference checklist |
 
 ---
 
@@ -111,3 +113,7 @@ These categories lack CWE identifiers but cause major production incidents:
 - [ ] Idempotency: Retryable operations are idempotent?
 - [ ] Index: Queries on large tables use indexed columns?
 - [ ] Secret: No hardcoded credentials or keys?
+- [ ] Test mocks: Heavy deps mocked in root conftest, not sub-conftest?
+- [ ] Mock targets: monkeypatch/patch paths resolve to actual module-level attributes?
+- [ ] Test markers: Tests needing real heavy deps have `slow`/`e2e` marker?
+- [ ] External mocks: All external services mocked in integration conftest?

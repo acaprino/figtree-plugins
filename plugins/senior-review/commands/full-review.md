@@ -690,6 +690,10 @@ Agent tool call:
     6. **Security test gaps**: Are security-critical paths tested? Auth, input validation, etc.
     7. **Performance test gaps**: Are performance-critical paths tested? Load testing?
     8. **Integration gaps**: Are interface contracts validated by tests?
+    9. **Test infrastructure design** (Python/pytest): Are heavy dependency mocks (ortools, scipy, prometheus_client, ML libs) centralized in root `tests/conftest.py`? Are there mocks in sub-directory conftest files that should be lifted to root? Root conftest runs first -- sub-conftest is too late if root-level tests trigger collection-time imports.
+    10. **Mock correctness**: Do `monkeypatch.setattr`/`patch` targets resolve to actual module-level attributes? Are lazy-imported functions (imported inside other functions) patched at their DEFINITION site, not usage site? Do mock return values match real API signatures?
+    11. **Test marker discipline**: Do tests requiring real heavy dependencies have `@pytest.mark.slow` or `@pytest.mark.e2e`? Are default `addopts` configured to exclude heavy tests from fast runs (`-m 'not slow and not e2e'`)?
+    12. **External service mock coverage**: Are ALL external services (DB, auth, cloud storage, email, payment, cloud APIs) mocked in integration conftest? Unmocked services cause hangs via credential lookups (google.auth.default, subprocess gcloud) or real API calls. Run `ruff check` on test files to catch import issues.
 
     For each finding, provide:
     - Severity (Critical / High / Medium / Low)

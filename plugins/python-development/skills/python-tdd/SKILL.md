@@ -166,7 +166,9 @@ def test_is_valid_email(input_val, expected):
 ```
 
 ### Mocking
-Patch where the object is used, not where it is defined:
+
+#### Standard imports: patch where used
+When a module imports at the top level (`from X import Y`), patch at the usage site:
 
 ```python
 from unittest.mock import patch, MagicMock
@@ -204,6 +206,22 @@ def test_should_raise_on_network_error(mock_get):
     with pytest.raises(ServiceUnavailableError):
         fetch_data("https://api.example.com/data")
 ```
+
+#### Lazy imports: patch where DEFINED
+When a function is imported inside another function (lazy import), it is NOT a module-level
+attribute at the usage site. You MUST patch at the definition site:
+
+```python
+# WRONG -- AttributeError: module has no attribute 'get_db'
+# (get_db is imported inside process_data(), not at module level)
+monkeypatch.setattr("myapp.services.processor.get_db", mock_db)
+
+# CORRECT -- patch where get_db is defined
+monkeypatch.setattr("myapp.database.get_db", mock_db)
+```
+
+Rule: if `monkeypatch.setattr` raises AttributeError, check whether the target
+is a lazy import. If so, patch the module where the function is defined.
 
 ### Async Testing
 Requires `pytest-asyncio`. Mark async tests and fixtures:
@@ -311,11 +329,61 @@ def test_export_should_write_csv(tmp_path):
 | No assertions in test body | Test always passes, proves nothing | Every test must assert something |
 | Asserting on `mock.called` only | Does not verify correct arguments | Use `assert_called_once_with(expected_args)` |
 | Hardcoded golden values (`== 660`) | Breaks when algorithm improves, not when behavior is wrong | Assert invariants, use `pytest.approx`, or derive expected values from inputs |
+| Heavy mocks in sub-directory conftest | Root tests load real deps first, `sys.modules` guard blocks later mock | Place ALL heavy dependency mocks in root `tests/conftest.py` |
+| Missing markers on heavy-dep tests | Tests break silently when deps are mocked by default | Mark with `@pytest.mark.slow` or custom marker, use `--strict-markers` |
+| Incomplete external service mocking | One unmocked service hangs CI (e.g., `google.auth.default()` subprocess) | Audit ALL external calls before finalizing integration conftest |
+| Patching lazy import at use site | Function not bound at module level, `setattr` target doesn't exist | Patch at definition site when import is inside a function body |
 
-## 6. References
+## 6. Pytest Infrastructure
+
+### conftest Execution Order
+Root `tests/conftest.py` runs FIRST. Sub-directory conftest files run only when their tests are collected.
+
+**Heavy mocks go in root conftest.** If you mock ortools, scipy, prometheus_client, or any large native dependency, do it in root `tests/conftest.py`. Sub-directory conftest mocks are too late -- collection-time imports already loaded the real module.
+
+```python
+# tests/conftest.py (ROOT -- runs first, before any test collection)
+import sys
+from unittest.mock import MagicMock
+
+# Mock heavy native deps BEFORE any test file imports them
+for _mod in ("ortools", "ortools.sat", "ortools.sat.python", "ortools.sat.python.cp_model",
+             "scipy", "scipy.optimize", "prometheus_client"):
+    if _mod not in sys.modules:
+        sys.modules[_mod] = MagicMock()
+```
+
+### Test Marker Discipline
+Tests requiring real heavy dependencies (scipy.optimize, real DB, ML models) must be marked:
+
+```python
+pytestmark = pytest.mark.slow  # module-level
+
+@pytest.mark.slow  # per-test or per-class
+class TestPortionSolver:
+    ...
+```
+
+Default `addopts` in pyproject.toml: `-m 'not slow and not e2e'`
+
+### External Service Mock Completeness
+Every external service the app uses must have a mock in the integration conftest:
+
+| Service | What to mock | Why |
+|---------|-------------|-----|
+| Database | connection/session | Real DB not available in CI |
+| Auth | token verification | No auth server in tests |
+| Cloud storage | upload/download | Calls google.auth.default() -- hangs |
+| Email | send functions | Sends real emails |
+| Payment | charge/refund | Hits real API |
+
+Audit: grep production code for external service imports, verify each has a corresponding mock.
+
+## 7. References
 
 - `references/tdd-best-practices.md` - Full TDD discipline, red-green-refactor workflows, coverage strategies
 - `references/framework-config.md` - pytest configuration, CI/CD integration, pyproject.toml setup
+- `references/pytest-infrastructure.md` - Conftest ordering, heavy dependency mocking, environment safety, mock target decision tree, external service audit
 - [pytest docs](https://docs.pytest.org/)
 - [unittest.mock docs](https://docs.python.org/3/library/unittest.mock.html)
 - [hypothesis docs](https://hypothesis.readthedocs.io/)

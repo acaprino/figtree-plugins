@@ -196,3 +196,28 @@ Reference for defect taxonomy categories 12, 14, 15, and 16.
 - **Fix**: Sanitize CR/LF characters, parameterized log messages (SLF4J `{}`), structured logging (JSON)
 - **Difficulty**: Easy
 - **Signature**: `logger.info("User logged in: " + username)` where username contains `\r\n`
+
+### 16.6 Test Infrastructure Design Flaws
+- **CWE**: N/A
+- **Pattern**: Heavy dependency mocks placed in sub-directory conftest files instead of root conftest; test collection loads real modules into `sys.modules` before sub-conftest runs, breaking `if mod not in sys.modules` guards
+- **Detection**: Grep for mock/patch of heavy deps (ortools, scipy, prometheus_client, ML libs) in sub-directory conftest files; verify root `tests/conftest.py` has them instead
+- **Fix**: Centralize ALL heavy dependency mocks in root `tests/conftest.py` (executed first by pytest); remove duplicates from sub-conftest files
+- **Difficulty**: Medium
+- **Signature**: `sys.modules["ortools"]` in `tests/unit/conftest.py` but NOT in `tests/conftest.py`; root-level test files import modules that depend on heavy libs
+- **Root cause**: pytest collection order -- root conftest runs first, sub-directory conftest files run only when that directory's tests are collected; root-level test files trigger imports during collection before any sub-conftest executes
+
+### 16.7 Environment/Platform Compatibility in Tests
+- **CWE**: N/A
+- **Pattern**: Platform API hangs block test execution; pytest plugins call `platform.platform()`, `platform.processor()`, or similar before any conftest.py runs; native dependencies (scipy, BLAS/Fortran extensions) hang on import due to OS-level service issues (e.g., WMI on Windows 11 + Python 3.13)
+- **Detection**: Check pytest plugin list for plugins that call `platform.*` functions (pyreadline3, pytest-metadata); check for top-level imports of heavy native deps in conftest; test on target platform
+- **Fix**: Monkey-patch platform internals (e.g., `platform._wmi_query`) in test runner script BEFORE `pytest.main()`; mock heavy native deps instead of importing them; use `run_tests.py` wrapper for platform workarounds
+- **Difficulty**: Hard (requires understanding pytest plugin initialization order)
+- **Signature**: pytest hangs indefinitely before any test runs; `platform._wmi_query()` or `import scipy.optimize` blocks; works on Linux but hangs on Windows
+
+### 16.8 Mock Target and Coverage Errors
+- **CWE**: N/A
+- **Pattern**: (A) Lazy import mock targeting -- `monkeypatch.setattr("app.module.func", ...)` fails with AttributeError because `func` is imported inside a function (lazy import), not at module level. Must patch at definition site. (B) Incomplete external service mocking -- integration conftest mocks DB, auth, rate limits but misses other external services (cloud storage, email, payment); unmocked calls trigger real API calls, subprocess spawns, or credential lookups that hang
+- **Detection**: (A) Verify patched path resolves to an actual module-level attribute; check if target function uses lazy imports. (B) Audit all production `import` statements for external services; cross-reference with integration conftest mock list
+- **Fix**: (A) For lazy imports, patch at the module where the function is DEFINED, not where it is used. (B) Add autouse fixtures for every external service in integration conftest
+- **Difficulty**: Medium
+- **Signature**: (A) `AttributeError: <module> does not have the attribute 'func'` in test. (B) Test hangs calling `google.auth.default()`, `subprocess gcloud`, or similar credential/API lookups

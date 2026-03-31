@@ -254,22 +254,27 @@ Agent tool call:
 
     ### Python files (.py)
 
-    Run ruff on EACH changed Python file. Use --select to target dead code
-    and unused parameter rules:
+    Run ruff on EACH changed Python file. Use the project's ruff config
+    first (respects pyproject.toml/ruff.toml rules including isort, style
+    checks, etc.). Only fall back to a manual --select if no config exists:
 
     ```bash
-    ruff check --select F401,F841,F811,ARG001,ARG002,ARG003,ARG004,ARG005 --output-format json <file>
+    # Step 1: Check if project has ruff config
+    # Look for [tool.ruff] in pyproject.toml, or ruff.toml/.ruff.toml
+
+    # Step 2a: If ruff config exists -- use it (catches ALL configured rules)
+    ruff check --output-format json <file>
+
+    # Step 2b: If NO ruff config -- use broad defaults
+    ruff check --select E,F,I,W,ARG --output-format json <file>
     ```
 
-    Rule coverage:
-    - F401: unused imports
-    - F841: unused local variables
-    - F811: redefined unused names
-    - ARG001: unused function arguments
-    - ARG002: unused method arguments
-    - ARG003: unused class method arguments
-    - ARG004: unused static method arguments
-    - ARG005: unused lambda arguments
+    Rule coverage with broad defaults:
+    - E: pycodestyle errors (E402 module-level import not at top, etc.)
+    - F: pyflakes (F401 unused imports, F841 unused variables, F811 redefined names)
+    - I: isort (I001 import sorting)
+    - W: pycodestyle warnings
+    - ARG: unused arguments (ARG001-ARG005)
 
     If ruff is not installed, attempt `pip install ruff` (or `uv pip install ruff`)
     then retry. If installation fails, note it and proceed to Phase 2.

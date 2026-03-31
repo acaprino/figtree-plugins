@@ -106,6 +106,9 @@ Consolidated review knowledge from senior-review agents: architect-review, failu
 | 14 | Inline pattern bypass | Inline constructs bypassing established top-of-file patterns |
 | 15 | Mixed error handling | Multiple error strategies in same file |
 | 16 | Inconsistent null handling | Mixed null/undefined treatment within same module |
+| 17 | Heavy mock in sub-conftest | Mock for large deps (>50MB or native C/Fortran) in sub-directory conftest instead of root `tests/conftest.py` |
+| 18 | Unmarked heavy-dep test | Test requiring real heavy dependency (scipy, ortools, ML models) without `slow`/`e2e` marker |
+| 19 | Mock target on lazy import | `monkeypatch.setattr` path points to usage site, not definition site, for functions imported inside other functions |
 
 ---
 
@@ -121,6 +124,7 @@ Consolidated review knowledge from senior-review agents: architect-review, failu
 | **Systems Architect** | Failure modes, scalability, blast radius |
 | **SRE** | 3 AM breakage risk, debugging difficulty |
 | **Pattern Detective** | Dominant patterns per file, violation scanning |
+| **Test Infrastructure Auditor** | conftest execution order, mock placement (root vs sub-conftest), external service mock coverage, test marker discipline, lazy import mock targeting, environment/platform compatibility |
 
 ---
 
