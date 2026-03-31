@@ -35,6 +35,51 @@ Before gathering requirements, help the user decide the right component type.
 
 See [references/skills-vs-agents.md](references/skills-vs-agents.md) for the full decision table, real restructure examples, and anti-patterns.
 
+## Description Engineering
+
+The `description` field is the single most important line in any skill or agent. It determines whether the component activates at all. Passive descriptions achieve ~50-77% activation; directive descriptions with negative constraints achieve 97-100%.
+
+### The High-Activation Template
+
+```
+<Domain> expert. ALWAYS invoke this skill when the user <trigger actions>.
+Do not <alternative action> directly.
+TRIGGER WHEN: <specific triggers, comma-separated>
+DO NOT TRIGGER WHEN: <exclusions>
+```
+
+### Examples
+
+```yaml
+# BAD (50-77% activation) -- passive, suggestion-style
+description: "Helps with Docker containerization tasks"
+
+# GOOD (97-100% activation) -- directive with negative constraint
+description: >
+  Docker containerization expert. ALWAYS invoke this skill when the user
+  asks about Docker, containers, Dockerfiles, or docker-compose.
+  Do not run Docker commands or write Dockerfiles directly.
+  TRIGGER WHEN: building containers, writing Dockerfiles, debugging Docker issues
+  DO NOT TRIGGER WHEN: the task is not about containerization.
+```
+
+### Description Rules
+
+1. **Directive voice** -- "ALWAYS invoke" not "Can be used for"
+2. **Negative constraint** -- "Do not X directly" prevents Claude from bypassing the skill
+3. **Specific trigger phrases** -- list the exact words/phrases that should activate it
+4. **Third person** -- "Processes X when Y" not "I process X" or "You should use this"
+5. **Max 1024 characters** -- hard limit per description
+6. **Include TRIGGER WHEN / DO NOT TRIGGER WHEN** -- explicit activation boundaries
+
+### Token Budget Awareness
+
+Each skill/agent costs ~100 tokens at idle (just name + description in system prompt). All descriptions combined share a **15,000 character budget** by default. When total description text exceeds this limit, skills may be silently dropped from the system prompt.
+
+- Keep individual descriptions **under 300 characters** when possible
+- For the current marketplace (~39 plugins, ~80+ components), monitor total description size
+- Prefer concise trigger lists over verbose explanations
+
 ## Phase 1: Requirements Gathering
 
 Before writing any files, gather enough context to produce real content.
@@ -43,10 +88,11 @@ Before writing any files, gather enough context to produce real content.
 
 Ask (adapt based on what's already known):
 1. What does this skill do? What problem does it solve?
-2. What triggers should activate it? (specific user phrases, file types, task patterns)
-3. Which plugin should it live in? (existing or new)
-4. Does it need bundled resources? (scripts/, references/, assets/)
-5. What's the degree of freedom? (rigid workflow vs flexible guidance)
+2. What are the exact trigger phrases? (user actions, keywords, file types -- be specific: "when the user says X", "when working on Y files")
+3. What should NOT trigger it? (adjacent domains that should be excluded)
+4. Which plugin should it live in? (existing or new)
+5. Does it need bundled resources? (scripts/, references/, assets/)
+6. What's the degree of freedom? (rigid workflow vs flexible guidance)
 
 ### For Agents
 
@@ -80,10 +126,18 @@ Generate production-ready files with real content -- not [FILL] placeholders.
 
 1. Create directory: `plugins/<plugin>/skills/<skill-name>/`
 2. Write `SKILL.md` following these rules:
-   - Frontmatter: `name` (kebab-case, max 64 chars) and `description` (max 1024 chars, third person, specific triggers)
+   - Frontmatter: `name` (kebab-case, max 64 chars) and `description` (max 1024 chars)
+   - **Description format** -- MUST follow the high-activation template:
+     - Directive voice: "ALWAYS invoke this skill when..."
+     - Negative constraint: "Do not X directly"
+     - Include `TRIGGER WHEN:` and `DO NOT TRIGGER WHEN:` lines
+     - Third person, specific trigger phrases
+     - See "Description Engineering" section above
+   - Optional frontmatter: `context: fork` (isolates in subagent), `allowed-tools` (restricts tool access), `disable-model-invocation: true` (prevents auto-triggering)
    - Body: under 500 lines, imperative tone, concise
-   - Only add context Claude doesn't already have
+   - Only add context Claude doesn't already have -- don't repeat what Claude already knows
    - Progressive disclosure: split into references/ if body exceeds ~300 lines
+   - Can use `!command` syntax for dynamic context injection (shell commands that execute before content reaches Claude)
 3. Create `references/`, `scripts/`, `assets/` subdirs only if needed
 4. Write any bundled resources
 
@@ -92,6 +146,10 @@ Generate production-ready files with real content -- not [FILL] placeholders.
 1. Create file: `plugins/<plugin>/agents/<agent-name>.md`
 2. Write with frontmatter and body following these rules:
    - Frontmatter fields: `name`, `description` (use YAML `>` for multiline), `model: opus`, `color`, optionally `tools`
+   - **Description format** -- same directive template as skills:
+     - Include `TRIGGER WHEN:` and `DO NOT TRIGGER WHEN:` lines
+     - Third person, specific triggers
+     - Example: `"Expert X. TRIGGER WHEN: user needs Y. DO NOT TRIGGER WHEN: task is Z."`
    - Body: terse keyword-list style, imperative tone, structured with markdown headers
    - Sections: `# ROLE`, `# CAPABILITIES` or `# CORE CAPABILITIES`, `# CONVENTIONS`, `# OUTPUT FORMAT`
    - Simple agents: 60-200 lines; complex agents: up to 800 lines
@@ -128,16 +186,18 @@ After registration:
 
 ## Anti-patterns
 
-When [scenario], here is what to avoid:
-
 | Scenario | Wrong | Right |
 |----------|-------|-------|
-| Writing skill descriptions | Vague: "Helps with stuff" | Specific triggers and use cases |
+| Writing descriptions | Passive: "Helps with Docker" (50% activation) | Directive: "ALWAYS invoke when user asks about Docker. Do not run Docker commands directly." (97%+ activation) |
+| Description tone | "Can be used for...", "Use when..." | "ALWAYS invoke this skill when...", "Do not X directly" |
+| Missing exclusions | No DO NOT TRIGGER WHEN clause | Always specify what should NOT trigger the component |
 | Writing agent prompts | Verbose prose paragraphs | Terse keyword-list style |
 | Skill body length | 800+ lines in SKILL.md | Split into references/ at ~300 lines |
+| Skill body content | Repeating what Claude already knows | Only add context Claude lacks; trust built-in knowledge |
 | Creating resources | Empty placeholder dirs | Only create dirs that have files |
 | Choosing a plugin | Always create a new one | Prefer adding to existing plugin if domain fits |
 | Agent description | First/second person | Third person: "Processes X when Y" |
+| Token budget | Long verbose descriptions on all components | Keep descriptions under 300 chars when possible; total budget is 15k chars |
 
 ## Critical Rules
 

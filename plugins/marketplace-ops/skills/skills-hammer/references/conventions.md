@@ -64,16 +64,67 @@ Terse keyword-list style, imperative tone. Standard sections:
 
 Simple agents: 60-200 lines. Complex agents: up to 800 lines.
 
+## Description Format (Skills and Agents)
+
+The description is the single most important line. It determines activation rate.
+
+### High-Activation Template (97-100%)
+
+```yaml
+# Skill description
+description: >
+  "<Domain summary>" argument-hint: "<usage hint>".
+  TRIGGER WHEN: <specific triggers, comma-separated>
+  DO NOT TRIGGER WHEN: <exclusions>.
+
+# Agent description (multiline with >)
+description: >
+  <Domain> expert for <specific tasks>.
+  TRIGGER WHEN: the user requires assistance with <triggers>.
+  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
+```
+
+### Rules
+
+- **Directive voice** -- "ALWAYS invoke" or imperative triggers, not "Can be used for"
+- **Negative constraint** -- "Do not X directly" prevents Claude from bypassing
+- **TRIGGER WHEN / DO NOT TRIGGER WHEN** -- explicit activation boundaries
+- **Third person** -- "Processes X when Y" not "I process X"
+- **Max 1024 characters** per description
+- **Under 300 characters** recommended (token budget)
+- **Specific trigger phrases** -- list exact words/actions that should activate
+
+### Low-Activation Anti-patterns
+
+- "Helps with stuff" -- vague, no triggers
+- "Use when working with Docker" -- passive suggestion, Claude bypasses it
+- "Docker expert for containerization" -- no negative constraint, no trigger phrases
+- Missing DO NOT TRIGGER WHEN -- causes false activations on adjacent domains
+
+## Token Budget
+
+- Each skill/agent costs ~100 tokens at idle (name + description in system prompt)
+- All descriptions share a **15,000 character** budget by default
+- When total exceeds limit, components may be silently dropped
+- Monitor with: `grep -o 'description:.*' marketplace.json | wc -c`
+
 ## Skill SKILL.md Structure
 
 ```yaml
 ---
 name: skill-name
 description: >
-  Third-person description with specific triggers.
-  Include WHEN to use and WHAT it does.
+  "<What it does>" argument-hint: "<usage hint>".
+  TRIGGER WHEN: <triggers>.
+  DO NOT TRIGGER WHEN: <exclusions>.
 ---
 ```
 
 Body: under 500 lines, imperative tone, only context Claude lacks.
 Progressive disclosure: split into references/ when exceeding ~300 lines.
+
+### Optional Frontmatter Fields
+
+- `context: fork` -- runs skill in isolated subagent context
+- `allowed-tools` -- restricts which tools the skill can use
+- `disable-model-invocation: true` -- prevents auto-triggering (slash-command only)
