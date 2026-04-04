@@ -1,5 +1,5 @@
 {
-  "description": "ACP session hooks -- startup logo, skill awareness, security gate, autocompact, brainstorm gate, review gate, docs gate, and team spawn gate",
+  "description": "ACP session hooks -- skill awareness, security gate, autocompact, brainstorm gate, review gate, docs gate, and team spawn gate",
   "hooks": {
     "PreToolUse": [
       {
@@ -46,11 +46,6 @@
     "SessionStart": [
       {
         "hooks": [
-          {
-            "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/handlers/acp-logo.js\"",
-            "timeout": 5
-          },
           {
             "type": "command",
             "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/handlers/skill-awareness.js\"",
