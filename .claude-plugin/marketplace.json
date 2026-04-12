@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Custom development workflow agents and skills for code quality, Tauri/Rust development, frontend optimization, AI tooling, and constraint programming optimization",
-    "version": "5.17.0"
+    "version": "5.21.0"
   },
   "plugins": [
     {
@@ -93,7 +93,7 @@
       "name": "frontend",
       "source": "./plugins/frontend",
       "description": "UI polishing, UX design, comprehensive CSS (BEM, CSS Modules, SASS, accessibility, cross-browser), layout design, daisyUI components, Radix UI primitives and themes, and premium web consulting",
-      "version": "3.8.0",
+      "version": "3.9.0",
       "author": {
         "name": "Alfio"
       },
@@ -140,7 +140,7 @@
       "name": "react-development",
       "source": "./plugins/react-development",
       "description": "React performance optimization, React 19 API adoption, state management audit, bundle analysis, re-render detection, and Vercel best practices checklist",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "author": {
         "name": "Alfio"
       },
@@ -837,7 +837,7 @@
       "name": "prompt-improver",
       "source": "./plugins/prompt-improver",
       "description": "Intelligent prompt optimization -- enriches vague prompts with research-based clarifying questions before Claude Code executes them",
-      "version": "0.6.0",
+      "version": "0.7.0",
       "author": {
         "name": "severity1"
       },
@@ -1257,7 +1257,7 @@
       "name": "agent-teams",
       "source": "./plugins/agent-teams",
       "description": "Orchestrate multi-agent teams for parallel code review, hypothesis-driven debugging, and coordinated feature development using Claude Code Agent Teams",
-      "version": "2.4.0",
+      "version": "2.5.0",
       "author": {
         "name": "Seth Hobson"
       },

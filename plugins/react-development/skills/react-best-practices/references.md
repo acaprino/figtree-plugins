@@ -1,3 +1,4 @@
+<!-- Source: vercel-labs/agent-skills - skills/react-best-practices/AGENTS.md -->
 # React Best Practices
 
 **Version 1.0.0**  
@@ -20,34 +21,36 @@ Comprehensive performance optimization guide for React and Next.js applications,
 
 ## Table of Contents
 
-1. [Eliminating Waterfalls](#1-eliminating-waterfalls) — **CRITICAL**
-   - 1.1 [Defer Await Until Needed](#11-defer-await-until-needed)
-   - 1.2 [Dependency-Based Parallelization](#12-dependency-based-parallelization)
-   - 1.3 [Prevent Waterfall Chains in API Routes](#13-prevent-waterfall-chains-in-api-routes)
-   - 1.4 [Promise.all() for Independent Operations](#14-promiseall-for-independent-operations)
-   - 1.5 [Strategic Suspense Boundaries](#15-strategic-suspense-boundaries)
-2. [Bundle Size Optimization](#2-bundle-size-optimization) — **CRITICAL**
+1. [Eliminating Waterfalls](#1-eliminating-waterfalls) -- **CRITICAL**
+   - 1.1 [Check Cheap Conditions Before Async Flags](#11-check-cheap-conditions-before-async-flags)
+   - 1.2 [Defer Await Until Needed](#12-defer-await-until-needed)
+   - 1.3 [Dependency-Based Parallelization](#13-dependency-based-parallelization)
+   - 1.4 [Prevent Waterfall Chains in API Routes](#14-prevent-waterfall-chains-in-api-routes)
+   - 1.5 [Promise.all() for Independent Operations](#15-promiseall-for-independent-operations)
+   - 1.6 [Strategic Suspense Boundaries](#16-strategic-suspense-boundaries)
+2. [Bundle Size Optimization](#2-bundle-size-optimization) -- **CRITICAL**
    - 2.1 [Avoid Barrel File Imports](#21-avoid-barrel-file-imports)
    - 2.2 [Conditional Module Loading](#22-conditional-module-loading)
    - 2.3 [Defer Non-Critical Third-Party Libraries](#23-defer-non-critical-third-party-libraries)
    - 2.4 [Dynamic Imports for Heavy Components](#24-dynamic-imports-for-heavy-components)
    - 2.5 [Preload Based on User Intent](#25-preload-based-on-user-intent)
-3. [Server-Side Performance](#3-server-side-performance) — **HIGH**
+3. [Server-Side Performance](#3-server-side-performance) -- **HIGH**
    - 3.1 [Authenticate Server Actions Like API Routes](#31-authenticate-server-actions-like-api-routes)
    - 3.2 [Avoid Duplicate Serialization in RSC Props](#32-avoid-duplicate-serialization-in-rsc-props)
-   - 3.3 [Cross-Request LRU Caching](#33-cross-request-lru-caching)
-   - 3.4 [Hoist Static I/O to Module Level](#34-hoist-static-io-to-module-level)
-   - 3.5 [Minimize Serialization at RSC Boundaries](#35-minimize-serialization-at-rsc-boundaries)
-   - 3.6 [Parallel Data Fetching with Component Composition](#36-parallel-data-fetching-with-component-composition)
-   - 3.7 [Parallel Nested Data Fetching](#37-parallel-nested-data-fetching)
-   - 3.8 [Per-Request Deduplication with React.cache()](#38-per-request-deduplication-with-reactcache)
-   - 3.9 [Use after() for Non-Blocking Operations](#39-use-after-for-non-blocking-operations)
-4. [Client-Side Data Fetching](#4-client-side-data-fetching) — **MEDIUM-HIGH**
+   - 3.3 [Avoid Shared Module State for Request Data](#33-avoid-shared-module-state-for-request-data)
+   - 3.4 [Cross-Request LRU Caching](#34-cross-request-lru-caching)
+   - 3.5 [Hoist Static I/O to Module Level](#35-hoist-static-io-to-module-level)
+   - 3.6 [Minimize Serialization at RSC Boundaries](#36-minimize-serialization-at-rsc-boundaries)
+   - 3.7 [Parallel Data Fetching with Component Composition](#37-parallel-data-fetching-with-component-composition)
+   - 3.8 [Parallel Nested Data Fetching](#38-parallel-nested-data-fetching)
+   - 3.9 [Per-Request Deduplication with React.cache()](#39-per-request-deduplication-with-reactcache)
+   - 3.10 [Use after() for Non-Blocking Operations](#310-use-after-for-non-blocking-operations)
+4. [Client-Side Data Fetching](#4-client-side-data-fetching) -- **MEDIUM-HIGH**
    - 4.1 [Deduplicate Global Event Listeners](#41-deduplicate-global-event-listeners)
    - 4.2 [Use Passive Event Listeners for Scrolling Performance](#42-use-passive-event-listeners-for-scrolling-performance)
    - 4.3 [Use SWR for Automatic Deduplication](#43-use-swr-for-automatic-deduplication)
    - 4.4 [Version and Minimize localStorage Data](#44-version-and-minimize-localstorage-data)
-5. [Re-render Optimization](#5-re-render-optimization) — **MEDIUM**
+5. [Re-render Optimization](#5-re-render-optimization) -- **MEDIUM**
    - 5.1 [Calculate Derived State During Rendering](#51-calculate-derived-state-during-rendering)
    - 5.2 [Defer State Reads to Usage Point](#52-defer-state-reads-to-usage-point)
    - 5.3 [Do not wrap a simple expression with a primitive result type in useMemo](#53-do-not-wrap-a-simple-expression-with-a-primitive-result-type-in-usememo)
@@ -63,7 +66,7 @@ Comprehensive performance optimization guide for React and Next.js applications,
    - 5.13 [Use Transitions for Non-Urgent Updates](#513-use-transitions-for-non-urgent-updates)
    - 5.14 [Use useDeferredValue for Expensive Derived Renders](#514-use-usedeferredvalue-for-expensive-derived-renders)
    - 5.15 [Use useRef for Transient Values](#515-use-useref-for-transient-values)
-6. [Rendering Performance](#6-rendering-performance) — **MEDIUM**
+6. [Rendering Performance](#6-rendering-performance) -- **MEDIUM**
    - 6.1 [Animate SVG Wrapper Instead of SVG Element](#61-animate-svg-wrapper-instead-of-svg-element)
    - 6.2 [CSS content-visibility for Long Lists](#62-css-content-visibility-for-long-lists)
    - 6.3 [Hoist Static JSX Elements](#63-hoist-static-jsx-elements)
@@ -75,7 +78,7 @@ Comprehensive performance optimization guide for React and Next.js applications,
    - 6.9 [Use Explicit Conditional Rendering](#69-use-explicit-conditional-rendering)
    - 6.10 [Use React DOM Resource Hints](#610-use-react-dom-resource-hints)
    - 6.11 [Use useTransition Over Manual Loading States](#611-use-usetransition-over-manual-loading-states)
-7. [JavaScript Performance](#7-javascript-performance) — **LOW-MEDIUM**
+7. [JavaScript Performance](#7-javascript-performance) -- **LOW-MEDIUM**
    - 7.1 [Avoid Layout Thrashing](#71-avoid-layout-thrashing)
    - 7.2 [Build Index Maps for Repeated Lookups](#72-build-index-maps-for-repeated-lookups)
    - 7.3 [Cache Property Access in Loops](#73-cache-property-access-in-loops)
@@ -90,10 +93,11 @@ Comprehensive performance optimization guide for React and Next.js applications,
    - 7.12 [Use Loop for Min/Max Instead of Sort](#712-use-loop-for-minmax-instead-of-sort)
    - 7.13 [Use Set/Map for O(1) Lookups](#713-use-setmap-for-o1-lookups)
    - 7.14 [Use toSorted() Instead of sort() for Immutability](#714-use-tosorted-instead-of-sort-for-immutability)
-8. [Advanced Patterns](#8-advanced-patterns) — **LOW**
-   - 8.1 [Initialize App Once, Not Per Mount](#81-initialize-app-once-not-per-mount)
-   - 8.2 [Store Event Handlers in Refs](#82-store-event-handlers-in-refs)
-   - 8.3 [useEffectEvent for Stable Callback Refs](#83-useeffectevent-for-stable-callback-refs)
+8. [Advanced Patterns](#8-advanced-patterns) -- **LOW**
+   - 8.1 [Do Not Put Effect Events in Dependency Arrays](#81-do-not-put-effect-events-in-dependency-arrays)
+   - 8.2 [Initialize App Once, Not Per Mount](#82-initialize-app-once-not-per-mount)
+   - 8.3 [Store Event Handlers in Refs](#83-store-event-handlers-in-refs)
+   - 8.4 [useEffectEvent for Stable Callback Refs](#84-useeffectevent-for-stable-callback-refs)
 
 ---
 
@@ -103,7 +107,40 @@ Comprehensive performance optimization guide for React and Next.js applications,
 
 Waterfalls are the #1 performance killer. Each sequential await adds full network latency. Eliminating them yields the largest gains.
 
-### 1.1 Defer Await Until Needed
+### 1.1 Check Cheap Conditions Before Async Flags
+
+**Impact: HIGH (avoids unnecessary async work when a synchronous guard already fails)**
+
+When a branch uses `await` for a flag or remote value and also requires a **cheap synchronous** condition (local props, request metadata, already-loaded state), evaluate the cheap condition **first**. Otherwise you pay for the async call even when the compound condition can never be true.
+
+This is a specialization of [Defer Await Until Needed](./async-defer-await.md) for `flag && cheapCondition` style checks.
+
+**Incorrect:**
+
+```typescript
+const someFlag = await getFlag()
+
+if (someFlag && someCondition) {
+  // ...
+}
+```
+
+**Correct:**
+
+```typescript
+if (someCondition) {
+  const someFlag = await getFlag()
+  if (someFlag) {
+    // ...
+  }
+}
+```
+
+This matters when `getFlag` hits the network, a feature-flag service, or `React.cache` / DB work: skipping it when `someCondition` is false removes that cost on the cold path.
+
+Keep the original order if `someCondition` is expensive, depends on the flag, or you must run side effects in a fixed order.
+
+### 1.2 Defer Await Until Needed
 
 **Impact: HIGH (avoids blocking unused code paths)**
 
@@ -179,7 +216,9 @@ async function updateResource(resourceId: string, userId: string) {
 
 This optimization is especially valuable when the skipped branch is frequently taken, or when the deferred operation is expensive.
 
-### 1.2 Dependency-Based Parallelization
+For `await getFlag()` combined with a cheap synchronous guard (`flag && someCondition`), see [Check Cheap Conditions Before Async Flags](./async-cheap-condition-before-await.md).
+
+### 1.3 Dependency-Based Parallelization
 
 **Impact: CRITICAL (2-10× improvement)**
 
@@ -226,7 +265,7 @@ We can also create all the promises first, and do `Promise.all()` at the end.
 
 Reference: [https://github.com/shuding/better-all](https://github.com/shuding/better-all)
 
-### 1.3 Prevent Waterfall Chains in API Routes
+### 1.4 Prevent Waterfall Chains in API Routes
 
 **Impact: CRITICAL (2-10× improvement)**
 
@@ -260,7 +299,7 @@ export async function GET(request: Request) {
 
 For operations with more complex dependency chains, use `better-all` to automatically maximize parallelism (see Dependency-Based Parallelization).
 
-### 1.4 Promise.all() for Independent Operations
+### 1.5 Promise.all() for Independent Operations
 
 **Impact: CRITICAL (2-10× improvement)**
 
@@ -284,7 +323,7 @@ const [user, posts, comments] = await Promise.all([
 ])
 ```
 
-### 1.5 Strategic Suspense Boundaries
+### 1.6 Strategic Suspense Boundaries
 
 **Impact: HIGH (faster initial paint)**
 
@@ -378,7 +417,7 @@ Both components share the same promise, so only one fetch occurs. Layout renders
 
 - Small, fast queries where suspense overhead isn't worth it
 
-- When you want to avoid layout shift (loading → content jump)
+- When you want to avoid layout shift (loading -> content jump)
 
 **Trade-off:** Faster initial paint vs potential layout shift. Choose based on your UX priorities.
 
@@ -588,83 +627,6 @@ The `typeof window !== 'undefined'` check prevents bundling preloaded modules fo
 
 ---
 
-### bundle-manual-chunks: Manual Chunk Splitting Strategy
-
-Configure `build.rollupOptions.output.manualChunks` to split large vendor bundles into cacheable chunks. Without this, Vite may produce a single vendor chunk that exceeds 500 KB, hurting initial load and cache invalidation.
-
-**Incorrect (single vendor chunk, 800KB+):**
-
-```ts
-// vite.config.ts
-export default defineConfig({
-  build: {
-    // No chunk strategy -- everything lands in one vendor chunk
-  }
-})
-```
-
-**Correct (vendor splitting by domain):**
-
-```ts
-// vite.config.ts
-export default defineConfig({
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-          'vendor-charts': ['recharts', 'd3-scale', 'd3-shape'],
-          'vendor-state': ['zustand', '@tanstack/react-query'],
-          'vendor-ui': ['@radix-ui/react-dialog', '@radix-ui/react-popover'],
-        }
-      }
-    }
-  }
-})
-```
-
-**Function-based splitting for route isolation:**
-
-```ts
-// vite.config.ts
-export default defineConfig({
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            if (id.includes('react')) return 'vendor-react'
-            if (id.includes('recharts') || id.includes('d3-')) return 'vendor-charts'
-            return 'vendor-misc'
-          }
-        }
-      }
-    }
-  }
-})
-```
-
-**When to split:**
-- Any chunk exceeding 500 KB (Vite warns at this threshold)
-- Vendor libraries updated on different cadences (React vs charting vs state)
-- Route-specific heavy dependencies (e.g. editor only on `/settings`)
-
-**When NOT to split:**
-- Small apps under 200 KB total -- splitting adds HTTP overhead
-- Libraries always loaded together -- splitting them wastes parallel requests
-
-**Analyze before splitting:**
-
-```bash
-npx vite-bundle-visualizer
-# or
-npx source-map-explorer dist/assets/*.js
-```
-
-Combine with `bundle-dynamic-imports` for route-level lazy loading and `bundle-preload` for critical chunk prefetching.
-
----
-
 ## 3. Server-Side Performance
 
 **Impact: HIGH**
@@ -675,7 +637,7 @@ Optimizing server-side rendering and data fetching eliminates server-side waterf
 
 **Impact: CRITICAL (prevents unauthorized access to server mutations)**
 
-Server Actions (functions with `"use server"`) are exposed as public endpoints, just like API routes. Always verify authentication and authorization **inside** each Server Action—do not rely solely on middleware, layout guards, or page-level checks, as Server Actions can be invoked directly.
+Server Actions (functions with `"use server"`) are exposed as public endpoints, just like API routes. Always verify authentication and authorization **inside** each Server Action--do not rely solely on middleware, layout guards, or page-level checks, as Server Actions can be invoked directly.
 
 Next.js documentation explicitly states: "Treat Server Actions with the same security considerations as public-facing API endpoints, and verify if the user is allowed to perform a mutation."
 
@@ -765,7 +727,7 @@ Reference: [https://nextjs.org/docs/app/guides/authentication](https://nextjs.or
 
 **Impact: LOW (reduces network payload by avoiding duplicate serialization)**
 
-RSC→client serialization deduplicates by object reference, not value. Same reference = serialized once; new reference = serialized again. Do transformations (`.toSorted()`, `.filter()`, `.map()`) in client, not server.
+RSC->client serialization deduplicates by object reference, not value. Same reference = serialized once; new reference = serialized again. Do transformations (`.toSorted()`, `.filter()`, `.map()`) in client, not server.
 
 **Incorrect: duplicates array**
 
@@ -822,7 +784,55 @@ Deduplication works recursively. Impact varies by data type:
 
 **Exception:** Pass derived data when transformation is expensive or client doesn't need original.
 
-### 3.3 Cross-Request LRU Caching
+### 3.3 Avoid Shared Module State for Request Data
+
+**Impact: HIGH (prevents concurrency bugs and request data leaks)**
+
+For React Server Components and client components rendered during SSR, avoid using mutable module-level variables to share request-scoped data. Server renders can run concurrently in the same process. If one render writes to shared module state and another render reads it, you can get race conditions, cross-request contamination, and security bugs where one user's data appears in another user's response.
+
+Treat module scope on the server as process-wide shared memory, not request-local state.
+
+**Incorrect: request data leaks across concurrent renders**
+
+```tsx
+let currentUser: User | null = null
+
+export default async function Page() {
+  currentUser = await auth()
+  return <Dashboard />
+}
+
+async function Dashboard() {
+  return <div>{currentUser?.name}</div>
+}
+```
+
+If two requests overlap, request A can set `currentUser`, then request B overwrites it before request A finishes rendering `Dashboard`.
+
+**Correct: keep request data local to the render tree**
+
+```tsx
+export default async function Page() {
+  const user = await auth()
+  return <Dashboard user={user} />
+}
+
+function Dashboard({ user }: { user: User | null }) {
+  return <div>{user?.name}</div>
+}
+```
+
+Safe exceptions:
+
+- Immutable static assets or config loaded once at module scope
+
+- Shared caches intentionally designed for cross-request reuse and keyed correctly
+
+- Process-wide singletons that do not store request- or user-specific mutable data
+
+For static assets and config, see [Hoist Static I/O to Module Level](./server-hoist-static-io.md).
+
+### 3.4 Cross-Request LRU Caching
 
 **Impact: HIGH (caches across requests)**
 
@@ -859,7 +869,7 @@ Use when sequential user actions hit multiple endpoints needing the same data wi
 
 Reference: [https://github.com/isaacs/node-lru-cache](https://github.com/isaacs/node-lru-cache)
 
-### 3.4 Hoist Static I/O to Module Level
+### 3.5 Hoist Static I/O to Module Level
 
 **Impact: HIGH (avoids repeated file/network I/O per request)**
 
@@ -867,13 +877,123 @@ When loading static assets (fonts, logos, images, config files) in route handler
 
 **Incorrect: reads font file on every request**
 
+```typescript
+// app/api/og/route.tsx
+import { ImageResponse } from 'next/og'
+
+export async function GET(request: Request) {
+  // Runs on EVERY request - expensive!
+  const fontData = await fetch(
+    new URL('./fonts/Inter.ttf', import.meta.url)
+  ).then(res => res.arrayBuffer())
+
+  const logoData = await fetch(
+    new URL('./images/logo.png', import.meta.url)
+  ).then(res => res.arrayBuffer())
+
+  return new ImageResponse(
+    <div style={{ fontFamily: 'Inter' }}>
+      <img src={logoData} />
+      Hello World
+    </div>,
+    { fonts: [{ name: 'Inter', data: fontData }] }
+  )
+}
+```
+
 **Correct: loads once at module initialization**
 
-**Alternative: synchronous file reads with Node.js fs**
+```typescript
+// app/api/og/route.tsx
+import { ImageResponse } from 'next/og'
 
-**General Node.js example: loading config or templates**
+// Module-level: runs ONCE when module is first imported
+const fontData = fetch(
+  new URL('./fonts/Inter.ttf', import.meta.url)
+).then(res => res.arrayBuffer())
 
-**When to use this pattern:**
+const logoData = fetch(
+  new URL('./images/logo.png', import.meta.url)
+).then(res => res.arrayBuffer())
+
+export async function GET(request: Request) {
+  // Await the already-started promises
+  const [font, logo] = await Promise.all([fontData, logoData])
+
+  return new ImageResponse(
+    <div style={{ fontFamily: 'Inter' }}>
+      <img src={logo} />
+      Hello World
+    </div>,
+    { fonts: [{ name: 'Inter', data: font }] }
+  )
+}
+```
+
+**Correct: synchronous fs at module level**
+
+```typescript
+// app/api/og/route.tsx
+import { ImageResponse } from 'next/og'
+import { readFileSync } from 'fs'
+import { join } from 'path'
+
+// Synchronous read at module level - blocks only during module init
+const fontData = readFileSync(
+  join(process.cwd(), 'public/fonts/Inter.ttf')
+)
+
+const logoData = readFileSync(
+  join(process.cwd(), 'public/images/logo.png')
+)
+
+export async function GET(request: Request) {
+  return new ImageResponse(
+    <div style={{ fontFamily: 'Inter' }}>
+      <img src={logoData} />
+      Hello World
+    </div>,
+    { fonts: [{ name: 'Inter', data: fontData }] }
+  )
+}
+```
+
+**Incorrect: reads config on every call**
+
+```typescript
+import fs from 'node:fs/promises'
+
+export async function processRequest(data: Data) {
+  const config = JSON.parse(
+    await fs.readFile('./config.json', 'utf-8')
+  )
+  const template = await fs.readFile('./template.html', 'utf-8')
+
+  return render(template, data, config)
+}
+```
+
+**Correct: hoists config and template to module level**
+
+```typescript
+import fs from 'node:fs/promises'
+
+const configPromise = fs
+  .readFile('./config.json', 'utf-8')
+  .then(JSON.parse)
+const templatePromise = fs.readFile('./template.html', 'utf-8')
+
+export async function processRequest(data: Data) {
+  const [config, template] = await Promise.all([
+    configPromise,
+    templatePromise,
+  ])
+
+  return render(template, data, config)
+}
+```
+
+When to use this pattern:
 
 - Loading fonts for OG image generation
 
@@ -885,7 +1005,7 @@ When loading static assets (fonts, logos, images, config files) in route handler
 
 - Any static asset that's the same across all requests
 
-**When NOT to use this pattern:**
+When not to use this pattern:
 
 - Assets that vary per request or user
 
@@ -895,11 +1015,11 @@ When loading static assets (fonts, logos, images, config files) in route handler
 
 - Sensitive data that shouldn't persist in memory
 
-**With Vercel's [Fluid Compute](https://vercel.com/docs/fluid-compute):** Module-level caching is especially effective because multiple concurrent requests share the same function instance. The static assets stay loaded in memory across requests without cold start penalties.
+With Vercel's [Fluid Compute](https://vercel.com/docs/fluid-compute), module-level caching is especially effective because multiple concurrent requests share the same function instance. The static assets stay loaded in memory across requests without cold start penalties.
 
-**In traditional serverless:** Each cold start re-executes module-level code, but subsequent warm invocations reuse the loaded assets until the instance is recycled.
+In traditional serverless, each cold start re-executes module-level code, but subsequent warm invocations reuse the loaded assets until the instance is recycled.
 
-### 3.5 Minimize Serialization at RSC Boundaries
+### 3.6 Minimize Serialization at RSC Boundaries
 
 **Impact: HIGH (reduces data transfer size)**
 
@@ -933,7 +1053,7 @@ function Profile({ name }: { name: string }) {
 }
 ```
 
-### 3.6 Parallel Data Fetching with Component Composition
+### 3.7 Parallel Data Fetching with Component Composition
 
 **Impact: CRITICAL (eliminates server-side waterfalls)**
 
@@ -1012,7 +1132,7 @@ export default function Page() {
 }
 ```
 
-### 3.7 Parallel Nested Data Fetching
+### 3.8 Parallel Nested Data Fetching
 
 **Impact: CRITICAL (eliminates server-side waterfalls)**
 
@@ -1042,7 +1162,7 @@ const chatAuthors = await Promise.all(
 
 Each item independently chains `getChat` -> `getUser`, so a slow chat doesn't block author fetches for the others.
 
-### 3.8 Per-Request Deduplication with React.cache()
+### 3.9 Per-Request Deduplication with React.cache()
 
 **Impact: MEDIUM (deduplicates within request)**
 
@@ -1108,7 +1228,7 @@ Use `React.cache()` to deduplicate these operations across your component tree.
 
 Reference: [https://react.dev/reference/react/cache](https://react.dev/reference/react/cache)
 
-### 3.9 Use after() for Non-Blocking Operations
+### 3.10 Use after() for Non-Blocking Operations
 
 **Impact: MEDIUM (faster response times)**
 
@@ -1879,7 +1999,7 @@ function TodoList() {
 }
 ```
 
-The first callback is recreated every time `items` changes, which can cause child components to re-render unnecessarily. The second callback has a stale closure bug—it will always reference the initial `items` value.
+The first callback is recreated every time `items` changes, which can cause child components to re-render unnecessarily. The second callback has a stale closure bug--it will always reference the initial `items` value.
 
 **Correct: stable callbacks, no stale closures**
 
@@ -2800,7 +2920,7 @@ function processOrders(orders: Order[], users: User[]) {
 
 Build map once (O(n)), then all lookups are O(1).
 
-For 1000 orders × 1000 users: 1M ops → 2K ops.
+For 1000 orders × 1000 users: 1M ops -> 2K ops.
 
 ### 7.3 Cache Property Access in Loops
 
@@ -3457,7 +3577,59 @@ const sorted = [...items].sort((a, b) => a.value - b.value)
 
 Advanced patterns for specific cases that require careful implementation.
 
-### 8.1 Initialize App Once, Not Per Mount
+### 8.1 Do Not Put Effect Events in Dependency Arrays
+
+**Impact: LOW (avoids unnecessary effect re-runs and lint errors)**
+
+Effect Event functions do not have a stable identity. Their identity intentionally changes on every render. Do not include the function returned by `useEffectEvent` in a `useEffect` dependency array. Keep the actual reactive values as dependencies and call the Effect Event from inside the effect body or subscriptions created by that effect.
+
+**Incorrect: Effect Event added as a dependency**
+
+```tsx
+import { useEffect, useEffectEvent } from 'react'
+
+function ChatRoom({ roomId, onConnected }: {
+  roomId: string
+  onConnected: () => void
+}) {
+  const handleConnected = useEffectEvent(onConnected)
+
+  useEffect(() => {
+    const connection = createConnection(roomId)
+    connection.on('connected', handleConnected)
+    connection.connect()
+
+    return () => connection.disconnect()
+  }, [roomId, handleConnected])
+}
+```
+
+Including the Effect Event in dependencies makes the effect re-run every render and triggers the React Hooks lint rule.
+
+**Correct: depend on reactive values, not the Effect Event**
+
+```tsx
+import { useEffect, useEffectEvent } from 'react'
+
+function ChatRoom({ roomId, onConnected }: {
+  roomId: string
+  onConnected: () => void
+}) {
+  const handleConnected = useEffectEvent(onConnected)
+
+  useEffect(() => {
+    const connection = createConnection(roomId)
+    connection.on('connected', handleConnected)
+    connection.connect()
+
+    return () => connection.disconnect()
+  }, [roomId])
+}
+```
+
+Reference: [https://react.dev/reference/react/useEffectEvent#effect-event-in-deps](https://react.dev/reference/react/useEffectEvent#effect-event-in-deps)
+
+### 8.2 Initialize App Once, Not Per Mount
 
 **Impact: LOW-MEDIUM (avoids duplicate init in development)**
 
@@ -3495,7 +3667,7 @@ function Comp() {
 
 Reference: [https://react.dev/learn/you-might-not-need-an-effect#initializing-the-application](https://react.dev/learn/you-might-not-need-an-effect#initializing-the-application)
 
-### 8.2 Store Event Handlers in Refs
+### 8.3 Store Event Handlers in Refs
 
 **Impact: LOW (stable subscriptions)**
 
@@ -3531,7 +3703,7 @@ function useWindowEvent(event: string, handler: (e) => void) {
 
 `useEffectEvent` provides a cleaner API for the same pattern: it creates a stable function reference that always calls the latest version of the handler.
 
-### 8.3 useEffectEvent for Stable Callback Refs
+### 8.4 useEffectEvent for Stable Callback Refs
 
 **Impact: LOW (prevents effect re-runs)**
 

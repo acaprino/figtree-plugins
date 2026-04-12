@@ -25,12 +25,21 @@ Spawn a multi-agent team using preset configurations or custom composition. Hand
 
 If a preset is specified, use these configurations:
 
-**`review`** -- Multi-dimensional code review using specialized reviewers (default: 3 members)
+**`review`** -- Multi-dimensional code review with context-aware dimension selection (default: 3-9 members)
 
-- Spawn specialized agents per dimension (prefer marketplace experts over generic team-reviewer):
-  - Security: `senior-review:security-auditor`
-  - Architecture: `senior-review:code-auditor`
-  - Performance: `react-development:react-performance-optimizer` (React) or `agent-teams:team-reviewer` (general)
+- **Always-on** (3 agents): security (`senior-review:security-auditor`), architecture (`senior-review:code-auditor`), dead-code (`general-purpose`)
+- **Conditional** (auto-detected from changed files and codebase context):
+  - UI files (.tsx/.jsx/.vue/.svelte) detected: + `senior-review:ui-race-auditor`
+  - React project + .tsx/.jsx changed: + `react-development:react-performance-optimizer`
+  - Non-React frontend: + `agent-teams:team-reviewer` (performance)
+  - Fullstack app (2+ signals): + `platform-engineering:platform-reviewer`
+  - Multi-service / messaging patterns: + `senior-review:distributed-flow-auditor`
+  - Startup/init code changed: + `senior-review:chicken-egg-detector`
+  - Test files changed: + `agent-teams:team-reviewer` (testing)
+  - API route/schema files changed: + `agent-teams:team-reviewer` (API contracts)
+  - Migration files changed: + `agent-teams:team-reviewer` (data migrations)
+- Override with `--reviewers` for explicit dimension list, or `--all` to force all dimensions
+- See `/team-review` for full detection rules and agent prompts
 - Team name default: `review-team`
 
 **`debug`** -- Competing hypotheses debugging (default: 3 members)
@@ -199,9 +208,17 @@ Use the **most specialized agent** available. The team-lead's Ecosystem Integrat
 
 | Preset | Role | Default subagent_type | Preferred specialist (when applicable) |
 |--------|------|-----------------------|----------------------------------------|
-| review | security | `agent-teams:team-reviewer` | `senior-review:security-auditor` |
-| review | architecture | `agent-teams:team-reviewer` | `senior-review:code-auditor` |
-| review | performance | `agent-teams:team-reviewer` | `react-development:react-performance-optimizer` (React) |
+| review | security (always) | -- | `senior-review:security-auditor` |
+| review | architecture (always) | -- | `senior-review:code-auditor` |
+| review | dead-code (always) | -- | `general-purpose` |
+| review | ui-races (conditional) | -- | `senior-review:ui-race-auditor` |
+| review | react-perf (conditional) | -- | `react-development:react-performance-optimizer` |
+| review | platform (conditional) | -- | `platform-engineering:platform-reviewer` |
+| review | distributed (conditional) | -- | `senior-review:distributed-flow-auditor` |
+| review | chicken-egg (conditional) | -- | `senior-review:chicken-egg-detector` |
+| review | testing (conditional) | -- | `agent-teams:team-reviewer` |
+| review | API contracts (conditional) | -- | `agent-teams:team-reviewer` |
+| review | migrations (conditional) | -- | `agent-teams:team-reviewer` |
 | debug | investigator | `agent-teams:team-debugger` | -- |
 | feature | lead | `agent-teams:team-lead` | -- |
 | feature | implementer | `agent-teams:team-implementer` | `python-development:python-engineer`, `frontend:frontend-engineer`, `tauri-development:rust-engineer` |

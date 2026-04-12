@@ -1,3 +1,5 @@
+<!-- upstream: severity1/claude-code-prompt-improver - skills/prompt-improver/references/question-patterns.md -->
+
 # Question Patterns for Effective Clarification
 
 This reference provides templates, patterns, and best practices for formulating clarifying questions that are grounded in research and lead to actionable answers.
@@ -201,6 +203,29 @@ Before formulating questions, verify:
 }
 ```
 
+**Template 2: Architectural Pattern**
+```json
+{
+  "question": "How should the validation logic be organized?",
+  "header": "Pattern",
+  "multiSelect": false,
+  "options": [
+    {
+      "label": "Middleware approach",
+      "description": "Create validation middleware that runs before route handlers. Reusable across routes, centralized error handling."
+    },
+    {
+      "label": "Service layer validation",
+      "description": "Add validation to UserService class methods. Closer to business logic, easier to test in isolation."
+    },
+    {
+      "label": "Schema-based validation",
+      "description": "Define JSON schemas and use validator library. Declarative, auto-generates documentation, type-safe with TypeScript."
+    }
+  ]
+}
+```
+
 ### Scope Questions
 
 **When:** Unclear how much work should be done
@@ -223,6 +248,79 @@ Before formulating questions, verify:
     {
       "label": "All repository classes",
       "description": "Apply pattern to UserRepository, ProductRepository, OrderRepository (3 classes, 24 functions). Codebase-wide consistency."
+    }
+  ]
+}
+```
+
+**Template 2: Test Coverage Scope**
+```json
+{
+  "question": "What level of test coverage should be added?",
+  "header": "Test scope",
+  "multiSelect": false,
+  "options": [
+    {
+      "label": "Happy path only",
+      "description": "Basic test for successful operation. Quick validation that feature works."
+    },
+    {
+      "label": "Happy path + error cases",
+      "description": "Success cases and expected errors (invalid input, not found, etc.). Comprehensive basic coverage."
+    },
+    {
+      "label": "Full coverage including edge cases",
+      "description": "Success, errors, edge cases (empty data, null values, rate limits, etc.). Production-ready coverage."
+    }
+  ]
+}
+```
+
+### Priority/Order Questions
+
+**When:** Multiple tasks or unclear which to tackle first
+
+**Template 1: Task Priority**
+```json
+{
+  "question": "Which aspect should be addressed first?",
+  "header": "Priority",
+  "multiSelect": false,
+  "options": [
+    {
+      "label": "Fix security vulnerability",
+      "description": "SQL injection in user search (HIGH severity). Blocks production deployment."
+    },
+    {
+      "label": "Improve performance",
+      "description": "Optimize N+1 query in dashboard (MEDIUM severity). Affects user experience but not blocking."
+    },
+    {
+      "label": "Add documentation",
+      "description": "Document API endpoints (LOW severity). Important for maintainability but not urgent."
+    }
+  ]
+}
+```
+
+**Template 2: Feature Ordering**
+```json
+{
+  "question": "In what order should these features be implemented?",
+  "header": "Order",
+  "multiSelect": false,
+  "options": [
+    {
+      "label": "Auth -> Dashboard -> Export",
+      "description": "Build foundation first. Each feature depends on previous ones."
+    },
+    {
+      "label": "Dashboard -> Auth -> Export",
+      "description": "Get core functionality working, add security, then enhancements."
+    },
+    {
+      "label": "All in parallel",
+      "description": "Work on all features simultaneously. Faster but requires careful integration."
     }
   ]
 }
@@ -255,6 +353,29 @@ Before formulating questions, verify:
 }
 ```
 
+**Template 2: Configuration Values**
+```json
+{
+  "question": "What timeout value should be configured?",
+  "header": "Timeout",
+  "multiSelect": false,
+  "options": [
+    {
+      "label": "5 seconds",
+      "description": "Aggressive timeout. Fast failures but might interrupt legitimate slow operations."
+    },
+    {
+      "label": "30 seconds",
+      "description": "Balanced timeout. Industry standard for API requests. Recommended for most use cases."
+    },
+    {
+      "label": "120 seconds",
+      "description": "Conservative timeout. Allows for slow operations (large file uploads, complex reports)."
+    }
+  ]
+}
+```
+
 ## Number of Questions Guidelines
 
 ### 1-2 Questions: Simple Clarification
@@ -264,12 +385,45 @@ Before formulating questions, verify:
 - Binary or ternary choice
 - Target identification only
 
+**Example:**
+```json
+[
+  {
+    "question": "Which file should be modified?",
+    "header": "Target file",
+    "multiSelect": false,
+    "options": ["auth.ts", "middleware.ts", "session.ts"]
+  }
+]
+```
+
 ### 3-4 Questions: Moderate Complexity
 
 **Use when:**
 - Multiple independent decisions needed
 - Approach and scope both unclear
 - Configuration plus implementation questions
+
+**Example:**
+```json
+[
+  {
+    "question": "Which component should handle validation?",
+    "header": "Component",
+    ...
+  },
+  {
+    "question": "What validation approach should be used?",
+    "header": "Approach",
+    ...
+  },
+  {
+    "question": "Should existing validation be preserved?",
+    "header": "Migration",
+    ...
+  }
+]
+```
 
 ### 5-6 Questions: Complex Scenarios
 
@@ -279,6 +433,37 @@ Before formulating questions, verify:
 - Configuration, approach, scope, and priority all unclear
 
 **Important:** Only use 5-6 questions when truly necessary. Most scenarios should use 1-4 questions.
+
+**Example:**
+```json
+[
+  {
+    "question": "Which authentication method?",
+    "header": "Auth method",
+    ...
+  },
+  {
+    "question": "Where should tokens be stored?",
+    "header": "Token store",
+    ...
+  },
+  {
+    "question": "What scope for user roles?",
+    "header": "Role scope",
+    ...
+  },
+  {
+    "question": "How to handle existing sessions?",
+    "header": "Migration",
+    ...
+  },
+  {
+    "question": "Which database for sessions?",
+    "header": "Session DB",
+    ...
+  }
+]
+```
 
 ## Option Generation Best Practices
 
@@ -336,22 +521,167 @@ Before formulating questions, verify:
 }
 ```
 
+### Using Codebase Evidence
+
+**Research findings inform options:**
+
+```
+Research Results:
+- Found 3 API clients: src/api/rest-client.ts, src/api/graphql-client.ts, src/api/websocket-client.ts
+- rest-client.ts has timeout config (line 23: timeout: 30000)
+- graphql-client.ts missing timeout (potential bug)
+- websocket-client.ts uses different pattern (reconnect logic)
+```
+
+**Generated question:**
+```json
+{
+  "question": "Which API client needs timeout configuration?",
+  "header": "API client",
+  "multiSelect": false,
+  "options": [
+    {
+      "label": "REST client (src/api/rest-client.ts)",
+      "description": "Already has 30s timeout. Update existing configuration."
+    },
+    {
+      "label": "GraphQL client (src/api/graphql-client.ts)",
+      "description": "Missing timeout configuration. Likely the source of hanging requests."
+    },
+    {
+      "label": "WebSocket client (src/api/websocket-client.ts)",
+      "description": "Uses reconnect pattern instead of timeout. Different approach needed."
+    }
+  ]
+}
+```
+
 ## Common Pitfalls
 
 ### Pitfall 1: Generic Options
-Not actionable, no clear guidance. Fix: use specific, research-grounded options.
+
+**Bad:**
+```json
+{
+  "label": "Best practice approach",
+  "description": "Use industry standard methods"
+}
+```
+
+**Why bad:** Not actionable, no clear guidance
+
+**Fix:**
+```json
+{
+  "label": "Repository pattern with dependency injection",
+  "description": "Separate data access into UserRepository, injected via constructor. Used in OrderService (see src/services/order.service.ts:15)."
+}
+```
 
 ### Pitfall 2: Too Many Options
-Overwhelming, decision paralysis. Fix: narrow to 2-4 most relevant based on research.
+
+**Bad:**
+```json
+{
+  "question": "Which approach?",
+  "options": [
+    "Approach A",
+    "Approach B",
+    "Approach C",
+    "Approach D",
+    "Approach E",
+    "Approach F"
+  ]
+}
+```
+
+**Why bad:** Overwhelming, decision paralysis
+
+**Fix:** Narrow to 2-4 most relevant options based on research. If more than 4, create multiple questions or categorize.
 
 ### Pitfall 3: Leading Questions
-Biased question influences answer. Fix: present options neutrally with balanced trade-offs.
+
+**Bad:**
+```json
+{
+  "question": "Should we use the superior JWT approach?",
+  "options": ["Yes, JWT", "No, sessions"]
+}
+```
+
+**Why bad:** Biased question influences answer
+
+**Fix:**
+```json
+{
+  "question": "Which authentication mechanism should be implemented?",
+  "options": [
+    {
+      "label": "JWT tokens",
+      "description": "Stateless, scales horizontally. Client manages tokens. Trade-off: harder to invalidate."
+    },
+    {
+      "label": "Server-side sessions",
+      "description": "Stateful, easier to invalidate. Server manages state. Trade-off: requires shared session store."
+    }
+  ]
+}
+```
 
 ### Pitfall 4: Compound Questions
-Mixing multiple decisions, exponential option growth. Fix: separate into independent questions.
+
+**Bad:**
+```json
+{
+  "question": "Which library and what configuration should be used?",
+  "options": [
+    "Library A with Config X",
+    "Library A with Config Y",
+    "Library B with Config X",
+    "Library B with Config Y"
+  ]
+}
+```
+
+**Why bad:** Mixing multiple decisions, exponential option growth
+
+**Fix:** Separate into two questions
+```json
+[
+  {
+    "question": "Which library?",
+    "options": ["Library A", "Library B"]
+  },
+  {
+    "question": "What configuration?",
+    "options": ["Config X", "Config Y"]
+  }
+]
+```
 
 ### Pitfall 5: Asking Without Research
-Not grounded in codebase reality. Fix: always research first, generate options from findings.
+
+**Bad:**
+```json
+{
+  "question": "How should we implement authentication?",
+  "options": [
+    {"label": "Some approach", "description": "I think this might work"},
+    {"label": "Another approach", "description": "This could also work"}
+  ]
+}
+```
+
+**Why bad:** Not grounded in codebase reality, generic options
+
+**Fix:** Research first
+```
+1. Explore codebase for existing auth patterns
+2. Check package.json for auth libraries
+3. Review similar implementations in repo
+4. Web search for framework-specific best practices
+5. Generate options based on findings
+```
 
 ## Summary Checklist
 
@@ -367,3 +697,5 @@ Before using AskUserQuestion tool:
 - [ ] header field is <=12 characters
 - [ ] multiSelect explicitly set (true/false)
 - [ ] question ends with `?`
+
+**Remember:** The goal is clarity through specificity. Every option should be traceable back to research findings. Generic or assumed options undermine trust and lead to poor decisions.
