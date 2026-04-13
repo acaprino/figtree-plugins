@@ -9,6 +9,7 @@ description: >
   shared codebase, when designing interface contracts so parallel implementers can
   build against each other's APIs before they are ready, or when deciding whether
   to use vertical slices versus horizontal layers for a full-stack feature.
+version: 1.0.2
 ---
 
 # Parallel Feature Development

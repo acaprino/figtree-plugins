@@ -8,6 +8,7 @@ description: >
   needs to review and approve an implementer's plan before work begins, when
   orchestrating a graceful team shutdown after all tasks are complete, or when
   debugging why teammates are not coordinating correctly at integration points.
+version: 1.0.2
 ---
 
 # Team Communication Protocols

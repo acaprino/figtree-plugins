@@ -9,6 +9,7 @@ description: >
   iTerm2, in-process) for a CI or local environment, or when building a custom
   team composition for a non-standard workflow such as a migration or security
   audit.
+version: 1.0.2
 ---
 
 # Team Composition Patterns

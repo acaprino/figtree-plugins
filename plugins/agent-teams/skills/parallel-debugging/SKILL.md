@@ -5,6 +5,7 @@ description: >
   evidence collection, and root cause arbitration. Use this skill when debugging
   bugs with multiple potential causes, performing root cause analysis, or
   organizing parallel investigation workflows.
+version: 1.0.2
 ---
 
 # Parallel Debugging

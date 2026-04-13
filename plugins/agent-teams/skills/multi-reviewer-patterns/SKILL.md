@@ -5,6 +5,7 @@ description: >
   deduplication, severity calibration, and consolidated reporting. Use this skill
   when organizing multi-reviewer code reviews, calibrating finding severity, or
   consolidating review results.
+version: 1.0.2
 ---
 
 # Multi-Reviewer Patterns
