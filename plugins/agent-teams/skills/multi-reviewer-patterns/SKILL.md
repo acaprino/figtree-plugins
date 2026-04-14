@@ -5,7 +5,7 @@ description: >
   deduplication, severity calibration, and consolidated reporting. Use this skill
   when organizing multi-reviewer code reviews, calibrating finding severity, or
   consolidating review results.
-version: 1.0.2
+version: 1.1.0
 ---
 
 # Multi-Reviewer Patterns
@@ -41,6 +41,76 @@ Patterns for coordinating parallel code reviews across multiple quality dimensio
 | Database migration     | Performance, Architecture                    |
 | Authentication changes | Security, Testing                            |
 | Full feature review    | Security, Performance, Architecture, Testing |
+
+## Context Sharing Pattern
+
+When `/team-review` runs in pipeline mode (no `--skip-interconnect`), reviewers do not receive raw code only -- they receive two context artifacts produced in Phase 1:
+
+1. **Deep-dive output** at `.deep-dive/` (from `deep-dive-analysis` plugin): `01-structure.md`, `02-interfaces.md`, `05-risks.md`, and optionally `03-flows.md`, `04-semantics.md`, `06-documentation.md`, `07-final-report.md`.
+2. **Interconnect map** at `.team-review/02-interconnect.md` (from `senior-review:semantic-interconnect-mapper`): contracts (formal / structural / implicit), invariants, domain rules, assumptions (verified / documented / unverified), integration hot-spots, change impact radius.
+
+### Why context sharing matters
+
+Without shared context, each reviewer re-reads the code from scratch. This is wasteful and, more importantly, blinds them to bugs that only manifest across components -- broken implicit contracts, invariant drift, bypass paths, non-idempotent retries, terminal state mutations. Phase 1 surfaces those concerns in the interconnect map, and Phase 2 reviewers use the map as a checklist.
+
+### How reviewers should consume the context
+
+Reviewers should **not** read the entire context file. They should Grep or read only the anchors relevant to their dimension, guided by the `## Reviewer Hints` section at the bottom of `.team-review/02-interconnect.md`.
+
+Default anchor routing:
+
+| Reviewer dimension | Primary anchors in interconnect map |
+|--------------------|-------------------------------------|
+| security | `## Integration Hot-Spots` (inbound), `## Assumptions` (unverified), `## Contracts` (implicit, input validation) |
+| architecture (code-auditor) | `## Invariants`, `## Contracts` (structural + implicit), `## Call Graph` |
+| logic-integrity | `## Contracts` (implicit, unverified), `## Invariants`, `## Assumptions` (unverified), `## Domain Rules` |
+| distributed-flows | `## Integration Hot-Spots` (HTTP / queue / IPC), `## Call Graph` (cross-service) |
+| chicken-egg | `## Assumptions` (initialization order), `## Integration Hot-Spots` (Env / config), `## Invariants` (cross-component) |
+| ui-races | `## Invariants` (temporal), `## Integration Hot-Spots` (UI state) |
+| api-contracts (future) | `## Contracts` (formal) |
+
+### Prompt template for context-aware reviewers
+
+```
+You are reviewing for the {dimension} dimension.
+
+## Target
+[...]
+
+## Diff
+[...]
+
+## Context files
+- Deep-dive output: .deep-dive/
+- Interconnect map: .team-review/02-interconnect.md
+
+Per `## Reviewer Hints` in the interconnect map, focus your reading on these anchors:
+{anchors-for-this-dimension}
+
+## Instructions
+Follow your agent definition's phases and output format. Cite file:line for every finding.
+Every finding that relates to a contract/invariant/assumption in the interconnect map should
+also cite the map anchor that surfaced the concern.
+
+Write your output to .team-review/findings-{dimension}.md.
+```
+
+### Quality metric: context utilization rate
+
+A useful quality signal at the end of a review: **what fraction of findings cite an interconnect-map anchor?**
+
+- High (>= 30%): reviewers are leveraging the context effectively; the pipeline is paying off.
+- Medium (10-30%): context used but inconsistently; consider refining prompts.
+- Low (< 10%): either reviewers are ignoring the map or the map is too generic to be actionable.
+
+The logic-integrity-auditor dimension should be at >= 70% (its findings are almost entirely driven by the map).
+
+### Fallback: `--skip-interconnect` mode
+
+When the pipeline is skipped, reviewers receive only target + diff. In this mode:
+- `logic-integrity-auditor` is not spawned (no map to drive it).
+- All other reviewers fall back to their pre-pipeline behavior.
+- No `.deep-dive/` or `.team-review/02-interconnect.md` references should appear in reviewer prompts.
 
 ## Finding Deduplication
 

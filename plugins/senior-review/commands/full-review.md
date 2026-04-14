@@ -1,11 +1,16 @@
 ---
 description: >
-  "Orchestrate comprehensive multi-dimensional code review using specialized review agents. Includes deep-dive structural and semantic analysis by default for deeper context. Supports multi-service distributed flow analysis with cross-boundary contract verification, timeout chain validation, and resilience pattern auditing." argument-hint: "<target path(s) or description> [--skip-deep-dive] [--distributed] [--security-focus] [--performance-critical] [--strict-mode] [--framework react|spring|django|rails]".
-  TRIGGER WHEN: the user requires assistance with tasks related to this domain.
-  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
+  "[DEPRECATED -- prefer /agent-teams:team-review] Legacy orchestrator for multi-dimensional code review with deep-dive structural and semantic analysis, multi-service distributed flow analysis, and resilience pattern auditing. Kept for backward compatibility; new work should use /agent-teams:team-review which provides the same phased pipeline with better parallelism and context sharing." argument-hint: "<target path(s) or description> [--skip-deep-dive] [--distributed] [--security-focus] [--performance-critical] [--strict-mode] [--framework react|spring|django|rails]".
+  TRIGGER WHEN: the user explicitly invokes /senior-review:full-review.
+  DO NOT TRIGGER WHEN: the user asks for a generic code review, multi-dimensional audit, or uses /team-review -- prefer /agent-teams:team-review.
+deprecated: true
 ---
 
-# Comprehensive Code Review Orchestrator
+# Comprehensive Code Review Orchestrator (DEPRECATED)
+
+> **Deprecation notice.** This command is superseded by `/agent-teams:team-review`, which runs the same kind of phased pipeline (deep-dive -> interconnect map -> parallel reviewers -> consolidation) through the agent-teams orchestration layer and adds a `logic-integrity-auditor` dimension that hunts contract / invariant / domain-rule violations surfaced by the interconnect map. `/senior-review:full-review` remains available for one release for backward compatibility and will be removed in a future iteration. The underlying specialist agents (`senior-review:security-auditor`, `senior-review:code-auditor`, `senior-review:ui-race-auditor`, `senior-review:distributed-flow-auditor`, `senior-review:chicken-egg-detector`) are **not** deprecated -- they are invoked directly by `/agent-teams:team-review`.
+>
+> Migration: replace `/senior-review:full-review <target>` with `/agent-teams:team-review <target>`. Flags `--security-focus`, `--performance-critical`, and `--framework` have no direct analog; use `--reviewers` with an explicit dimension list instead. Flag `--skip-deep-dive` maps to `--skip-interconnect` in the new command.
 
 ## CRITICAL BEHAVIORAL RULES
 

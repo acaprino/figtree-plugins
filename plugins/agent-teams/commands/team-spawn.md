@@ -25,9 +25,10 @@ Spawn a multi-agent team using preset configurations or custom composition. Hand
 
 If a preset is specified, use these configurations:
 
-**`review`** -- Multi-dimensional code review with context-aware dimension selection (default: 3-9 members)
+**`review`** -- Multi-dimensional code review with context-aware dimension selection (default: 4-10 members). Runs a 4-phase pipeline: Phase 1 builds a context map (deep-dive + interconnect), Phase 2 runs reviewers in parallel with access to that context. See `/team-review` for the full pipeline.
 
-- **Always-on** (3 agents): security (`senior-review:security-auditor`), architecture (`senior-review:code-auditor`), dead-code (`general-purpose`)
+- **Always-on** (4 agents): security (`senior-review:security-auditor`), architecture (`senior-review:code-auditor`), logic integrity (`senior-review:logic-integrity-auditor`), dead-code (`general-purpose`)
+- **Context-builder** (Phase 1b, invoked by `/team-review`, not part of this preset): `senior-review:semantic-interconnect-mapper`
 - **Conditional** (auto-detected from changed files and codebase context):
   - UI files (.tsx/.jsx/.vue/.svelte) detected: + `senior-review:ui-race-auditor`
   - React project + .tsx/.jsx changed: + `react-development:react-performance-optimizer`
@@ -210,7 +211,9 @@ Use the **most specialized agent** available. The team-lead's Ecosystem Integrat
 |--------|------|-----------------------|----------------------------------------|
 | review | security (always) | -- | `senior-review:security-auditor` |
 | review | architecture (always) | -- | `senior-review:code-auditor` |
+| review | logic-integrity (always, skipped with --skip-interconnect) | -- | `senior-review:logic-integrity-auditor` |
 | review | dead-code (always) | -- | `general-purpose` |
+| review | interconnect-mapper (Phase 1b, invoked by /team-review) | -- | `senior-review:semantic-interconnect-mapper` |
 | review | ui-races (conditional) | -- | `senior-review:ui-race-auditor` |
 | review | react-perf (conditional) | -- | `react-development:react-performance-optimizer` |
 | review | platform (conditional) | -- | `platform-engineering:platform-reviewer` |

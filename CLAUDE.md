@@ -97,6 +97,7 @@ Some plugins are ported from external repositories and should be kept in sync wi
 | `docker` (multi-stage-dockerfile) | `github/awesome-copilot` - `skills/multi-stage-dockerfile/SKILL.md` | `plugins/docker/skills/multi-stage-dockerfile/SKILL.md` |
 | `testing` (e2e-testing-patterns) | `wshobson/agents` - `plugins/developer-essentials/skills/e2e-testing-patterns/SKILL.md` | `plugins/testing/skills/e2e-testing-patterns/SKILL.md` |
 | `agent-teams` | `wshobson/agents` - `plugins/agent-teams/` | `plugins/agent-teams/agents/*.md`, `plugins/agent-teams/commands/*.md`, `plugins/agent-teams/skills/*/SKILL.md`, `plugins/agent-teams/skills/*/references/*.md` |
+| `senior-review` (semantic-interconnect-mapper) | `wshobson/agents` - `plugins/agent-orchestration/agents/context-manager.md` (pattern cherry-picked, not a direct copy) | `plugins/senior-review/agents/semantic-interconnect-mapper.md` |
 | `typescript-development` (mastering-typescript) | `SpillwaveSolutions/mastering-typescript-skill` - `mastering-typescript/` | `plugins/typescript-development/skills/mastering-typescript/SKILL.md`, `plugins/typescript-development/skills/mastering-typescript/references/*.md`, `plugins/typescript-development/skills/mastering-typescript/scripts/validate-setup.sh`, `plugins/typescript-development/skills/mastering-typescript/assets/tsconfig-template.json`, `plugins/typescript-development/skills/mastering-typescript/assets/eslint-template.js` |
 
 ### How to sync a plugin
@@ -198,6 +199,11 @@ for skill in multi-reviewer-patterns parallel-debugging parallel-feature-develop
       --jq '.content' | base64 -d
   done
 done
+
+# Fetch upstream context-manager as reference for semantic-interconnect-mapper (pattern only, not direct copy)
+# Local target: plugins/senior-review/agents/semantic-interconnect-mapper.md
+gh api repos/wshobson/agents/contents/plugins/agent-orchestration/agents/context-manager.md \
+  --jq '.content' | base64 -d
 
 # Fetch latest mastering-typescript files from upstream (SpillwaveSolutions/mastering-typescript-skill example)
 # Local target: plugins/typescript-development/skills/mastering-typescript/
