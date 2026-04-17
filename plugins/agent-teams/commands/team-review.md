@@ -193,8 +193,8 @@ If deep-dive fails or produces no output, halt the pipeline and report the error
 
 ## Phase 2: Adversarial Review (parallel)
 
-1. Use `Teammate` tool with `operation: "spawnTeam"`, team name: `review-{timestamp}`.
-2. For each selected dimension (always-on + detected conditional), use `Task` tool to spawn a teammate using the **most specialized agent**.
+1. Use `TeamCreate` tool to create the team with `team_name: "review-{timestamp}"` and `description`.
+2. For each selected dimension (always-on + detected conditional), use `Agent` tool to spawn a teammate using the **most specialized agent**.
 
 ### Dimension-to-agent mapping
 
@@ -304,7 +304,7 @@ Write `.team-review/99-consolidated.md`. Mark `phase_3_consolidation` complete.
    ```
 
 2. Send `shutdown_request` to all reviewers.
-3. Call `Teammate` cleanup to remove team resources.
+3. Call `TeamDelete` to remove team resources.
 4. Update `state.json` -> `status: "complete"`, mark `phase_4_report` complete.
 5. Inform the user that detailed findings and context are preserved in `.team-review/` for future reference (do not auto-delete).
 

@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Custom development workflow agents and skills for code quality, Tauri/Rust development, frontend optimization, AI tooling, and constraint programming optimization",
-    "version": "5.24.0"
+    "version": "5.25.0"
   },
   "plugins": [
     {
@@ -140,7 +140,7 @@
       "name": "react-development",
       "source": "./plugins/react-development",
       "description": "React performance optimization, React 19 API adoption, state management audit, bundle analysis, re-render detection, and Vercel best practices checklist",
-      "version": "1.7.0",
+      "version": "1.8.0",
       "author": {
         "name": "Alfio"
       },
@@ -1259,7 +1259,7 @@
       "name": "agent-teams",
       "source": "./plugins/agent-teams",
       "description": "Orchestrate multi-agent teams for parallel code review, hypothesis-driven debugging, and coordinated feature development using Claude Code Agent Teams. Includes the team-review pipeline (deep-dive + interconnect map + parallel reviewers + consolidation) for finding cross-component logic bugs, and the team-codebase-map pipeline (context brief + interconnect map + parallel writers + drift-aware review) for producing accurate codebase documentation.",
-      "version": "2.8.0",
+      "version": "2.9.0",
       "author": {
         "name": "Seth Hobson"
       },

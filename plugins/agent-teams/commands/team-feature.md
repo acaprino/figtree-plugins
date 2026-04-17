@@ -71,9 +71,9 @@ Before starting, invoke these skills to inform the feature development process:
    ```
    git checkout -b {branch-name}
    ```
-2. Use `Teammate` tool with `operation: "spawnTeam"`, team name: `feature-{timestamp}`
+2. Use `TeamCreate` tool to create the team with `team_name: "feature-{timestamp}"` and `description`
 3. Spawn a `team-lead` agent to coordinate
-4. For each work stream, use `Task` tool to spawn the **most specialized agent** for the context:
+4. For each work stream, use `Agent` tool to spawn the **most specialized agent** for the context:
    - Detect codebase language/framework from files in scope
    - Python code: `subagent_type: "python-development:python-engineer"`
    - React/frontend: `subagent_type: "frontend:frontend-engineer"`
@@ -125,4 +125,4 @@ After all tasks complete:
    ```
 
 2. Send `shutdown_request` to all teammates
-3. Call `Teammate` cleanup
+3. Call `TeamDelete` to remove team resources

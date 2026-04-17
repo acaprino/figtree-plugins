@@ -36,7 +36,7 @@ Before starting, invoke these skills:
 
 ## Phase 2: Team Spawn
 
-1. Use `Teammate` tool with `operation: "spawnTeam"`, team name: `research-{timestamp}`
+1. Use `TeamCreate` tool to create the team with `team_name: "research-{timestamp}"` and `description`
 2. Spawn researchers using specialized agents:
 
 **Codebase Analyst** (always, unless `--scope web`):
@@ -137,4 +137,4 @@ After all researchers report:
 ## Phase 5: Cleanup
 
 1. Send `shutdown_request` to all researchers
-2. Call `Teammate` cleanup to remove team resources
+2. Call `TeamDelete` to remove team resources

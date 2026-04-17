@@ -50,6 +50,6 @@ For each teammate in the team:
    Tasks remaining: {remaining}
    ```
 
-2. Unless `--keep-tasks` is set, call `Teammate` tool with `operation: "cleanup"` to remove team and task directories
+2. Unless `--keep-tasks` is set, call `TeamDelete` tool to remove team and task directories
 
 3. If `--keep-tasks` is set, inform user: "Task list preserved at ~/.claude/tasks/{team-name}/"

@@ -90,7 +90,7 @@ Spawn a single `senior-review:semantic-interconnect-mapper` agent:
 
 Spawn a write team with 6 specialists working simultaneously:
 
-1. Use `Teammate` tool with `operation: "spawnTeam"`, team name: `codebase-map-writers-{timestamp}`
+1. Use `TeamCreate` tool to create the team with `team_name: "codebase-map-writers-{timestamp}"` and `description`
 2. Spawn all 6 agents in parallel:
 
 **Agent 1: Overview Writer**
@@ -148,7 +148,7 @@ Spawn a single reviewer agent:
 ## Phase 4: Cleanup & Summary
 
 1. Send `shutdown_request` to all remaining teammates
-2. Call `Teammate` cleanup to remove team resources
+2. Call `TeamDelete` to remove team resources
 3. Present final summary:
 
 ```

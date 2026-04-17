@@ -82,6 +82,39 @@ None. No tests, no build step, no CI pipeline. All content is static markdown.
 
 Some plugins are ported from external repositories and should be kept in sync with their upstream source. When asked to update one of these plugins, fetch the latest content from the upstream URL using `gh api` and apply any changes, then follow the standard marketplace update workflow.
 
+### Default upstream-update strategy
+
+When the user asks for "upstream updates" (or similar), this is the default workflow. Do not blindly overwrite local files - most syncs need targeted merging because local has legitimate customizations.
+
+1. **Check all synced plugins in parallel**. For each file in the sync table below, diff the upstream against the local version. Spawn Explore agents when there are many files to parallelize the diffing. Focus the reports on: which files differ, what changed, and whether the drift is intentional or worth pulling.
+
+2. **Classify each file** before touching it:
+   - **Clear win** - new upstream file missing locally, or a bug/fact fix with no local conflict. Pull directly.
+   - **Minor refinement** - small wording/metadata changes. Pull if no local frontmatter or content conflicts.
+   - **Hard merge** - upstream rewrote a section we also evolved locally. Layer upstream changes onto local; do not overwrite.
+   - **Intentional drift** (do not touch) - local namespace rewrites (`superpowers:` -> `ai-tooling:`), local polish (typo fixes, expanded triggers), style conventions (no em dashes per CLAUDE.md; no emojis in some plugins), local-only additions (custom presets, Ecosystem Integration sections, Context Sharing Pattern in `multi-reviewer-patterns`), `--` replacing upstream's em dash.
+
+3. **Preserve these local customizations** on every merge:
+   - Source attribution lines at the top of files
+   - Frontmatter: localized `description` (often multiline with `>`), `tools`, `color`, `version`, `model`
+   - Plugin-specific style: no em dashes (use `--`), no emojis in some plugins
+   - Namespace replacements (`superpowers:X` -> `ai-tooling:X`)
+   - Local-only sections (e.g., `## Ecosystem Integration` in agent-teams agents)
+
+4. **For judgment calls**, ask the user via `AskUserQuestion`:
+   - When upstream rewrote a section we also evolved (merge vs keep vs overwrite)
+   - When upstream adds a feature that conflicts with local direction
+   - When a file is flagged as "major drift"
+
+5. **Apply targeted Edits, not Writes** - prefer surgical edits that fix specific bugs (stale tool names, added items in a list) over replacing whole files. Only use Write for new files or when the entire file is being replaced.
+
+6. **Watch for stale tool names** (common drift source): `` `Teammate` tool `` / `` `Task` tool to spawn `` / `` Call `Teammate` cleanup `` / `` operation: "spawnTeam" `` -> fix to `` `TeamCreate` tool `` / `` `Agent` tool `` / `` `TeamDelete` ``. Grep all agent-teams files after any sync to catch these.
+
+7. **Version bump and commit** - bump each touched plugin's `version` in `.claude-plugin/marketplace.json`, bump `metadata.version`, and commit everything together with a descriptive message like "Sync upstream updates for X and Y (vN.N.N)". Push to master.
+
+8. **Verify** - run `Grep` for any remaining stale tool names, confirm marketplace.json is consistent, then `git status` / `git diff --stat` before committing.
+
+
 | Plugin | Upstream source | Files to sync |
 |--------|----------------|---------------|
 | `ai-tooling` (brainstorming) | `obra/superpowers` - `skills/brainstorming/SKILL.md` | `plugins/ai-tooling/skills/brainstorming/SKILL.md` |

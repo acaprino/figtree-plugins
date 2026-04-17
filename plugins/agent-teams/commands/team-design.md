@@ -69,7 +69,7 @@ Phase 8-10: PARALLEL POLISH TEAM (3 agents)
 
 Spawn a design team with 3 specialists working simultaneously:
 
-1. Use `Teammate` tool with `operation: "spawnTeam"`, team name: `design-{timestamp}`
+1. Use `TeamCreate` tool to create the team with `team_name: "design-{timestamp}"` and `description`
 2. Spawn 3 agents in parallel:
 
 **Agent 1: Design Direction**
@@ -134,7 +134,7 @@ Use `ai-tooling:executing-plans` skill:
 
 Spawn a polish/review team with 3 specialists working simultaneously:
 
-1. Use `Teammate` tool with `operation: "spawnTeam"`, team name: `polish-{timestamp}`
+1. Use `TeamCreate` tool to create the team with `team_name: "polish-{timestamp}"` and `description`
 2. Spawn 3 agents in parallel:
 
 **Agent 1: UI Polish**
@@ -168,7 +168,7 @@ Spawn a polish/review team with 3 specialists working simultaneously:
 ## Phase 11: Completion
 
 1. Send `shutdown_request` to all remaining teammates
-2. Call `Teammate` cleanup
+2. Call `TeamDelete` to remove team resources
 3. Present final summary:
 
 ```
