@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Custom development workflow agents and skills for code quality, Tauri/Rust development, frontend optimization, AI tooling, and constraint programming optimization",
-    "version": "5.34.0"
+    "version": "5.35.0"
   },
   "plugins": [
     {
@@ -357,8 +357,8 @@
     {
       "name": "research",
       "source": "./plugins/research",
-      "description": "Search and research toolkit -- quick-searcher (sonnet) for fast fact-finding and single-concept lookups, deep-researcher (opus) for complex multi-source investigation requiring systematic coverage, cross-referencing, and iterative refinement",
-      "version": "2.5.3",
+      "description": "Web research toolkit (any topic) -- quick-searcher (sonnet) for single-fact web lookups and as sub-unit in deep team, deep-researcher (opus) lead orchestrator that classifies queries into authoritative/community/comparison/recency angles and spawns parallel quick-searcher sub-agents with cross-checked synthesis",
+      "version": "2.6.0",
       "author": {
         "name": "Alfio"
       },
@@ -378,6 +378,9 @@
       "agents": [
         "./agents/quick-searcher.md",
         "./agents/deep-researcher.md"
+      ],
+      "skills": [
+        "./skills/web-search-techniques/SKILL.md"
       ]
     },
     {
