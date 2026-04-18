@@ -2,8 +2,8 @@
 name: readme-craft
 description: >
   Craft magnetic, top-tier README.md files for open-source and public projects. Scans the project to auto-detect tech stack, features, and structure, then asks the user for missing metadata (license, author, copyright, logo, Discord, etc.). Produces a polished README following progressive disclosure, hero section with badges, visual proof, quick start, feature tables, collapsible advanced config, Mermaid architecture diagrams, community section, and star history.
-  TRIGGER WHEN: "readme", "write a readme", "create readme", "readme.md", "scrivi il readme", "crea il readme", "project readme".
-  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
+  TRIGGER WHEN: the user asks to write, create, draft, or scaffold a README.md for a project (English or Italian phrasing: "readme", "write a readme", "create readme", "scrivi il readme", "crea il readme").
+  DO NOT TRIGGER WHEN: auditing/updating an existing README (use /docs:maintain-readme), or writing non-README docs (use /codebase-mapper:docs-create).
 ---
 
 # README Craft
@@ -216,7 +216,7 @@ Centered. License link. "Built with [heart] by [author]" one-liner.
 5. **Tables** for structured data (commands, features, env vars).
 6. **Dark/light mode** support with `<picture>` for logos and charts.
 7. **No emoji overload.** 1 emoji per bullet in the "Why" section. No emoji in headings except "Why" and section markers.
-8. **Keep total README under 300 lines** for most projects. Use collapsible sections and link to docs/ for deep dives.
+8. **Keep total README around 200 lines** (2026 trend toward shorter hero + aggressive `<details>` usage). Under 300 is a hard ceiling; link to `docs/` for anything longer.
 9. **Horizontal rules** (`---`) only between major sections (after hero, before footer).
 
 ---

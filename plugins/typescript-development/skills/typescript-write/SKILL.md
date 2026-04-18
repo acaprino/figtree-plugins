@@ -1,9 +1,9 @@
 ---
 name: typescript-write
 description: >
-  "Write TypeScript and JavaScript code following modern best practices and coding standards.
-  TRIGGER WHEN: writing or reviewing TypeScript/JavaScript code."
-  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
+  Write TypeScript and JavaScript code following modern best practices and coding standards.
+  TRIGGER WHEN: writing or reviewing TypeScript/JavaScript code, including types, generics, async patterns, module boundaries, and style conventions.
+  DO NOT TRIGGER WHEN: the task is framework-specific React performance (use react-development), Node.js build/packaging, or enterprise-grade deep-dive (use mastering-typescript skill).
 ---
 
 # TypeScript/JavaScript Development Skill

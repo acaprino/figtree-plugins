@@ -15,9 +15,10 @@ Inspired by [paulrobello/par_cc_usage](https://github.com/paulrobello/par_cc_usa
 ## How it works
 
 Claude Code stores session data as JSONL files in:
-- `~/.config/claude/projects/` (primary)
-- `~/.claude/projects/` (legacy)
-- Custom path via `CLAUDE_CONFIG_DIR` env var
+- `~/.config/claude/projects/` (Linux/macOS primary)
+- `~/.claude/projects/` (legacy Unix)
+- `%USERPROFILE%\.claude\projects\` (Windows, default)
+- Custom path via `CLAUDE_CONFIG_DIR` env var (all platforms)
 
 The script parses these files, extracts assistant message token usage, deduplicates by request ID, and computes:
 - Total token usage (input, output, cache)
@@ -104,12 +105,6 @@ The script reads Claude Code's native JSONL format. Key fields extracted:
 
 ## Pricing
 
-Hardcoded Anthropic pricing tiers (per token):
-
-| Model | Input | Output | Cache Create | Cache Read |
-|-------|-------|--------|--------------|------------|
-| Opus | $15/MTok | $75/MTok | $18.75/MTok | $1.50/MTok |
-| Sonnet | $3/MTok | $15/MTok | $3.75/MTok | $0.30/MTok |
-| Haiku | $0.80/MTok | $4/MTok | $1/MTok | $0.08/MTok |
+Pricing is defined in a single source of truth: `scripts/cc_usage.py` (see the `MODEL_PRICING` table near the top). To update prices, edit that table -- this document intentionally does not duplicate the numbers to avoid drift.
 
 When `costUSD` is present in the JSONL data, that value takes priority over calculated estimates.

@@ -261,7 +261,7 @@ Don't use `Object.assign(this.settings, data)` to mutate defaults.
 
 ## API Reference
 
-See `obsidian-api-reference.md` in this skill directory for a condensed TypeScript API reference covering all key classes: Plugin, App, Vault, Workspace, MetadataCache, FileManager, Component, View, Modal, Setting, Menu, MarkdownRenderer, Platform, DOM helpers, and more.
+See `references/obsidian-api-reference.md` in this skill directory for a condensed TypeScript API reference covering all key classes: Plugin, App, Vault, Workspace, MetadataCache, FileManager, Component, View, Modal, Setting, Menu, MarkdownRenderer, Platform, DOM helpers, and more.
 
 For the full type definitions, read `node_modules/obsidian/obsidian.d.ts` in the project.
 

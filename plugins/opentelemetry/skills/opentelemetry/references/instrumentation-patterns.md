@@ -322,7 +322,9 @@ with tracer.start_as_current_span("process_payment") as span:
     try:
         result = await gateway.charge(payment)
         span.set_attribute("payment.tx_id", result.tx_id)
-        span.set_status(Status(StatusCode.OK))
+        # Leave status UNSET on success -- do NOT set OK explicitly (per OTel spec
+        # recommendation: only the instrumenting code that handles a complete
+        # request/response SHOULD set OK; libraries should leave UNSET).
         return result
     except GatewayTimeoutError as e:
         # Infrastructure error -- record as exception, mark ERROR
@@ -333,9 +335,8 @@ with tracer.start_as_current_span("process_payment") as span:
         span.set_status(Status(StatusCode.ERROR, f"Gateway timeout: {e}"))
         raise HTTPException(status_code=504)
     except InsufficientFundsError as e:
-        # Business error -- expected outcome, NOT an error status
+        # Business error -- expected outcome, leave status UNSET
         span.add_event("payment_declined", attributes={"reason": str(e)})
-        span.set_status(Status(StatusCode.OK))
         return {"status": "declined", "reason": str(e)}
 ```
 
@@ -350,5 +351,10 @@ with tracer.start_as_current_span("process_payment") as span:
 - `start_as_current_span()` defaults: `record_exception=True` and
   `set_status_on_exception=True` -- exceptions are captured automatically unless
   you handle them explicitly
+- Do NOT set `OK` on every span -- `UNSET` is the correct default. Only set `OK`
+  at the outermost boundary (e.g., HTTP server handler) when the request is known
+  to have completed successfully. Setting OK inside nested spans prevents parents
+  from transitioning to ERROR later.
 - Business-logic rejections (declined payments, validation failures) should use
-  `add_event()` with `StatusCode.OK`, not `record_exception()` with `StatusCode.ERROR`
+  `add_event()` and leave status UNSET -- do NOT use `StatusCode.ERROR` for
+  expected business outcomes.

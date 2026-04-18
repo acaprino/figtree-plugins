@@ -290,10 +290,10 @@ See `references/naming-frameworks.md` for the full morphological toolkit includi
 If the user has configured API keys, use the domain checker script (located in domain-hunter):
 
 ```bash
-python ../domain-hunter/scripts/domain_checker.py name1 name2 name3
+python "${CLAUDE_PLUGIN_ROOT}/skills/domain-hunter/scripts/domain_checker.py" name1 name2 name3
 ```
 
-The script checks `.com`, `.app`, `.io`, `.co` availability via WHOIS API. See `domain-hunter/scripts/domain_checker.py` for setup instructions.
+The script checks `.com`, `.app`, `.io`, `.co` availability via WHOIS API. See `${CLAUDE_PLUGIN_ROOT}/skills/domain-hunter/scripts/domain_checker.py` for setup instructions.
 
 If no API key is available, fall back to WebSearch queries like `"namexyz.com" site:whois` or check registrar sites manually.
 

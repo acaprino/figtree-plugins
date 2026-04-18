@@ -80,8 +80,8 @@ const TARGET_URL = 'http://localhost:3001'; // <-- Auto-detected or from user
   await page.goto(TARGET_URL);
   console.log('Page loaded:', await page.title());
 
-  await page.screenshot({ path: '/tmp/screenshot.png', fullPage: true });
-  console.log('Screenshot saved to /tmp/screenshot.png');
+  await page.screenshot({ path: '${TMPDIR:-/tmp}/screenshot.png', fullPage: true });
+  console.log('Screenshot saved to ${TMPDIR:-/tmp}/screenshot.png');
 
   await browser.close();
 })();
@@ -231,11 +231,11 @@ const TARGET_URL = 'http://localhost:3000'; // Auto-detected
     });
 
     await page.screenshot({
-      path: '/tmp/screenshot.png',
+      path: '${TMPDIR:-/tmp}/screenshot.png',
       fullPage: true,
     });
 
-    console.log('Screenshot saved to /tmp/screenshot.png');
+    console.log('Screenshot saved to ${TMPDIR:-/tmp}/screenshot.png');
   } catch (error) {
     console.error('Error:', error.message);
   } finally {
@@ -395,12 +395,12 @@ For comprehensive Playwright API documentation, see [API_REFERENCE.md](API_REFER
 
 - **CRITICAL: Detect servers FIRST** -- Always run `detectDevServers()` before writing test code for localhost testing
 - **Custom headers** -- Use `PW_HEADER_NAME`/`PW_HEADER_VALUE` env vars to identify automated traffic to your backend
-- **Use /tmp for test files** -- Write to `/tmp/playwright-test-*.js`, never to skill directory or user's project
+- **Use OS temp dir** -- Write to `${TMPDIR:-/tmp}/playwright-test-*.js` on Unix/macOS or `%TEMP%\playwright-test-*.js` on Windows (use `os.tmpdir()` in Node). Never write to skill directory or user's project.
 - **Parameterize URLs** -- Put detected/provided URL in a `TARGET_URL` constant at the top of every script
 - **DEFAULT: Visible browser** -- Always use `headless: false` unless user explicitly asks for headless mode
 - **Headless mode** -- Only use `headless: true` when user specifically requests "headless" or "background" execution
 - **Slow down** -- Use `slowMo: 100` to make actions visible and easier to follow
-- **Wait strategies** -- Use `waitForURL`, `waitForSelector`, `waitForLoadState` instead of fixed timeouts
+- **Wait strategies** -- Use `waitForURL`, `locator().waitFor()` (preferred in v1.27+), or `waitForLoadState` instead of fixed timeouts. `waitForSelector` is soft-deprecated in favor of locator-based waits.
 - **Error handling** -- Always use try-catch for robust automation
 - **Console output** -- Use `console.log()` to track progress and show what's happening
 

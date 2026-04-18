@@ -493,9 +493,11 @@ test("form is accessible", async ({ page }) => {
 cy.get(".btn.btn-primary.submit-button").click();
 cy.get("div > form > div:nth-child(2) > input").type("text");
 
-// Good selectors
-cy.getByRole("button", { name: "Submit" }).click();
-cy.getByLabel("Email address").type("user@example.com");
+// Good selectors (Cypress with @testing-library/cypress installed)
+// npm i -D @testing-library/cypress
+// In cypress/support/commands.ts: import '@testing-library/cypress/add-commands';
+cy.findByRole("button", { name: "Submit" }).click();
+cy.findByLabelText("Email address").type("user@example.com");
 cy.get('[data-testid="email-input"]').type("user@example.com");
 ```
 

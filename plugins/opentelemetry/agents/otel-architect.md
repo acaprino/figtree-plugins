@@ -179,8 +179,14 @@ from opentelemetry.context.propagation import TextMapPropagator
 from opentelemetry.trace.propagation import get_current_span
 from typing import Optional, List
 
+from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
+
+# Module-level instance -- do NOT construct per-call (allocation churn on hot paths)
+_TRACECONTEXT = TraceContextTextMapPropagator()
+
+
 class AmqpPropagator(TextMapPropagator):
-    """Propagator for AMQP message headers."""
+    """Propagator for AMQP message headers. Delegates wire format to W3C TraceContext."""
 
     class AmqpGetter:
         def get(self, carrier, key):
@@ -195,17 +201,16 @@ class AmqpPropagator(TextMapPropagator):
 
     def extract(self, carrier, context=None, getter=None):
         getter = getter or self.AmqpGetter()
-        # Delegate to W3C TraceContext propagator
-        from opentelemetry.trace.propagation import TraceContextTextMapPropagator
-        return TraceContextTextMapPropagator().extract(carrier, context, getter)
+        # Reuse module-level instance (avoids per-call allocation)
+        return _TRACECONTEXT.extract(carrier, context, getter)
 
     def inject(self, carrier, context=None, setter=None):
         setter = setter or self.AmqpSetter()
-        from opentelemetry.trace.propagation import TraceContextTextMapPropagator
-        TraceContextTextMapPropagator().inject(carrier, context, setter)
+        _TRACECONTEXT.inject(carrier, context, setter)
 
     @property
     def fields(self):
+        # TextMapPropagator ABC requires Set[str], not dict
         return {"traceparent", "tracestate"}
 ```
 

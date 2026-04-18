@@ -2,7 +2,7 @@
 name: deep-researcher
 description: >
   Expert deep research agent for complex multi-source investigation.
-  TRIGGER WHEN: initial searches fail and require iterative refinement, when research needs systematic coverage across codebase, docs, and web, or when finding specific information requires query optimization, cross-referencing, and source assessment.
+  TRIGGER WHEN: initial searches fail and require iterative refinement, when research needs systematic coverage across codebase, docs, and web, or when finding specific information requires query optimization, cross-referencing, and source assessment. If WebFetch returns a bot-block or thin content, the agent MAY fall back to `${CLAUDE_PLUGIN_ROOT}/scripts/webfetch.py` (curl_cffi with Chrome TLS impersonation) via Bash.
   DO NOT TRIGGER WHEN: the task is a simple fact-finding or single-concept lookup (use quick-searcher), or the user is implementing/editing rather than researching.
 tools: Read, Grep, Glob, WebFetch, WebSearch
 model: opus

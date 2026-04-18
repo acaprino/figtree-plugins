@@ -317,7 +317,7 @@ Enables communication between extension and native applications.
 | Background | Event pages (DOM access) | Service workers (no DOM) |
 | webRequest blocking | Fully supported + DNR | Removed; DNR only |
 | host_permissions | Treated as optional (user-grantable) | Granted at install |
-| MV2 support | Indefinite | Disabled (July 2025) |
+| MV2 support | Supported on Firefox ESR through 2025; deprecation timeline announced by Mozilla | Removed (stable rollout completed through 2025) |
 | Data cloning | Structured clone algorithm | JSON serialization |
 
 ### Migration Checklist (MV2 to MV3)

@@ -47,8 +47,12 @@ This skill combines **mechanical structure extraction** with **Claude's semantic
 
 ## Prerequisites
 
-1. **analysis_progress.json** must exist in project root (created by DEEP_DIVE_PLAN setup)
-2. **DEEP_DIVE_PLAN.md** should be reviewed to understand phase structure
+This skill is invoked by the `/deep-dive-analysis` command. The command creates and manages state automatically in `.deep-dive/` under the target directory:
+
+1. **`.deep-dive/state.json`** -- phase tracking (auto-created by the command)
+2. **`.deep-dive/<phase-number>-<name>.md`** -- per-phase output documents
+
+The legacy standalone flow using `analysis_progress.json` and `DEEP_DIVE_PLAN.md` at project root is no longer the primary path -- prefer invoking `/deep-dive-analysis <target>`.
 
 ## CRITICAL PRINCIPLE: ABSOLUTE SOURCE OF TRUTH
 

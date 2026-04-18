@@ -22,10 +22,10 @@ RabbitMQ and AMQP architecture expert. Design queue topologies, configure exchan
 - **headers** - route by message header matching; use when routing key insufficient
 - **consistent-hash** - distribute across queues by hash; use for load balancing (plugin)
 
-## Queue Design
+## Queue Design (RabbitMQ 4.x)
 - classic queues - single node, fast, suitable for transient workloads
-- quorum queues - Raft-based replication, recommended for durable production queues
-- streams - append-only log, high throughput, replay capability, non-destructive consume
+- quorum queues - Raft-based replication, default for durable production queues (classic mirrored queues REMOVED in 4.0)
+- streams - append-only log, high throughput, replay capability, non-destructive consume; super streams partition across nodes for horizontal scale (4.0+)
 - lazy queues - page messages to disk early, use for large backlogs (classic only)
 - priority queues - `x-max-priority` argument, 1-10 levels recommended
 
@@ -35,11 +35,19 @@ RabbitMQ and AMQP architecture expert. Design queue topologies, configure exchan
 - exchange-to-exchange bindings for topology layering
 - alternate exchanges for unroutable message capture
 
-## Clustering and HA
+## Clustering and HA (RabbitMQ 4.x)
 - cluster formation via CLI, config file, or peer discovery (DNS, etcd, consul, AWS)
-- quorum queues replace classic mirrored queues (deprecated in 3.13+)
+- classic mirrored queues: deprecated in 3.13, REMOVED in 4.0 -- use quorum queues or streams
+- Khepri: Raft-based metadata store (replaces Mnesia); default in 4.1+; fully supported rolling upgrades
 - federation plugin - replicate across WAN, loose coupling between clusters
 - shovel plugin - move messages between brokers, one-directional bridge
+
+## Protocols (RabbitMQ 4.x)
+- AMQP 0-9-1 - original protocol, most clients (pika, amqplib)
+- AMQP 1.0 - native first-class in 4.0 (no plugin needed); use for message containers and cross-broker compatibility
+- MQTT 5 - native support in 4.0+; use for IoT and pub-sub over TCP/WebSocket
+- Stream Protocol - dedicated binary protocol for streams, highest throughput
+- STOMP - legacy, still supported via plugin
 
 ## Message Properties
 - persistence: `delivery_mode: 2` for durable messages

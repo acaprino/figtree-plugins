@@ -48,6 +48,10 @@ Present: files changed, insertions, deletions. Give the user a sense of scope.
 ### Step 4 - Conflict check
 
 ```bash
+# Git 2.38+: modern form (preferred) -- returns tree OID + conflict report in one call
+git merge-tree --write-tree --name-only <base> <branch>
+
+# Legacy fallback for git <2.38
 git merge-tree $(git merge-base <base> <branch>) <base> <branch>
 ```
 

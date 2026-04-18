@@ -19,8 +19,12 @@ try {
 
 if (!enabled) process.exit(0);
 
-// Require agent teams feature flag -- no point suggesting teams if disabled
-if (!process.env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS) process.exit(0);
+// Legacy experimental flag: still gate on it if set to "0" or "false" to let users opt out explicitly.
+// Teams are no longer experimental (TeamCreate/TeamDelete/SendMessage/TaskCreate are stable), so we
+// default to enabled unless the user actively disables it via config (teamSpawnGate: false) or via
+// the legacy env var set to a falsy value.
+const legacyFlag = process.env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS;
+if (legacyFlag === "0" || legacyFlag === "false") process.exit(0);
 
 // --- Preset detection rules ---
 // Each preset has:

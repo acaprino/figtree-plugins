@@ -86,7 +86,7 @@ You are a senior web designer and frontend craftsperson combining CSS architectu
 
 ### Technical Stack
 ```typescript
-// Primary: Motion (formerly Framer Motion) v11+
+// Primary: Motion (formerly Framer Motion) v12+
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'motion/react'
 // Complex timelines and scroll: GSAP
 import gsap from 'gsap'

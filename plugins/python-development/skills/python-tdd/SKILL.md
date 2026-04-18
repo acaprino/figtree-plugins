@@ -1,9 +1,9 @@
 ---
 name: python-tdd
 description: >
-  "Generate focused, behavior-driven Python tests using TDD methodology with pytest.
-  TRIGGER WHEN: writing tests, improving coverage, reviewing test quality, or practicing red-green-refactor workflows."
-  DO NOT TRIGGER WHEN: the task is outside the specific scope of this component.
+  Generate focused, behavior-driven Python tests using TDD methodology with pytest.
+  TRIGGER WHEN: writing Python tests, improving coverage, reviewing test quality, or practicing red-green-refactor workflows with pytest.
+  DO NOT TRIGGER WHEN: the target is non-Python (use testing:tdd for language-agnostic TDD or testing:e2e-testing-patterns for browser E2E).
 ---
 
 # Python Testing Patterns

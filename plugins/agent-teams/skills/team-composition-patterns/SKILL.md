@@ -66,7 +66,7 @@ Best practices for composing multi-agent teams, selecting team sizes, choosing a
 ### Research Team
 
 - **Size**: 3 researchers
-- **Agents**: 3x `general-purpose`
+- **Agents**: 3x `research:deep-researcher` (for systematic multi-source investigation) or `general-purpose` fallback; use `research:quick-searcher` for single-fact lookups
 - **Default areas**: Each assigned a different research question, module, or topic
 - **Capabilities**: Codebase search (Grep, Glob, Read), web search (WebSearch, WebFetch)
 - **Use when**: Need to understand a codebase, research libraries, compare approaches, or gather information from code and web sources in parallel

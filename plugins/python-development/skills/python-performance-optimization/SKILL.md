@@ -67,19 +67,19 @@ python -m pstats output.prof
 
 ### line_profiler - Line-by-Line
 ```bash
-pip install line-profiler
+uv add --dev line-profiler    # or: uv tool install line-profiler
 kernprof -l -v script.py
 ```
 
 ### memory_profiler - Memory Usage
 ```bash
-pip install memory-profiler
+uv add --dev memory-profiler
 python -m memory_profiler script.py
 ```
 
 ### py-spy - Production Profiling
 ```bash
-pip install py-spy
+uv tool install py-spy
 py-spy record -o profile.svg -- python script.py
 py-spy top --pid 12345
 ```

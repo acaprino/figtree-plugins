@@ -81,13 +81,15 @@ my-plugin/
     "lint": "eslint src/"
   },
   "devDependencies": {
+    "@eslint/js": "^9.0.0",
     "@types/node": "^22.0.0",
     "builtin-modules": "^4.0.0",
     "esbuild": "^0.24.0",
     "eslint": "^9.0.0",
     "eslint-plugin-obsidianmd": "latest",
     "obsidian": "latest",
-    "typescript": "^5.5.0"
+    "typescript": "^5.5.0",
+    "typescript-eslint": "^8.0.0"
   }
 }
 ```
@@ -173,15 +175,24 @@ main.js
 data.json
 ```
 
-### .eslintrc.json
-```json
-{
-  "extends": ["plugin:obsidianmd/recommended"],
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "project": "./tsconfig.json"
-  }
-}
+### eslint.config.mjs (ESLint 9+ flat config)
+```javascript
+import js from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import obsidianmd from 'eslint-plugin-obsidianmd';
+
+export default [
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
+  ...obsidianmd.configs.recommended,
+  {
+    languageOptions: {
+      parserOptions: {
+        project: './tsconfig.json',
+      },
+    },
+  },
+];
 ```
 
 ## Post-Scaffold

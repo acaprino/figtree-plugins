@@ -246,7 +246,7 @@ See `references/anti-patterns.md` for the full catalog. Priority order:
 ### Primary Stack: Ruff + Complexipy (recommended for new projects)
 
 ```bash
-pip install ruff complexipy radon wily
+uv tool install ruff complexipy radon wily    # or: uv add --dev ...
 
 ruff check src/                              # Fast linting (Rust, replaces flake8+plugins)
 complexipy src/ --max-complexity-allowed 15  # Cognitive complexity (Rust)

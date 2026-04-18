@@ -6,6 +6,9 @@ description: >
   DO NOT TRIGGER WHEN: the prompt is already specific, or the user is invoking a slash command (the hook bypasses those via the /, #, @, ! prefixes).
 ---
 
+<!-- upstream: severity1/claude-code-prompt-improver - skills/prompt-improver/SKILL.md -->
+<!-- Local port: hook handler converted from Python (scripts/improve-prompt.py) to Node.js (hooks/handlers/improve-prompt.js) -->
+
 # Prompt Improver Skill
 
 ## Purpose

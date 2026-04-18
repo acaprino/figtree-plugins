@@ -85,7 +85,7 @@ Task:
     ## Linter Output (if available)
     [paste ESLint JSON report if captured in Step 1.5, or "No linter output available"]
 
-    ## Vercel React Best Practices Checklist (62 rules -- flag violations)
+    ## Vercel React Best Practices Checklist (70 rules -- flag violations)
 
     **1. Eliminating Waterfalls (CRITICAL):** async-defer-await (move await into branches), async-parallel (Promise.all for independent ops), async-dependencies (better-all for partial deps), async-api-routes (start promises early, await late), async-suspense-boundaries (stream with Suspense)
     **2. Bundle Size (CRITICAL):** bundle-barrel-imports (import directly, avoid barrels), bundle-dynamic-imports (next/dynamic for heavy components), bundle-defer-third-party (load analytics after hydration), bundle-conditional (load modules only when activated), bundle-preload (preload on hover/focus)

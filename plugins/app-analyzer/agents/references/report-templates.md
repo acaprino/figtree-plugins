@@ -5,7 +5,7 @@
 ```markdown
 # {APP} - Competitive Analysis
 
-> Date: {DATE} | Version: {VERSION} | Method: ADB + UI inspection
+> Date: {DATE} | Version: {VERSION} | Method: {METHOD}
 
 ## Executive Summary
 | Metric | Value |
