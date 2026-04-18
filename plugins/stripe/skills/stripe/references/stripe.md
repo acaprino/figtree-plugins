@@ -20,7 +20,7 @@ STRIPE_WEBHOOK_SECRET=whsec_...
 import Stripe from 'stripe';
 
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-12-18.acacia',
+  apiVersion: '2025-09-30.preview',  // pin to a current dated version; check https://stripe.com/docs/upgrades for latest
 });
 ```
 

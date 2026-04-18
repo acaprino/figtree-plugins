@@ -1,6 +1,10 @@
-// Security Gate - PostToolUse hook (disablable)
-// Checks for hardcoded secrets in Write/Edit operations
-// Toggle: set "securityGate" to false in ~/.claude/acp-config.json to disable
+// Security Gate - PreToolUse hook (disablable)
+// Blocks Write/Edit operations that would persist hardcoded secrets to disk.
+// This runs BEFORE the write executes, so a detected secret never touches the
+// filesystem. (Previously ran as PostToolUse -- kept for reference: on
+// PostToolUse, exit 1 surfaces an error but the write already happened.)
+//
+// Toggle: set "securityGate" to false in ~/.claude/acp-config.json to disable.
 
 const fs = require("fs");
 const path = require("path");
@@ -78,17 +82,34 @@ process.stdin.on("end", () => {
 
     for (const pattern of secretPatterns) {
       if (pattern.test(content)) {
-        console.error(`\x1b[31m[Security Gate]\x1b[0m Potential hardcoded secret detected in ${path.basename(filePath)}`);
-        console.error(`Pattern matched: ${pattern.source.substring(0, 40)}...`);
-        console.error("Move secrets to .env or a secure vault.");
-        process.exit(1);
+        // PreToolUse: exit 1 blocks the Write/Edit before it executes.
+        // Emit a PreToolUse-shaped JSON decision so Claude sees the reason.
+        const decision = {
+          hookSpecificOutput: {
+            hookEventName: "PreToolUse",
+            permissionDecision: "deny",
+            permissionDecisionReason:
+              `[Security Gate] Potential hardcoded secret detected in ${path.basename(filePath)}. ` +
+              `Pattern matched: ${pattern.source.substring(0, 40)}... ` +
+              `Move secrets to .env or a secure vault, then retry.`,
+          },
+        };
+        process.stdout.write(JSON.stringify(decision));
+        process.exit(0);
       }
     }
 
     process.exit(0);
   } catch {
     // Fail closed -- don't allow unchecked operations
-    console.error("[Security Gate] Failed to parse hook input, blocking as precaution");
-    process.exit(1);
+    const decision = {
+      hookSpecificOutput: {
+        hookEventName: "PreToolUse",
+        permissionDecision: "deny",
+        permissionDecisionReason: "[Security Gate] Failed to parse hook input, blocking as precaution.",
+      },
+    };
+    process.stdout.write(JSON.stringify(decision));
+    process.exit(0);
   }
 });

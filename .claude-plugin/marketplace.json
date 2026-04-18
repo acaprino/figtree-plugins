@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Custom development workflow agents and skills for code quality, Tauri/Rust development, frontend optimization, AI tooling, and constraint programming optimization",
-    "version": "5.33.0"
+    "version": "5.34.0"
   },
   "plugins": [
     {
@@ -277,8 +277,8 @@
     {
       "name": "stripe",
       "source": "./plugins/stripe",
-      "description": "Stripe payments, subscriptions, Connect marketplaces, and revenue optimization for SaaS monetization",
-      "version": "1.3.1",
+      "description": "Stripe payments, subscriptions, Connect marketplaces, and revenue optimization for SaaS monetization; includes a dedicated skill (references + scripts) for API patterns, checkout optimization, webhook reliability, and pricing design",
+      "version": "2.0.0",
       "author": {
         "name": "Alfio"
       },
@@ -290,13 +290,19 @@
         "monetization",
         "pricing",
         "revenue",
-        "saas"
+        "saas",
+        "webhooks",
+        "checkout",
+        "connect"
       ],
       "category": "payments",
       "strict": false,
       "agents": [
         "./agents/stripe-integrator.md",
         "./agents/revenue-optimizer.md"
+      ],
+      "skills": [
+        "./skills/stripe"
       ]
     },
     {
@@ -600,7 +606,7 @@
       "name": "senior-review",
       "source": "./plugins/senior-review",
       "description": "Multi-agent code review orchestration with unified code auditing (architecture, failure flow, pattern analysis, scoring), security auditing, UI race condition detection, distributed flow analysis, platform engineering review, dead code detection, semantic interconnect mapping (contracts / invariants / domain rules / assumptions) reusable across team-review and codebase-mapper, logic-integrity auditing for cross-component contract violations, git blame/history analysis, finding validation with false-positive filtering, committable PR suggestions, pre-review skip logic, intent-driven review, confidence gating, cross-agent deduplication, pre-existing issue separation, verdict system, interactive fix loop, and conditional reviewers for testing quality, API contracts, and data migrations. Backed by a comprehensive defect taxonomy knowledge base (140+ defect patterns, CWE/OWASP mappings, plus a dedicated logic-integrity reference).",
-      "version": "5.4.0",
+      "version": "5.5.0",
       "author": {
         "name": "Alfio"
       },
@@ -639,7 +645,8 @@
         "./agents/distributed-flow-auditor.md",
         "./agents/chicken-egg-detector.md",
         "./agents/semantic-interconnect-mapper.md",
-        "./agents/logic-integrity-auditor.md"
+        "./agents/logic-integrity-auditor.md",
+        "./agents/api-contract-auditor.md"
       ],
       "skills": [
         "./skills/defect-taxonomy"
@@ -808,8 +815,8 @@
     {
       "name": "acp-hooks",
       "source": "./plugins/acp-hooks",
-      "description": "ACP session hooks -- skill awareness injection, security gate for hardcoded secrets, autocompact when context is high, cleanup of duplicate built-in plugins, brainstorm gate for creative/building prompts, review gate for PR/merge operations, docs gate for documentation auditing, and team spawn gate for auto-suggesting agent teams with free-form custom composition",
-      "version": "2.6.1",
+      "description": "ACP session hooks -- skill awareness injection, PreToolUse security gate that BLOCKS hardcoded secrets before they reach disk, autocompact when context is high, cleanup of duplicate built-in plugins, brainstorm gate for creative/building prompts, review gate for PR/merge operations, docs gate for documentation auditing, and team spawn gate with runtime-generated agent catalog from marketplace.json (no more drift from hardcoded lists)",
+      "version": "3.0.0",
       "author": {
         "name": "Alfio"
       },

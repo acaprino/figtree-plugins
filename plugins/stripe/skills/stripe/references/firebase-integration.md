@@ -84,7 +84,7 @@ import * as admin from 'firebase-admin';
 import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2023-10-16',
+  apiVersion: '2025-09-30.preview',  // pin to a current dated version; check https://stripe.com/docs/upgrades for latest
 });
 
 admin.initializeApp();

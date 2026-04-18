@@ -234,13 +234,23 @@ For detailed code examples of the following, see `references/stripe-patterns.md`
 
 ## Scripts Reference
 
-- `scripts/setup_products.py` - Create products and prices
-- `scripts/webhook_handler.py` - Flask webhook endpoint
-- `scripts/sync_subscriptions.py` - Sync subscriptions to database
-- `scripts/stripe_utils.py` - Common utility functions
+All scripts live in the `stripe:stripe` skill. Absolute paths at runtime use `${CLAUDE_PLUGIN_ROOT}/skills/stripe/scripts/`:
+
+- `setup_products.py` -- Create products and prices
+- `webhook_handler.py` -- Signature-verified webhook endpoint with idempotency
+- `sync_subscriptions.py` -- Sync subscriptions to database
+- `stripe_utils.py` -- Common utility functions
 
 ## References
 
-- `references/stripe-patterns.md` - Metered billing, Connect, tax, 3DS, Radar, disputes, idempotency patterns
-- `references/firebase-integration.md` - Firebase + Firestore integration
-- `references/api-cheatsheet.md` - Quick API reference
+Load from the `stripe:stripe` skill's `references/` directory (see `SKILL.md` for the full index):
+
+- `stripe-patterns.md` -- metered billing, Connect, tax, 3DS, Radar, disputes, idempotency
+- `firebase-integration.md` -- Firebase + Firestore integration
+- `api-cheatsheet.md` -- quick API reference
+- `stripe.md` -- core Stripe concepts and current API version notes
+- `checkout-optimization.md` -- conversion optimization patterns
+- `subscription-patterns.md` -- subscription lifecycle and state reconciliation
+- `pricing-patterns.md` -- tier design and pricing strategy
+- `cost-analysis.md` -- unit economics
+- `usage-revenue-modeling.md` -- usage-based revenue models

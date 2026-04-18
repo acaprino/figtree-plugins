@@ -269,35 +269,90 @@ const DOMAIN_KEYWORDS = [
   "queue", "cache", "redis", "postgres", "mongo", "stripe"
 ];
 
-// SYNC: update this catalog when agents are added or removed from the marketplace
-const AGENT_CATALOG = [
-  "python-development:python-engineer -- Python implementation",
-  "python-development:python-test-engineer -- Python tests",
-  "python-development:python-refactor-agent -- Python refactoring",
-  "frontend:frontend-engineer -- Frontend/React implementation",
-  "frontend:web-designer -- Web design, CSS, aesthetics",
-  "frontend:ui-layout-designer -- Layout, grid, responsive",
-  "tauri-development:rust-engineer -- Rust implementation",
-  "tauri-development:tauri-desktop -- Tauri desktop apps",
-  "tauri-development:tauri-mobile -- Tauri mobile apps",
-  "testing:test-writer -- Test suites (any language)",
+// Build AGENT_CATALOG at runtime by reading the active marketplace.json.
+// Kills drift: add/remove an agent in marketplace.json and this hook sees it
+// immediately with no source edit.
+//
+// Strategy: walk up from cwd to find `.claude-plugin/marketplace.json`, parse
+// it, and for every registered agent extract `name:` + first sentence of
+// `description:` from its frontmatter. Fall back to a minimal static catalog
+// when no marketplace.json is found (e.g., running outside a project).
+
+function findMarketplaceJson(startDir) {
+  let dir = startDir;
+  for (let i = 0; i < 20; i++) {
+    const candidate = path.join(dir, ".claude-plugin", "marketplace.json");
+    if (fs.existsSync(candidate)) return candidate;
+    const parent = path.dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+  return null;
+}
+
+function extractAgentFrontmatter(agentPath) {
+  try {
+    const text = fs.readFileSync(agentPath, "utf8");
+    const match = text.match(/^---([\s\S]*?)---/);
+    if (!match) return null;
+    const fm = match[1];
+    const nameMatch = fm.match(/^\s*name:\s*(.+)$/m);
+    const descMatch = fm.match(/description:\s*>\s*\n([\s\S]*?)(?=\n\S|\n---|$)/m)
+      || fm.match(/^\s*description:\s*(.+)$/m);
+    if (!nameMatch) return null;
+    let desc = descMatch ? descMatch[1].trim() : "";
+    desc = desc.replace(/^\s*>?\s*/, "").split(/\.\s|\n/)[0].trim();
+    if (desc.length > 80) desc = desc.slice(0, 77) + "...";
+    return { name: nameMatch[1].trim(), desc };
+  } catch {
+    return null;
+  }
+}
+
+// Static fallback: kept minimal intentionally -- the real catalog is built
+// at runtime. Used only when no marketplace.json can be located or parsed.
+const STATIC_FALLBACK_CATALOG = [
+  "general-purpose -- General-purpose agent for multi-step tasks",
   "research:deep-researcher -- Multi-source investigation",
   "research:quick-searcher -- Fast fact-finding",
   "senior-review:security-auditor -- Security review",
   "senior-review:code-auditor -- Architecture/quality review",
-  "senior-review:distributed-flow-auditor -- Cross-service flows",
-  "senior-review:ui-race-auditor -- UI race conditions",
-  "senior-review:chicken-egg-detector -- Circular dependencies",
-  "platform-engineering:platform-reviewer -- Cross-platform compliance",
-  "react-development:react-performance-optimizer -- React performance",
-  "codebase-mapper:codebase-explorer -- Codebase understanding",
-  "codebase-mapper:documentation-engineer -- Documentation writing",
-  "app-analyzer:app-analyzer -- App navigation/UX analysis",
   "agent-teams:team-lead -- Team coordination",
   "agent-teams:team-implementer -- General implementation",
   "agent-teams:team-reviewer -- General review",
   "agent-teams:team-debugger -- Hypothesis-driven debugging",
 ].join("\n  ");
+
+function buildAgentCatalog() {
+  const marketplacePath = findMarketplaceJson(process.cwd());
+  if (!marketplacePath) return STATIC_FALLBACK_CATALOG;
+
+  try {
+    const marketplace = JSON.parse(fs.readFileSync(marketplacePath, "utf8"));
+    const projectRoot = path.dirname(path.dirname(marketplacePath));
+    const entries = [];
+
+    for (const plugin of marketplace.plugins || []) {
+      const pluginName = plugin.name;
+      const pluginSource = (plugin.source || "").replace(/^\.\//, "");
+      const pluginDir = path.join(projectRoot, pluginSource);
+
+      for (const agentRelPath of plugin.agents || []) {
+        const agentPath = path.join(pluginDir, agentRelPath.replace(/^\.\//, ""));
+        const fm = extractAgentFrontmatter(agentPath);
+        if (fm) {
+          entries.push(`${pluginName}:${fm.name}${fm.desc ? " -- " + fm.desc : ""}`);
+        }
+      }
+    }
+
+    return entries.length > 0 ? entries.join("\n  ") : STATIC_FALLBACK_CATALOG;
+  } catch {
+    return STATIC_FALLBACK_CATALOG;
+  }
+}
+
+const AGENT_CATALOG = buildAgentCatalog();
 
 function detectComplexity(prompt) {
   const lower = prompt.toLowerCase();
