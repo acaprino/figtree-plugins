@@ -30,10 +30,10 @@ Three pillars govern every application you ship -- Security, Architecture, and P
 
 ## When to Load References
 
-- **Security review or audit**: Load `server-validation`, `auth-tokens`, `api-security`, `xss-csp`, `secrets-management`, `platform-security`
+- **Security review or audit**: Load `server-validation`, `auth-tokens`, `passkeys-webauthn`, `api-security`, `xss-csp`, `secrets-management`, `platform-security`
 - **Architecture decisions**: Load `client-server-architecture`, `api-design`, `offline-first`, `infrastructure`
 - **Performance optimization**: Load `frontend-performance`, `backend-and-platform-performance`
-- **Full platform review**: Load all 12 references
+- **Full platform review**: Load all 13 references
 
 ## Reference Materials
 
@@ -41,6 +41,7 @@ Three pillars govern every application you ship -- Security, Architecture, and P
 
 1. **server-validation.md** -- Server-side validation rules, trust boundaries, real-world bypass incidents
 2. **auth-tokens.md** -- Token storage per platform, OAuth 2.1 flows, JWT best practices, secure storage APIs
+3. **passkeys-webauthn.md** -- WebAuthn Level 3 / passkey patterns, server-side verification, cross-platform support, cloned-authenticator detection
 3. **api-security.md** -- Endpoint auth, rate limiting, CORS, OWASP API risks, Peloton/Parler case studies
 4. **xss-csp.md** -- XSS severity by platform, CSP directives, anti-CSRF, sanitization, British Airways incident
 5. **secrets-management.md** -- Secret exposure risks, environment variables, vault services, GitGuardian stats

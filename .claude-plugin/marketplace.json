@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Custom development workflow agents and skills for code quality, Tauri/Rust development, frontend optimization, AI tooling, and constraint programming optimization",
-    "version": "5.31.0"
+    "version": "5.32.0"
   },
   "plugins": [
     {
@@ -680,8 +680,8 @@
     {
       "name": "browser-extensions",
       "source": "./plugins/browser-extensions",
-      "description": "Expert Firefox extension (WebExtension) developer covering Manifest V2/V3, all 51 browser.* APIs, content scripts, background scripts, native messaging, cross-browser compatibility, AMO publishing, web-ext CLI tooling, project scaffolding, and live MDN documentation lookup",
-      "version": "1.5.2",
+      "description": "Expert Firefox extension (WebExtension) developer covering Manifest V2/V3, all 51 browser.* APIs, content scripts, background scripts, native messaging, cross-browser compatibility, AMO publishing, web-ext CLI tooling, project scaffolding, and live MDN documentation lookup; includes /firefox-scaffold, /firefox-lint, /firefox-publish commands",
+      "version": "1.6.0",
       "author": {
         "name": "Alfio"
       },
@@ -705,6 +705,11 @@
       ],
       "skills": [
         "./skills/firefox-extension-dev"
+      ],
+      "commands": [
+        "./commands/firefox-scaffold.md",
+        "./commands/firefox-lint.md",
+        "./commands/firefox-publish.md"
       ]
     },
     {
@@ -1070,8 +1075,8 @@
     {
       "name": "platform-engineering",
       "source": "./plugins/platform-engineering",
-      "description": "Cross-platform development rulebook -- security (validation, auth tokens, API security, XSS/CSP, secrets), architecture (client-server, REST vs GraphQL, offline-first, monolith-first, CI/CD), and performance (bundles, images, Core Web Vitals, SSR/SSG, CDN caching) for SPA, PWA, mobile, Electron, and Tauri",
-      "version": "1.0.0",
+      "description": "Cross-platform development rulebook -- security (validation, auth tokens, passkeys/WebAuthn, API security, XSS/CSP, secrets), architecture (client-server, REST vs GraphQL, offline-first, monolith-first, CI/CD), and performance (bundles, images, Core Web Vitals, SSR/SSG, CDN caching) for SPA, PWA, mobile, Electron (with Fuses + asar integrity), and Tauri; includes /platform-review standalone command",
+      "version": "1.1.0",
       "author": {
         "name": "Alfio"
       },
@@ -1098,6 +1103,9 @@
       ],
       "skills": [
         "./skills/platform-engineering"
+      ],
+      "commands": [
+        "./commands/platform-review.md"
       ]
     },
     {

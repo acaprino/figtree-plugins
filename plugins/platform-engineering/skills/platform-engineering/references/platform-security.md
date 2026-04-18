@@ -45,7 +45,36 @@
 - Use preload scripts with `contextBridge.exposeInMainWorld()` to create a controlled API surface.
 - Validate all IPC messages in the main process as untrusted input.
 - Keep Electron/Chromium updated -- bundled Chromium doesn't auto-update, so track security releases and treat them as ship-blocking.
-- Use Electron Fuses to disable `runAsNode` in production.
+- **Configure Electron Fuses** via `electron/fuses` or `@electron/fuses` CLI to disable at-build-time the dangerous features that attackers use to achieve RCE or supply-chain compromise. Fuses are flipped into the compiled Electron binary and cannot be re-enabled without re-shipping.
+
+### Recommended Fuses configuration
+
+```javascript
+// forge.config.ts (Electron Forge) or scripts/flip-fuses.js
+const { flipFuses, FuseVersion, FuseV1Options } = require('@electron/fuses');
+
+await flipFuses(
+  require('electron'), // path to electron binary
+  {
+    version: FuseVersion.V1,
+    [FuseV1Options.RunAsNode]: false,                       // disable ELECTRON_RUN_AS_NODE
+    [FuseV1Options.EnableCookieEncryption]: true,           // encrypt cookies on disk
+    [FuseV1Options.EnableNodeOptionsEnvironmentVariable]: false,  // block NODE_OPTIONS injection
+    [FuseV1Options.EnableNodeCliInspectArguments]: false,   // block --inspect flag
+    [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,  // verify asar integrity on load
+    [FuseV1Options.OnlyLoadAppFromAsar]: true,              // refuse to load from disk outside asar
+    [FuseV1Options.LoadBrowserProcessSpecificV8Snapshot]: false,
+    [FuseV1Options.GrantFileProtocolExtraPrivileges]: false,
+  },
+);
+```
+
+### asar Integrity
+
+- **Enable `EnableEmbeddedAsarIntegrityValidation` + `OnlyLoadAppFromAsar` fuses.** Together they require the app to load from a signed asar archive whose SHA-256 hash is embedded in the Electron binary -- an attacker cannot replace `app.asar` without invalidating the signature.
+- Available on macOS and Windows (Electron 30+); Linux support is in progress.
+- Without asar integrity, an attacker with filesystem write access can swap `app.asar` with a malicious version (e.g., adding a keylogger) -- code signing on the installer does NOT prevent post-install tampering.
+- electron-builder integration: set `"asarIntegrity": true` in `build` config; it calculates hashes at build time.
 
 ### DON'T
 
