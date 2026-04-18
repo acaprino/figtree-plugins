@@ -215,6 +215,51 @@ HEALTHCHECK --interval=30s --timeout=3s CMD wget -qO- http://localhost:8080/actu
 ENTRYPOINT ["java", "-jar", "app.jar"]
 ```
 
+### Bun (Server or API)
+
+```dockerfile
+FROM oven/bun:1-alpine AS builder
+WORKDIR /app
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile
+COPY . .
+RUN bun build ./src/index.ts --target=bun --outdir=./dist --minify
+
+FROM oven/bun:1-alpine
+WORKDIR /app
+RUN addgroup -S app && adduser -S app -G app
+COPY --from=builder --chown=app:app /app/dist ./dist
+COPY --from=builder --chown=app:app /app/node_modules ./node_modules
+USER app
+EXPOSE 3000
+HEALTHCHECK --interval=30s --timeout=3s CMD wget -qO- http://localhost:3000/health || exit 1
+CMD ["bun", "run", "./dist/index.js"]
+```
+
+Notes: Bun 1.2+ uses text-based `bun.lock` (replaces legacy `bun.lockb`). Pin the Bun major version; do not use `:latest`.
+
+### Deno (API or CLI)
+
+```dockerfile
+FROM denoland/deno:2-alpine AS builder
+WORKDIR /app
+COPY deno.json deno.lock ./
+RUN deno cache --lock=deno.lock main.ts
+COPY . .
+RUN deno compile --allow-net --allow-env --output=/app/server main.ts
+
+FROM alpine:3.20
+WORKDIR /app
+RUN addgroup -S app && adduser -S app -G app
+COPY --from=builder --chown=app:app /app/server /app/server
+USER app
+EXPOSE 8000
+HEALTHCHECK --interval=30s --timeout=3s CMD wget -qO- http://localhost:8000/health || exit 1
+ENTRYPOINT ["/app/server"]
+```
+
+Notes: Deno 2 ships `deno compile` producing a self-contained binary; the runtime image can be plain alpine with no Deno installed. Declare required permissions explicitly -- Deno refuses unknown ones.
+
 ## .dockerignore Template
 
 Always create a `.dockerignore` alongside the Dockerfile:

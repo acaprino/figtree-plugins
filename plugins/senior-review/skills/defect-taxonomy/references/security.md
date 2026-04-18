@@ -147,6 +147,34 @@ Reference for defect taxonomy category 6.
 - **Difficulty**: Medium-High
 - **Signature**: `new RegExp(userPattern)`, no validation between HTTP handler and business logic
 
+### 6.11 Regex Denial-of-Service (ReDoS)
+- **CWE**: 1333 | **OWASP**: related to A04:2021 (Insecure Design)
+- **Pattern**: Catastrophic-backtracking regex applied to attacker-controlled input. Nested quantifiers (`(a+)+`), overlapping alternations (`(a|a)*`), exponential blowup on unanchored patterns.
+- **Detection**: Scan for regex literals with `+*` or `**`; Python `re.match` without `re.DOTALL`/`re.ASCII` flags on user input; `validators` / email-regex libraries older than a year; Semgrep rule `python.lang.security.audit.dangerous-regex`.
+- **Fix**: Use `re2` (linear-time engine), `regex` library with timeout, rewrite pattern to eliminate nested quantifiers, validate length before matching, anchor patterns (`^...$`).
+- **Difficulty**: Medium
+- **Signature**: `re.match(r"^(a+)+$", user_input)`, `re.fullmatch(r"(\w+\s?)+", ...)`, unanchored email validators on untrusted input
+
+### 6.12 Server-Side Request Forgery (SSRF)
+- **CWE**: 918 | **OWASP**: A10:2021
+- **Patterns**:
+  - Fetching a URL from user input without allowlist (`requests.get(url)`)
+  - Following redirects to cloud metadata (`169.254.169.254`, `metadata.google.internal`, `fd00:ec2::254`)
+  - DNS rebinding (resolve-check vs resolve-at-use race)
+  - Blind SSRF via Webhooks, PDF renderers, image proxies
+- **Detection**: Taint from HTTP inputs into outbound HTTP calls; scan for `requests.get(url)`/`httpx.get(url)` where `url` is user-controlled; check redirect policies.
+- **Fix**: Allowlist of allowed hosts/schemes; disable redirects (`allow_redirects=False`) or validate each hop; block `169.254.0.0/16`, `127.0.0.0/8`, `::1`, RFC1918, link-local; use a dedicated SSRF-proof library (e.g., `ssrfmap`-aware fetchers); pin DNS resolution with `getaddrinfo` + revalidate on connect.
+- **Difficulty**: Medium-High
+- **Signature**: `requests.get(user_url)` with no validation; webhook endpoints that fetch arbitrary URLs; PDF/image renderers that resolve remote resources
+
+### 6.13 Monetary Precision / Floating-Point Money (CWE-681 family)
+- **CWE**: 681 (Incorrect Conversion between Numeric Types), 682 (Incorrect Calculation)
+- **Pattern**: Financial calculations using IEEE-754 binary float (`float` in Python, `Number` in JS) instead of decimal / integer cents. Accumulated rounding errors, sum-not-equal-to-parts, fee miscalculations.
+- **Detection**: Grep for `* 0.01`, `price: float`, `amount: Number`; check model schemas for `float`/`double` columns on money fields; scan for `round(...)` on totals (hides underlying drift).
+- **Fix**: Use `decimal.Decimal` with explicit precision + rounding mode; store as integer minor units (cents / satoshi); use libraries like `moneyed` (Python) or `dinero.js` (TS); enforce via Pydantic `Decimal` / `condecimal`.
+- **Difficulty**: Low to detect, medium to fix (schema migration)
+- **Signature**: `total = sum(p * 0.01 for p in prices)`, `amount: float` in API payloads, SQLAlchemy `Float` column on a `price_usd` field
+
 ---
 
 ## Quick Reference: Security Detection Priorities
@@ -160,6 +188,8 @@ Reference for defect taxonomy category 6.
 | High | Auth flaws | 862/863 | Medium -- route analysis |
 | High | Path Traversal | 22 | High -- taint analysis |
 | High | Secrets in code | 798 | High -- regex patterns |
-| Medium | SSRF | 918 | Medium -- taint analysis |
+| Medium | SSRF | 918 | Medium -- taint analysis, allowlist check |
 | Medium | Template Injection | 1336 | Medium -- API pattern matching |
+| Medium | ReDoS | 1333 | Medium -- regex AST analysis, quantifier heuristics |
+| Medium | Monetary Precision | 681 / 682 | High -- schema scan for `float` on money fields |
 | Lower | Timing attacks | 208 | Low -- requires context understanding |
