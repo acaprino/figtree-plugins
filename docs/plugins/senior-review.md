@@ -1,6 +1,6 @@
 # Senior Review Plugin
 
-> Catch bugs before they ship. Five specialized agents review code quality, security, UI timing, distributed flows, and startup cycles in parallel -- backed by a comprehensive defect taxonomy knowledge base with 140+ defect patterns and CWE/OWASP mappings.
+> Catch bugs before they ship. Eight specialized agents review code quality, security, UI timing, distributed flows, startup cycles, cross-component logic integrity, and formal API contracts in parallel -- plus a semantic interconnect mapper that turns codebases into a shared contract/invariant map consumable by every reviewer. Backed by a comprehensive defect taxonomy knowledge base with 140+ defect patterns and CWE/OWASP mappings.
 
 ## Agents
 
@@ -109,6 +109,66 @@ Use the chicken-egg-detector agent to analyze [system/infrastructure]
 - Finds cases where component A requires B to be ready but B requires A -- creating deadlocks, flaky startups, or hidden temporal coupling
 - Concrete evidence: every finding includes file:line references for both sides of the dependency cycle
 - References `defect-taxonomy` skill for integration error patterns
+
+---
+
+### `semantic-interconnect-mapper`
+
+Phase 1b context-builder that produces a structured map of a codebase's contracts, invariants, domain rules, assumptions, integration hot-spots, and call graph. Output is consumed by every downstream reviewer (logic-integrity-auditor, code-auditor, security-auditor, distributed-flow-auditor, api-contract-auditor, chicken-egg-detector, ui-race-auditor) so they can find cross-component bugs instead of only local issues.
+
+| | |
+|---|---|
+| **Model** | `opus` |
+| **Tools** | Read, Grep, Glob |
+| **Use for** | Pre-review context building when running `/team-review` or `/map-codebase`; generating the `.team-review/02-interconnect.md` artifact that drives the logic-integrity and contract reviewers |
+
+**Invocation:**
+```
+Used automatically by /team-review Phase 1b (after deep-dive analysis) and by /map-codebase pipelines; rarely invoked directly
+```
+
+**Output sections:** `## Contracts` (formal + implicit), `## Invariants` (temporal + structural), `## Assumptions` (unverified), `## Domain Rules`, `## Integration Hot-Spots` (HTTP, queue, IPC, env/config), `## Call Graph`. Each section is self-contained so reviewers can Grep a single heading and get full context.
+
+---
+
+### `logic-integrity-auditor`
+
+Adversarial reviewer that hunts for violations of contracts, invariants, assumptions, domain rules, ordering, idempotency, and state machines documented in the interconnect map. Catches bugs no local-only reviewer can see -- logic drift across components, implicit contracts silently broken, terminal states mutated, retry paths double-committing.
+
+| | |
+|---|---|
+| **Model** | `opus` |
+| **Use for** | `/team-review` Phase 2 (always-on in the review preset); logic/contract/invariant audit of code with an associated interconnect map |
+
+**Invocation:**
+```
+Used automatically by /team-review; requires .team-review/02-interconnect.md (produced by semantic-interconnect-mapper)
+```
+
+**Methodology:** Reads the interconnect map + target files, proves violations of documented contracts / invariants / domain rules / assumptions. Stops and reports if interconnect map is absent (precondition failure).
+
+---
+
+### `api-contract-auditor`
+
+Adversarial auditor for formal API contracts -- OpenAPI / Swagger, JSON Schema, GraphQL SDL, gRPC `.proto`, AsyncAPI for event schemas, TypeScript DTOs, Pydantic models. Hunts for contract-code drift, breaking changes hidden as minor version bumps, missing nullable markers, type mismatches between producer and consumer schemas, underspecified error responses.
+
+| | |
+|---|---|
+| **Model** | `opus` |
+| **Tools** | Read, Glob, Grep, Bash |
+| **Use for** | Auditing OpenAPI/Swagger/GraphQL/gRPC specs for drift vs implementation; reviewing a PR that touches an API boundary; spec-first development audit; checking backwards compatibility before a release |
+
+**Invocation:**
+```
+Use the api-contract-auditor agent to review [spec file or API boundary]
+```
+
+**Methodology:**
+- 5-phase audit: contract inventory (find every spec artifact) -> contract-vs-implementation drift -> breaking-change detection (BREAKING / SAFE / AMBIGUOUS classification) -> consumer-side audit (hand-written + generated clients) -> cross-contract coherence
+- Every finding cites producer `file:line` AND consumer `file:line`
+- Handles OpenAPI 3.1, GraphQL SDL, gRPC, AsyncAPI, JSON Schema, Pydantic, TypeScript DTOs, Zod schemas
+- Fulfills the `semantic-interconnect-mapper` `## Contracts` (formal) anchor
 
 ---
 

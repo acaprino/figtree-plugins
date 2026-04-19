@@ -286,6 +286,27 @@ Domain expert is auto-selected based on `--domain` flag or auto-detected from th
 
 ---
 
+### `/team-codebase-map`
+
+Parallel codebase mapping pipeline. Explores the project, runs 6 writer agents in parallel to generate narrative docs (overview, tech stack, workflows, onboarding, ops, config), then reviews and produces an INDEX.md with Mermaid diagrams.
+
+| | |
+|---|---|
+| **Invoke** | `/team-codebase-map [target-path]` |
+| **Pipeline** | Phase 1: `codebase-explorer` + `semantic-interconnect-mapper` -> Phase 2: 6 writer agents in parallel -> Phase 3: `guide-reviewer` produces INDEX.md |
+| **Output** | `.codebase-map/` directory with 10 numbered narrative documents + INDEX.md |
+
+```
+/team-codebase-map                  # map the entire current project
+/team-codebase-map src/auth         # map a specific subdirectory
+```
+
+**Parallel writers:** `overview-writer`, `tech-writer`, `flow-writer`, `onboarding-writer`, `ops-writer`, `config-writer` -- all from the `codebase-mapper` plugin. Produces human-readable narrative docs (not API reference).
+
+**Context sharing:** Phase 1b generates an interconnect map (contracts, invariants, domain rules) via `senior-review:semantic-interconnect-mapper`, which all writers reference so facts stay consistent across the 10 documents.
+
+---
+
 ### `/team-design`
 
 Parallel UI design and build pipeline -- brainstorm, then run design direction + layout + UX patterns in parallel, build, polish + perf + review in parallel.

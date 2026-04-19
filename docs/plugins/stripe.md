@@ -2,23 +2,28 @@
 
 > Integrate Stripe without reading 500 pages of docs. Covers payments, subscriptions, Connect marketplaces, billing, webhooks, and revenue optimization with ready-to-use patterns.
 
-## Skills
+## Agents
 
-### `stripe-agent`
+### `stripe-integrator`
 
-Complete Stripe API integration covering payments, subscriptions, Connect marketplaces, and compliance.
+Complete Stripe API integrator covering payments, subscriptions, Connect marketplaces, billing, webhooks, and compliance.
 
 | | |
 |---|---|
-| **Invoke** | Skill reference |
-| **Use for** | Payment processing, subscriptions, marketplaces, billing, webhooks |
+| **Model** | `opus` |
+| **Use for** | Payment processing, subscriptions, marketplaces, billing, webhooks, SCA/3DS compliance, fraud prevention, dispute handling |
+
+**Invocation:**
+```
+Use the stripe-integrator agent to [integrate/audit/extend] [Stripe feature]
+```
 
 **Core capabilities:**
 - **Payments** - Payment intents, checkout sessions, payment links
 - **Subscriptions** - Recurring billing, metered usage, tiered pricing
 - **Connect** - Marketplace payments, platform fees, seller onboarding
 - **Billing** - Invoices, customer portal, tax calculation
-- **Webhooks** - Event handling, subscription lifecycle
+- **Webhooks** - Signature-verified event handling, subscription lifecycle, idempotency
 - **Security** - 3D Secure, SCA compliance, fraud prevention (Radar)
 - **Disputes** - Chargeback handling, evidence submission
 
@@ -47,8 +52,13 @@ Monetization expert. Analyzes your codebase to discover features, calculate serv
 
 | | |
 |---|---|
-| **Invoke** | Skill reference |
+| **Model** | `opus` |
 | **Use for** | Feature cost analysis, pricing strategy, usage modeling, revenue projections, tier design |
+
+**Invocation:**
+```
+Use the revenue-optimizer agent to [analyze/design/project] [pricing|tiers|revenue]
+```
 
 **5-Phase Workflow:**
 1. **Discover** - Scan codebase for features, services, and integrations
@@ -64,6 +74,40 @@ Monetization expert. Analyzes your codebase to discover features, calculate serv
 | LTV | (ARPU x Margin) / Monthly Churn |
 | Break-even | Fixed Costs / (ARPU - Variable Cost) |
 | Optimal Price | (Cost Floor x 0.3) + (Value Ceiling x 0.7) |
+
+---
+
+## Skills
+
+### `stripe`
+
+Stripe knowledge base -- API patterns, checkout optimization, subscription lifecycle, pricing strategies, webhook reliability, Firebase integration, cost analysis, revenue modeling. Loaded by `stripe-integrator` and `revenue-optimizer`; also usable standalone when you need patterns without agent invocation.
+
+| | |
+|---|---|
+| **Invoke** | Skill reference |
+| **Trigger** | Working with Stripe API (Payment Intents, Customers, Subscriptions, Checkout Sessions, Connect, webhooks, tax, usage-based billing), pricing strategy, or revenue modeling |
+
+**References** (under `skills/stripe/references/`):
+| File | Content |
+|------|---------|
+| `stripe.md` | Core concepts, current API version notes, pin patterns |
+| `api-cheatsheet.md` | Quick API reference |
+| `stripe-patterns.md` | Metered billing, Connect, tax, 3DS, Radar, disputes, idempotency |
+| `checkout-optimization.md` | Conversion optimization patterns |
+| `subscription-patterns.md` | Subscription lifecycle + state reconciliation |
+| `pricing-patterns.md` | Tier design, pricing strategy |
+| `cost-analysis.md` | Unit economics |
+| `usage-revenue-modeling.md` | Usage-based revenue models |
+| `firebase-integration.md` | Firebase + Firestore integration |
+
+**Scripts** (`skills/stripe/scripts/`, reference via `${CLAUDE_PLUGIN_ROOT}/skills/stripe/scripts/`):
+- `setup_products.py` -- bootstrap Products and Prices
+- `webhook_handler.py` -- signature-verified receiver with idempotency
+- `sync_subscriptions.py` -- reconcile local DB vs Stripe subscription state
+- `stripe_utils.py` -- shared utilities
+
+**Key section:** webhook reliability checklist (signature verification, raw body preservation, idempotency via `event.id`, 10-second 2xx response, replay testing).
 
 ---
 

@@ -35,4 +35,31 @@ Knowledge base for instrumenting Python services with OpenTelemetry -- distribut
 
 ---
 
+## Commands
+
+### `/otel-audit`
+
+Audit an existing OpenTelemetry Python instrumentation for correctness, performance, and production readiness. Delegates to the `otel-architect` agent with a structured 10-dimension checklist.
+
+```
+/otel-audit src/
+/otel-audit src/worker/           # audit a single module
+```
+
+**Audit dimensions:**
+- SDK setup (TracerProvider lifecycle, resource detectors, graceful shutdown)
+- Span hygiene (context manager use, status codes, attribute budgets, semantic conventions)
+- Attribute safety (no PII in spans or baggage, no None values, string truncation)
+- Context propagation (propagator instances at module scope, custom transports correct)
+- Async / threading (asyncio, Celery, threading boundaries)
+- Exporters (OTLP port choice, BatchSpanProcessor in prod, TLS, compression)
+- Sampling (parent-based ratio, tail sampling via Collector, error carve-out)
+- Logs + metrics (Logs SDK stabilized in v1.26+, correct instruments per signal)
+- AWS / ADOT (X-Ray ID generator + propagator, ECS / Lambda resource detectors)
+- Anti-patterns (per-call propagator allocation, SimpleSpanProcessor in prod, Jaeger exporter removed in v1.22)
+
+**Output:** Prioritized findings grouped by severity with concrete fix code per item.
+
+---
+
 **Related:** [python-development](python-development.md) (Python best practices) | [platform-engineering](platform-engineering.md) (infrastructure and observability patterns)

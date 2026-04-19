@@ -231,6 +231,32 @@ Write and audit Python code comments using antirez's 9-type taxonomy.
 
 ---
 
+### `pydantic-v2`
+
+Deep guide to Pydantic v2 (2.13+) for production Python. Covers validators, serializers, strict mode, performance tuning, security, and v1 -> v2 migration. Also documents PydanticAI and Logfire integration.
+
+| | |
+|---|---|
+| **Invoke** | Skill reference |
+| **Use for** | Writing or refactoring Pydantic models in Python 3.10+; migrating from v1 to v2; choosing `Annotated[Decimal, ...]` vs `condecimal` for money; designing FastAPI request/response schemas and error envelopes; hot-path performance tuning |
+
+**Sections:**
+- Core model patterns (`ConfigDict`, `Annotated[T, Field(...)]`, `@computed_field`, discriminated unions)
+- Validators: mode decision rules (after/before/wrap/plain), Annotated reusable pattern, `ValidationInfo.context`, `PydanticCustomError`
+- Serialization: custom `@field_serializer` / `@model_serializer`, `PlainSerializer`/`WrapSerializer` via Annotated, validation-vs-serialization JSON Schema modes, alias trinity, polymorphic serialization (2.13+)
+- Strict mode: global vs per-field vs per-call, real-world break cases (FastAPI query params, CSV, env vars)
+- Advanced typing: generics (PEP 695), `TypeAdapter`, `RootModel[T]`, `Self` (PEP 673), TypedDict / dataclass support
+- Performance: 12-point optimization guide (model_validate_json bytes path, TypeAdapter at module scope, discriminated unions, FailFast, defer_build, cache_strings, __pydantic_serializer__ bytes fast-path)
+- Monetary precision (CWE-681 defense) with `Annotated[Decimal, Field(...)]`
+- Settings management via `pydantic-settings` (env_nested_delimiter, SecretStr, source priority)
+- FastAPI integration (response_model projection, RequestValidationError envelope, streaming/SSE)
+- Security and secrets (SecretStr/SecretBytes, TypeAdapter safety model, recursive depth guard)
+- PydanticAI + Logfire (logfire.instrument_pydantic, logfire.instrument_pydantic_ai, agent framework)
+- v1 -> v2 migration checklist (bump-pydantic coverage + gaps)
+- Common gotchas (extra=allow v1/v2 diff, @model_validator(mode="after") classmethod deprecation 2.12+, UTC AwareDatetime trap, model_dump shallow-copy trap, Path/deque constraint removal in 2.11+)
+
+---
+
 ## Commands
 
 ### `/python-scaffold`
@@ -258,6 +284,22 @@ Metrics-driven 4-phase refactoring with checkpoint approval before execution and
 **Phases:** Analysis -> Planning -> (Checkpoint) -> Execution -> Validation
 
 **Output:** `.python-refactor/` directory with analysis, plan, execution log, and validation report.
+
+---
+
+### `/python-audit`
+
+Consolidated Python code-quality audit. Runs ruff (lint + format) + mypy/pyright (types) + vulture (dead code) + complexipy/radon (complexity) + pytest coverage in parallel, then aggregates findings into a prioritized fix list at `.python-audit/REPORT.md`.
+
+```
+/python-audit src/              # full audit of src/
+/python-audit . --skip-types    # skip type-check phase
+/python-audit . --strict        # exit 1 if any critical finding (CI-friendly)
+```
+
+**Framework-aware dead-code filtering:** Django admin handlers, FastAPI `@app.*` / `@router.*` routes, pytest `conftest.py` fixtures, click commands all recognized so their "unused" callables aren't falsely flagged.
+
+**Report contains:** Lint issues by rule category, type errors by hot file, dead code with confidence, complexity flags (cognitive > 15, MI < 65), coverage gaps, auto-fixable delta.
 
 ---
 

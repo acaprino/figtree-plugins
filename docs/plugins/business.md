@@ -1,8 +1,32 @@
 # Business Plugin
 
-> Navigate tech law without a lawyer on retainer. Contract review, GDPR/CCPA compliance, IP protection, and risk assessment tailored to software businesses.
+> Navigate tech law and SaaS strategy without a full-time CMO or lawyer on retainer. Contract review, GDPR/CCPA compliance, IP protection, risk assessment, and end-to-end SaaS business planning (positioning, pricing, GTM, unit economics) tailored to software businesses.
 
 ## Agents
+
+### `business-planner`
+
+Fractional CMO and GTM strategist for SaaS business planning. Socratic Phase-gated approach (one phase at a time, targeted questions, data-driven benchmarks).
+
+| | |
+|---|---|
+| **Model** | `opus` |
+| **Use for** | SaaS business plan, GTM strategy, positioning, pricing strategy, market sizing (TAM/SAM/SOM), PMF validation, persona design, competitive analysis, unit economics |
+
+**Invocation:**
+```
+Use the business-planner agent to plan [business dimension] for [product]
+```
+
+**Methodology:**
+- Socratic one-phase-at-a-time questioning (no questionnaire dumps)
+- Data-driven benchmarks (industry conversion rates, churn, CAC/LTV targets)
+- Frameworks: April Dunford positioning, Blue Ocean, Crossing the Chasm, PLG/SLG/hybrid GTM, Jobs-to-be-Done
+- Builds on the `saas-business-plan` knowledge base
+
+**Workflow phases:** Discovery -> Market sizing -> Competitive analysis -> Positioning -> Pricing -> GTM motion -> Unit economics -> Risk assessment. Stops at each phase for user validation.
+
+---
 
 ### `privacy-doc-generator`
 
@@ -28,32 +52,36 @@ Use the privacy-doc-generator agent to draft a [privacy policy/cookie policy/DPA
 
 ---
 
-## Skills
-
 ### `legal-advisor`
 
-Technology law advisor covering compliance and risk mitigation.
+Technology law advisor for advisory analysis and general legal documents -- contracts, NDAs, IP/copyright, employment law, M&A, corporate governance, regulatory compliance.
 
 | | |
 |---|---|
-| **Invoke** | Skill reference |
-| **Use for** | Contract review, compliance, IP protection, privacy policies, risk assessment |
+| **Model** | `opus` |
+| **Use for** | Contract review, NDAs, IP protection, employment law, corporate governance, legal risk assessment |
 
-**Core capabilities:**
-- **Contract Management** - Review, negotiate, draft, and manage contracts
-- **Privacy & Data Protection** - GDPR, CCPA, data processing agreements
-- **Intellectual Property** - Patents, trademarks, copyrights, trade secrets
-- **Compliance** - Regulatory mapping, policy development, audit preparation
-- **Risk Management** - Legal risk assessment, mitigation strategies, insurance
+**Invocation:**
+```
+Use the legal-advisor agent for [contract review / IP question / compliance check]
+```
 
-**Legal domains covered:**
-| Domain | Topics |
-|--------|--------|
-| Software | Licensing, SaaS agreements, open source |
-| Privacy | GDPR, CCPA, data transfers, consent |
-| IP | Patents, trademarks, copyrights, trade secrets |
-| Employment | Agreements, NDAs, non-competes, IP assignments |
-| Corporate | Formation, governance, equity, M&A |
+Route privacy document drafting (Privacy Policies, Cookie Policies, DPAs, DPIA reports) to `privacy-doc-generator` instead.
+
+---
+
+## Skills
+
+### `saas-business-plan`
+
+Strategic knowledge base for SaaS business planning and GTM strategy (2025-2026 market data).
+
+| | |
+|---|---|
+| **Invoke** | Skill reference (loaded by `business-planner` agent) |
+| **Use for** | Market sizing (TAM/SAM/SOM), persona frameworks, competitive analysis, pricing models (freemium, usage-based, tiered), positioning (April Dunford, Blue Ocean), GTM motions (PLG / SLG / hybrid), advertising benchmarks, KPI targets |
+
+**References:** 8 deep-dive references covering persona design, TAM/SAM/SOM calculation, competitive frameworks, pricing tiers and elasticity, GTM funnel design, PMF measurement, SaaS metrics (CAC/LTV/NRR/logo churn), and advertising benchmarks. Loaded progressively by the `business-planner` agent based on the phase.
 
 ---
 
